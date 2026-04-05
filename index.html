@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi Premium AI TK Baiturrohman</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     
@@ -17,7 +17,7 @@
         .top-bar { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .db-status { font-size: 0.8rem; font-weight: 600; background: var(--glass-bg); padding: 5px 12px; border-radius: 20px; border: 1px solid var(--glass-border); }
         .admin-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); font-size: 1.2rem; color: white; cursor: pointer; padding: 8px 12px; border-radius: 50%; transition: 0.3s; }
-        .header h1 { font-size: 1.4rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .header h1 { font-size: 1.4rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .header p { font-size: 0.85rem; opacity: 0.8; margin-top: 5px; }
         select, input[type="password"], input[type="text"], input[type="number"], input[type="time"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.2); color: white; font-size: 1rem; outline: none; margin-bottom: 15px; color-scheme: dark; }
         select option { background: #1a1a2e; color: white; }
@@ -26,8 +26,10 @@
         .status-circle { width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); border: 2px solid var(--glass-border); transition: all 0.5s ease; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
         .status-circle i { font-size: 3rem; margin-bottom: 5px; }
         .scanning { animation: pulse 1.5s infinite; } @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255,255,255,0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
-        #selfie-preview { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px; border: 4px solid var(--primary); display: none; box-shadow: 0 0 20px rgba(0,230,118,0.5); }
+        
+        #selfie-preview, #reg-selfie-preview { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px; border: 4px solid var(--primary); display: none; box-shadow: 0 0 20px rgba(0,230,118,0.5); }
         #ai-loading { font-size: 0.8rem; color: var(--warning); font-weight: bold; margin-bottom: 10px; display: none; }
+        
         .fab { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #ff4081, #c51162); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; z-index: 50; }
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: #1a1a2e; border: 1px solid var(--glass-border); padding: 25px; border-radius: 15px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; color: white; position: relative; }
@@ -35,29 +37,39 @@
         .close-btn { font-size: 1.5rem; cursor: pointer; color: var(--danger); border: none; background: none; }
         .admin-section { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); text-align: left; }
         .admin-section h4 { margin-bottom: 15px; color: #00e676; font-size: 1rem; }
+        
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px); color: white; padding: 15px 25px; border-radius: 10px; border-left: 5px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; animation: slideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; transition: opacity 0.5s; font-size: 0.9rem; max-width: 300px; line-height: 1.4;}
         .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); }
         .toast i { font-size: 1.5rem; } .toast.error i { color: var(--danger); } .toast.success i { color: var(--primary); }
         @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         
-        /* Table Style Baru untuk Cetak */
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px; background: white; color: black; border-radius: 8px; overflow: hidden; } 
-        th, td { padding: 12px; border-bottom: 1px solid #ddd; text-align: center; vertical-align: middle; } 
-        th { background-color: #f1f1f1; font-weight: bold; text-transform: uppercase; } 
-        .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; color: black; display: inline-block; } 
-        .bg-green { background: #00e676; } .bg-yellow { background: #ffea00; } .bg-red { background: #ff1744; color: white;} 
+        /* Table Style Khusus Cetak Persis Gambar */
+        .report-month-title { color: black; text-align: center; margin-bottom: 20px; font-weight: bold; font-size: 1.5rem; }
+        .table-wrapper { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; overflow-x: auto; color: black; }
+        .print-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; color: black; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;} 
+        .print-table th, .print-table td { border: 1px solid #333; padding: 8px; text-align: center; vertical-align: middle; }
+        .print-table th { background-color: #f8f9fa; font-weight: bold; }
+        .name-header { font-size: 1rem; text-transform: uppercase; background-color: #e9ecef !important; }
+        .tgl-col { width: 40px; font-weight: bold; background-color: #f8f9fa; }
         
+        /* Indikator Warna Status di Laporan */
+        .status-hijau { color: #00a000; font-weight: bold; }
+        .status-kuning { color: #d4a000; font-weight: bold; }
+        .status-merah { color: #ff0000; font-weight: bold; }
+
         .toggle-btn { font-size: 1.5rem; cursor: pointer; transition: 0.3s; background: none; border: none; }
         .toggle-on { color: var(--primary); } .toggle-off { color: #555; }
 
+        /* Konfigurasi Cerdas Lembar Print */
         @media print { 
             body { background: white; color: black; display: block; padding: 0; } 
-            .top-bar, .glass-panel, .fab, .close-btn, .btn-action, #toast-container { display: none !important; } 
-            .modal { position: static; background: white; display: block; filter: none; } 
-            .modal-content { background: white; color: black; border: none; max-width: 100%; overflow: visible; padding: 0; } 
-            table { border: 1px solid black; } th, td { border: 1px solid black; } th { background: #ccc !important; -webkit-print-color-adjust: exact; }
-            .badge { border: 1px solid black; }
+            .top-bar, .glass-panel, .fab, .close-btn, .btn-action, #toast-container, .modal-header { display: none !important; } 
+            .modal { position: static; background: white; display: block; filter: none; padding: 0; } 
+            .modal-content { background: white; color: black; border: none; max-width: 100%; padding: 0; overflow: visible; box-shadow: none; } 
+            .table-wrapper { padding: 0; margin-bottom: 0; page-break-after: always; box-shadow: none; }
+            .table-wrapper:last-child { page-break-after: auto; } /* Hilangkan blank page di akhir */
+            .print-table th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -89,24 +101,32 @@
         
         <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
             <p style="font-size: 0.8rem; margin-bottom: 10px; color: #aaa;">Guru Baru? Silakan daftar akun.</p>
-            <button class="btn-action" style="background: rgba(255,255,255,0.1); color: var(--info);" onclick="openRegister()"><i class="fas fa-user-plus"></i> Daftar Akun Baru</button>
+            <button class="btn-action" style="background: rgba(255,255,255,0.1); color: var(--info);" onclick="openRegister()"><i class="fas fa-user-plus"></i> Daftar Akun & Wajah</button>
         </div>
     </div>
 
     <div class="glass-panel" id="register-area" style="display: none;">
         <h2><i class="fas fa-user-plus"></i> Daftar Akun Baru</h2>
-        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Akun harus disetujui admin sebelum bisa digunakan.</p>
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajib mendaftarkan wajah (Face ID).</p>
+        
         <input type="text" id="reg-name" placeholder="Nama Lengkap Guru">
-        <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka Rahasia)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
-        <button class="btn-action btn-success" onclick="submitRegistration()"><i class="fas fa-check"></i> Daftar Sekarang</button>
-        <button class="btn-action btn-danger" onclick="cancelRegister()"><i class="fas fa-arrow-left"></i> Kembali</button>
+        <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
+        
+        <div style="margin: 15px 0; padding: 15px; border: 1px dashed var(--info); border-radius: 10px;">
+            <input type="file" accept="image/*" capture="user" id="reg-camera-input" style="display:none;" onchange="processFaceRegistration(this)">
+            <img id="reg-selfie-preview" src="">
+            <p id="reg-ai-loading" style="font-size: 0.8rem; color: var(--warning); display:none;"><i class="fas fa-spinner fa-spin"></i> AI Memindai Wajah...</p>
+            
+            <button id="btn-reg-scan" class="btn-action" style="background: var(--info);" onclick="document.getElementById('reg-camera-input').click()"><i class="fas fa-camera"></i> 1. Scan Wajah AI</button>
+            <p id="reg-face-status" style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*Wajah belum direkam</p>
+        </div>
+
+        <button id="btn-submit-reg" class="btn-action btn-success" style="display:none;" onclick="submitRegistration()"><i class="fas fa-check"></i> 2. Kirim Pendaftaran</button>
+        <button class="btn-action btn-danger" onclick="cancelRegister()"><i class="fas fa-arrow-left"></i> Batal</button>
     </div>
 
     <div class="glass-panel" id="main-app" style="display: none;">
-        <div id="status-circle" class="status-circle">
-            <i id="status-icon" class="fas fa-satellite-dish"></i>
-            <h2 id="status-title" style="font-size:0.9rem;">Memeriksa Lokasi...</h2>
-        </div>
+        <div id="status-circle" class="status-circle"><i id="status-icon" class="fas fa-satellite-dish"></i><h2 id="status-title" style="font-size:0.9rem;">Memeriksa Lokasi...</h2></div>
         <p id="info-text" style="font-weight: bold; margin-bottom: 5px;">Menghubungkan ke GPS...</p>
         <p id="distance-text" style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 15px;"></p>
 
@@ -132,27 +152,19 @@
     </div>
 
     <div id="reportModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content" style="background: #f4f7f6; max-width: 900px;">
             <div class="modal-header">
-                <h2 style="color: black;"><i class="fas fa-chart-bar" style="color: var(--info);"></i> Laporan Absensi Harian</h2>
+                <h2 style="color: var(--info);"><i class="fas fa-print"></i> Laporan Siap Cetak</h2>
                 <button class="close-btn" onclick="closeReport()"><i class="fas fa-times"></i></button>
             </div>
-            <button class="btn-action" onclick="window.print()" style="background: var(--info); width: auto; padding: 10px 20px; float: right; margin-bottom: 15px;"><i class="fas fa-print"></i> Cetak Laporan</button>
-            <div style="width: 100%; overflow-x: auto; clear: both;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Nama Guru</th>
-                            <th>Jam Masuk</th>
-                            <th>Jam Pulang</th>
-                            <th>Status Kehadiran</th>
-                        </tr>
-                    </thead>
-                    <tbody id="report-table-body">
-                        <tr><td colspan="5">Memuat data database...</td></tr>
-                    </tbody>
-                </table>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+                <p style="color: #555; font-size: 0.9rem;">Pilih bulan dan klik cetak. Kertas otomatis akan dibagi.</p>
+                <button class="btn-action" onclick="window.print()" style="background: var(--info); width: auto; padding: 10px 20px; margin:0;"><i class="fas fa-print"></i> Cetak Dokumen</button>
+            </div>
+            
+            <div id="report-render-area">
+                <p style="color: black; text-align: center;">Memuat dan merapikan data...</p>
             </div>
         </div>
     </div>
@@ -179,7 +191,7 @@
 
             <div class="admin-section">
                 <h4><i class="fas fa-users"></i> 3. Database Guru & Persetujuan Akun</h4>
-                <p style="font-size:0.75rem; color:#aaa; margin-bottom: 10px;">Gunakan tombol <i class="fas fa-toggle-on" style="color:var(--primary);"></i> untuk mengaktifkan/mematikan akun guru.</p>
+                <p style="font-size:0.75rem; color:#aaa; margin-bottom: 10px;">Guru yang mendaftar mandiri akan berstatus non-aktif. Klik ikon <i class="fas fa-toggle-on" style="color:var(--primary);"></i> untuk mengizinkan mereka absen.</p>
                 <ul id="admin-teacher-list" style="list-style: none; font-size:0.9rem;"></ul>
             </div>
             
@@ -188,7 +200,7 @@
         </div>
     </div>
 
-    <input type="file" accept="image/*" capture="user" id="admin-face-input" style="display:none;" onchange="registerTeacherFace(this)">
+    <input type="file" accept="image/*" capture="user" id="admin-face-input" style="display:none;" onchange="registerTeacherFaceAdmin(this)">
 
     <script>
         // --- KONFIGURASI SUPABASE ---
@@ -196,9 +208,8 @@
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        // State Aplikasi
-        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00" };
-        let teachers = []; let registeringTeacherId = null;
+        let appSettings = { id: null, lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00" };
+        let teachers = []; let registeringTeacherId = null; let tempRegistrationFaceData = null;
         let selectedTeacherName = ""; let watchId = null; let attendanceLogged = false; 
         let currentAbsenType = ""; let currentStatus = ""; let currentColor = ""; let currentIcon = ""; 
         let isAiLoaded = false;
@@ -207,10 +218,9 @@
         
         window.onload = async () => { 
             await checkSupabaseConnection(); 
-            await loadSettingsFromDB(); // Tarik pengaturan dari Cloud!
+            await loadSettingsFromDB(); 
             await fetchTeachersFromDB(); 
             await loadFaceAPIModels(); 
-            loadReportFromDB(); 
         }
 
         // --- SISTEM TOAST & AI ---
@@ -244,63 +254,76 @@
             st.innerHTML = error ? '<i class="fas fa-circle" style="color:var(--danger);"></i> Offline' : '<i class="fas fa-circle" style="color:var(--primary);"></i> Online';
         }
 
-        // --- SISTEM PENGATURAN CLOUD (Tabel Pengaturan) ---
+        // --- PENGATURAN TERSIMPAN DI DATABASE (CLOUD) ---
         async function loadSettingsFromDB() {
             const { data, error } = await sb.from('Pengaturan').select('*').limit(1);
             if (data && data.length > 0) {
                 const dbSet = data[0];
-                appSettings = {
-                    id: dbSet.id, lat: dbSet.lat, lng: dbSet.lng, radius: dbSet.radius,
-                    openTime: dbSet.open_time, lateTime: dbSet.late_time, tolTime: dbSet.tol_time, homeTime: dbSet.home_time
-                };
+                appSettings = { id: dbSet.id, lat: dbSet.lat, lng: dbSet.lng, radius: dbSet.radius, openTime: dbSet.open_time, lateTime: dbSet.late_time, tolTime: dbSet.tol_time, homeTime: dbSet.home_time };
             } else if (data && data.length === 0) {
-                // Jika tabel Pengaturan kosong, otomatis buat baris pertama
-                await sb.from('Pengaturan').insert([{ 
-                    lat: appSettings.lat, lng: appSettings.lng, radius: appSettings.radius, 
-                    open_time: appSettings.openTime, late_time: appSettings.lateTime, tol_time: appSettings.tolTime, home_time: appSettings.homeTime 
-                }]);
-                loadSettingsFromDB(); // Muat ulang
+                await sb.from('Pengaturan').insert([{ lat: appSettings.lat, lng: appSettings.lng, radius: appSettings.radius, open_time: appSettings.openTime, late_time: appSettings.lateTime, tol_time: appSettings.tolTime, home_time: appSettings.homeTime }]);
+                loadSettingsFromDB(); 
             }
         }
 
         async function saveSettingsToDB() {
-            const lat = document.getElementById('set-lat').value; const lng = document.getElementById('set-lng').value;
-            const radius = parseInt(document.getElementById('set-radius').value);
-            const op = document.getElementById('set-open-time').value; const lt = document.getElementById('set-late-time').value;
-            const tt = document.getElementById('set-tol-time').value; const ht = document.getElementById('set-home-time').value;
-
-            showToast("Menyimpan Pengaturan ke Cloud...", "info");
+            const lat = document.getElementById('set-lat').value; const lng = document.getElementById('set-lng').value; const radius = parseInt(document.getElementById('set-radius').value);
+            const op = document.getElementById('set-open-time').value; const lt = document.getElementById('set-late-time').value; const tt = document.getElementById('set-tol-time').value; const ht = document.getElementById('set-home-time').value;
+            showToast("Menyimpan ke Cloud...", "info");
             
-            // Update ke database
             if(appSettings.id) {
                 const { error } = await sb.from('Pengaturan').update({ lat: lat, lng: lng, radius: radius, open_time: op, late_time: lt, tol_time: tt, home_time: ht }).eq('id', appSettings.id);
                 if(error) { showToast("Gagal menyimpan ke tabel Pengaturan.", "error"); return; }
             }
-            showToast("Pengaturan Berhasil Disimpan Permanen!", "success");
-            closeAdmin(); loadSettingsFromDB(); // Segarkan setting lokal
+            showToast("Pengaturan Berhasil Disimpan Permanen!", "success"); closeAdmin(); loadSettingsFromDB(); 
         }
 
-        // --- SISTEM DATA GURU & REGISTRASI ---
+        // --- SISTEM GURU & REGISTRASI WAJAH MANDIRI ---
         async function fetchTeachersFromDB() {
             const { data, error } = await sb.from('Guru').select('*').order('nama', { ascending: true });
             if (error) { showToast("Tabel 'Guru' bermasalah.", "error"); teachers = []; } else { teachers = data || []; }
             checkDeviceLock(); renderTeacherList(); 
         }
 
-        function openRegister() { document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; }
+        function openRegister() { 
+            document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; 
+            tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none';
+            document.getElementById('reg-selfie-preview').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam";
+        }
         function cancelRegister() { document.getElementById('register-area').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
         
+        async function processFaceRegistration(input) {
+            if (!isAiLoaded) { showToast("AI belum siap, tunggu...", "warning"); return; }
+            if (input.files && input.files[0]) {
+                const aiLoading = document.getElementById('reg-ai-loading'); aiLoading.style.display = 'block';
+                const imgUrl = URL.createObjectURL(input.files[0]); const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
+
+                imgHtml.onload = async () => {
+                    try {
+                        const detection = await faceapi.detectSingleFace(imgHtml).withFaceLandmarks().withFaceDescriptor();
+                        aiLoading.style.display = 'none';
+                        if (!detection) { showToast("Wajah tidak terdeteksi! Pastikan tidak gelap.", "error"); return; }
+
+                        tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
+                        document.getElementById('reg-selfie-preview').src = imgUrl; document.getElementById('reg-selfie-preview').style.display = 'block';
+                        document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Wajah Terekam</span>";
+                        document.getElementById('btn-submit-reg').style.display = 'flex'; // Munculkan tombol kirim pendaftaran
+                    } catch(err) { aiLoading.style.display = 'none'; showToast("Error pemindaian AI.", "error"); }
+                }
+            }
+        }
+
         async function submitRegistration() {
             const name = document.getElementById('reg-name').value.trim(); const pin = document.getElementById('reg-pin').value.trim();
-            if(!name || pin.length !== 4) { showToast("Isi Nama Lengkap dan PIN 4 Angka!", "warning"); return; }
+            if(!name || pin.length !== 4) { showToast("Isi Nama dan PIN 4 Angka!", "warning"); return; }
+            if(!tempRegistrationFaceData) { showToast("Anda harus Scan Wajah terlebih dahulu!", "warning"); return; }
             
             showToast("Mendaftarkan akun ke sistem...", "info");
-            // is_active defaultnya false dari Supabase, atau kita paksa false disini
-            const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false }]);
+            const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, face_data: tempRegistrationFaceData }]);
             
-            if(error) { showToast("Gagal mendaftar. Nama mungkin sudah ada.", "error"); }
+            if(error) { showToast("Gagal mendaftar. Pastikan jaringan stabil.", "error"); }
             else { 
-                showToast("Pendaftaran Berhasil! Tunggu Admin untuk mengaktifkan akun dan merekam wajah Anda.", "success"); 
+                showToast("Pendaftaran Sukses! Hubungi Admin untuk mengaktifkan akunmu.", "success"); 
                 document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = '';
                 cancelRegister(); fetchTeachersFromDB();
             }
@@ -308,9 +331,7 @@
 
         function checkDeviceLock() {
             const lockedName = localStorage.getItem('locked_teacher_name'); const selectEl = document.getElementById('teacher-select');
-            
-            // Filter hanya guru yang sudah aktif untuk ditampilkan di dropdown login
-            const activeTeachers = teachers.filter(t => t.is_active === true);
+            const activeTeachers = teachers.filter(t => t.is_active === true); // Hanya tampilkan yang aktif
 
             if (lockedName) {
                 document.getElementById('select-container').style.display = 'none'; document.getElementById('device-lock-msg').style.display = 'block'; document.getElementById('locked-name-display').style.display = 'block';
@@ -328,8 +349,8 @@
             
             const teacherData = teachers.find(t => t.nama === name);
             if(teacherData && teacherData.pin === pin) {
-                if(!teacherData.is_active) { showToast("Akun Anda belum diaktifkan Admin!", "error"); return; }
-                if(!teacherData.face_data) { showToast("Admin belum mendaftarkan wajah Anda di sistem!", "warning"); return; }
+                if(!teacherData.is_active) { showToast("Akun Anda belum disetujui Admin!", "error"); return; }
+                if(!teacherData.face_data) { showToast("Wajah belum terdaftar di sistem!", "warning"); return; }
                 
                 localStorage.setItem('locked_teacher_name', name); selectedTeacherName = name;
                 document.getElementById('login-area').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; document.getElementById('teacher-pin').value = ''; 
@@ -340,11 +361,10 @@
 
         function logout() { if(watchId) navigator.geolocation.clearWatch(watchId); document.getElementById('main-app').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
 
-        // --- SISTEM ABSENSI (OTAK UTAMA) ---
+        // --- SISTEM ABSENSI & GPS ---
         async function startAttendanceCheck() {
             setUIState('info', 'fas fa-spinner fa-spin', 'Cek Database...', 'Memeriksa riwayat absen...');
-            const todayStr = new Date().toLocaleDateString('id-ID'); 
-            const currentMins = new Date().getHours() * 60 + new Date().getMinutes();
+            const todayStr = new Date().toLocaleDateString('id-ID'); const currentMins = new Date().getHours() * 60 + new Date().getMinutes();
             const openMins = timeToMins(appSettings.openTime); const homeMins = timeToMins(appSettings.homeTime);
             
             const { data: logs, error } = await sb.from('Naskan').select('*').eq('tanggal', todayStr).eq('nama', selectedTeacherName);
@@ -355,15 +375,10 @@
             if (!datangLog) {
                 if (currentMins < openMins) {
                     setUIState('warning', 'fas fa-clock', 'Belum Buka', `Absen masuk baru bisa dilakukan jam ${appSettings.openTime} WIB.`); attendanceLogged = true;
-                } else {
-                    attendanceLogged = false; currentAbsenType = 'Datang'; startGPS();
-                }
+                } else { attendanceLogged = false; currentAbsenType = 'Datang'; startGPS(); }
             } else if (!pulangLog) {
-                if (currentMins >= homeMins) {
-                    attendanceLogged = false; currentAbsenType = 'Pulang'; startGPS();
-                } else {
-                    setUIState(datangLog.warna, 'fas fa-check-circle', 'Sudah Absen Masuk', `Silakan tunggu jam pulang (${appSettings.homeTime})`); attendanceLogged = true;
-                }
+                if (currentMins >= homeMins) { attendanceLogged = false; currentAbsenType = 'Pulang'; startGPS(); } 
+                else { setUIState(datangLog.warna, 'fas fa-check-circle', 'Sudah Absen Masuk', `Silakan tunggu jam pulang (${appSettings.homeTime})`); attendanceLogged = true; }
             } else {
                 setUIState('info', 'fas fa-check-circle', 'Selesai Tugas', 'Anda sudah absen pulang hari ini.'); attendanceLogged = true;
             }
@@ -399,29 +414,24 @@
         }
 
         async function processFaceAttendance(input) {
-            if (!isAiLoaded) { showToast("AI sedang memuat, tunggu...", "warning"); return; }
+            if (!isAiLoaded) { showToast("AI sedang memuat...", "warning"); return; }
             if (input.files && input.files[0]) {
-                const aiLoading = document.getElementById('ai-loading');
-                aiLoading.style.display = 'block'; document.getElementById('btn-selfie').style.display = 'none';
-                
-                const imgUrl = URL.createObjectURL(input.files[0]);
-                const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
+                const aiLoading = document.getElementById('ai-loading'); aiLoading.style.display = 'block'; document.getElementById('btn-selfie').style.display = 'none';
+                const imgUrl = URL.createObjectURL(input.files[0]); const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
 
                 imgHtml.onload = async () => {
                     try {
-                        // AI Opsi Yang Lebih Ramah Cahaya (minConfidence: 0.4)
-                        const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 });
+                        const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 }); // Diturunkan agar toleran cahaya redup
                         const detection = await faceapi.detectSingleFace(imgHtml, options).withFaceLandmarks().withFaceDescriptor();
                         
                         if (!detection) { showToast("Wajah tidak terdeteksi! Pastikan tidak gelap.", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; return; }
 
                         const teacherData = teachers.find(t => t.nama === selectedTeacherName);
                         const savedDescriptor = new Float32Array(JSON.parse(teacherData.face_data)); 
-                        
                         const distance = faceapi.euclideanDistance(detection.descriptor, savedDescriptor);
                         aiLoading.style.display = 'none';
 
-                        // Ambang batas toleransi dilonggarkan ke 0.55 (default 0.6)
+                        // Ambang batas toleransi 0.55 (Cukup aman)
                         if (distance <= 0.55) {
                             showToast("Wajah Cocok! Menyimpan...", "success");
                             document.getElementById('selfie-preview').src = imgUrl; document.getElementById('selfie-preview').style.display = 'block'; document.getElementById('selfie-preview').style.borderColor = "var(--primary)";
@@ -430,9 +440,7 @@
                             showToast("Wajah Tidak Cocok dengan Database!", "error");
                             document.getElementById('selfie-preview').src = imgUrl; document.getElementById('selfie-preview').style.display = 'block'; document.getElementById('selfie-preview').style.borderColor = "var(--danger)"; document.getElementById('btn-selfie').style.display = 'flex'; 
                         }
-                    } catch(err) {
-                        showToast("Terjadi kesalahan komputasi AI.", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex';
-                    }
+                    } catch(err) { showToast("Error komputasi AI.", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; }
                 }
             }
         }
@@ -441,12 +449,9 @@
             const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); const dateStr = new Date().toLocaleDateString('id-ID');
             setUIState('info', 'fas fa-spinner fa-spin', 'Menyimpan...', 'Mencatat ke Naskan...');
             const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: currentAbsenType, status: currentStatus, warna: currentColor }]);
-            if (error) { 
-                showToast("ERROR DB: " + error.message, "error"); setUIState('danger', 'fas fa-times', 'Gagal Simpan', "Coba ulang foto."); document.getElementById('btn-selfie').style.display = 'flex'; 
-            } else {
-                attendanceLogged = true; setUIState(currentColor, currentIcon, `Berhasil Absen!`, `${timeStr} - ${currentStatus}`); 
-                showToast(`Absen Berhasil Diterima!`, 'success'); loadReportFromDB();
-            }
+            
+            if (error) { showToast("ERROR DB: " + error.message, "error"); setUIState('danger', 'fas fa-times', 'Gagal Simpan', "Coba ulang."); document.getElementById('btn-selfie').style.display = 'flex'; } 
+            else { attendanceLogged = true; setUIState(currentColor, currentIcon, `Berhasil Absen!`, `${timeStr} - ${currentStatus}`); showToast(`Absen Berhasil!`, 'success'); }
         }
 
         function setUIState(colorVar, iconClass, titleText, descText, isScanning) {
@@ -454,40 +459,95 @@
             document.getElementById('status-icon').className = iconClass; document.getElementById('status-title').innerText = titleText; document.getElementById('info-text').innerText = descText;
         }
 
-        // --- SISTEM LAPORAN CERDAS (CETAK PREMIUM) ---
-        function openReport() { document.getElementById('reportModal').style.display = 'flex'; loadReportFromDB(); }
+        // --- SISTEM LAPORAN CETAK CERDAS (SESUAI GAMBAR SKETSA) ---
+        function openReport() { document.getElementById('reportModal').style.display = 'flex'; buildSmartReport(); }
         function closeReport() { document.getElementById('reportModal').style.display = 'none'; }
 
-        async function loadReportFromDB() {
-            const tbody = document.getElementById('report-table-body');
-            const { data: logs, error } = await sb.from('Naskan').select('*').order('tanggal', { ascending: false }).order('id', { ascending: true });
-            
-            if (error) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--danger);">Gagal memuat data laporan.</td></tr>'; return; }
-            tbody.innerHTML = '';
-            if (logs.length === 0) { tbody.innerHTML = '<tr><td colspan="5">Belum ada data absensi bulan ini.</td></tr>'; return; }
+        async function buildSmartReport() {
+            const renderArea = document.getElementById('report-render-area');
+            renderArea.innerHTML = '<p style="color: black; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Menyusun Laporan...</p>';
 
-            // Logika Menggabungkan Datang dan Pulang jadi 1 Baris Tabel
-            const groupedReport = {};
+            // Ambil data bulan ini (Sederhana: ambil semua, filter via JS)
+            const { data: logs, error } = await sb.from('Naskan').select('*');
+            if (error) { renderArea.innerHTML = '<p style="color:red; text-align:center;">Gagal mengambil data laporan.</p>'; return; }
+
+            const now = new Date();
+            const currentMonthStr = String(now.getMonth() + 1).padStart(2, '0');
+            const currentYearStr = String(now.getFullYear());
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+            // 1. Ekstrak Data
+            const reportMap = {}; // reportMap[nama][tgl (1-31)] = { datang, pulang, status, warna }
+            const teachersSet = new Set();
+
             logs.forEach(log => {
-                const key = log.tanggal + "_" + log.nama;
-                if (!groupedReport[key]) { groupedReport[key] = { tanggal: log.tanggal, nama: log.nama, masuk: '-', pulang: '-', status: log.status, warna: log.warna }; }
-                
-                if (log.tipe === 'Datang') { 
-                    groupedReport[key].masuk = log.waktu; 
-                    groupedReport[key].status = log.status; // Gunakan status saat datang sebagai acuan warna utama
-                    groupedReport[key].warna = log.warna;
-                } 
-                else if (log.tipe === 'Pulang') { groupedReport[key].pulang = log.waktu; }
+                // Asumsi log.tanggal format id-ID (DD/MM/YYYY)
+                const parts = log.tanggal.split('/');
+                if(parts.length === 3 && parts[1] === currentMonthStr && parts[2] === currentYearStr) {
+                    const day = parseInt(parts[0]);
+                    teachersSet.add(log.nama);
+                    
+                    if (!reportMap[log.nama]) reportMap[log.nama] = {};
+                    if (!reportMap[log.nama][day]) reportMap[log.nama][day] = { datang: '-', pulang: '-', status: '-', warna: '' };
+
+                    if (log.tipe === 'Datang') { 
+                        reportMap[log.nama][day].datang = log.waktu; 
+                        reportMap[log.nama][day].status = log.status; // Acuan warna dari kedatangan
+                        reportMap[log.nama][day].warna = log.warna;
+                    } 
+                    else if (log.tipe === 'Pulang') { reportMap[log.nama][day].pulang = log.waktu; }
+                }
             });
 
-            // Cetak ke HTML Tabel
-            Object.values(groupedReport).forEach(row => {
-                let bg = row.warna === 'primary' ? 'bg-green' : (row.warna === 'warning' ? 'bg-yellow' : (row.warna === 'danger' ? 'bg-red' : 'bg-blue'));
-                tbody.innerHTML += `<tr><td>${row.tanggal}</td><td><b>${row.nama}</b></td><td>${row.masuk}</td><td>${row.pulang}</td><td><span class="badge ${bg}">${row.status}</span></td></tr>`;
+            const uniqueTeachers = Array.from(teachersSet);
+            if (uniqueTeachers.length === 0) { renderArea.innerHTML = '<p style="color: black; text-align: center;">Belum ada absensi di bulan ini.</p>'; return; }
+
+            // 2. Membagi Guru (3 Guru Per Kertas/Tabel agar muat dan rapi)
+            const teachersPerTable = 3;
+            const chunks = [];
+            for (let i = 0; i < uniqueTeachers.length; i += teachersPerTable) {
+                chunks.push(uniqueTeachers.slice(i, i + teachersPerTable));
+            }
+
+            // 3. Merender HTML Tabel Berlapis (Sesuai Gambar Sketsa User)
+            let html = `<h3 class="report-month-title">Rekapitulasi Absensi Bulan ${monthNames[now.getMonth()]} ${now.getFullYear()}</h3>`;
+            
+            chunks.forEach((chunk) => {
+                html += `<div class="table-wrapper">`;
+                html += `<table class="print-table"><thead><tr><th rowspan="2" class="tgl-col">Tgl</th>`;
+                
+                // Baris Nama
+                chunk.forEach(t => { html += `<th colspan="3" class="name-header">${t}</th>`; });
+                html += `</tr><tr>`;
+                
+                // Baris Datang Pulang Status
+                chunk.forEach(() => { html += `<th>Datang</th><th>Pulang</th><th>Status</th>`; });
+                html += `</tr></thead><tbody>`;
+
+                // Baris Tanggal 1 sampai 31
+                const maxDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); // Jumlah hari dalam bulan tsb
+                for(let day = 1; day <= maxDays; day++) {
+                    html += `<tr><td class="tgl-col">${day}</td>`;
+                    chunk.forEach(t => {
+                        const cell = reportMap[t] && reportMap[t][day] ? reportMap[t][day] : { datang: '', pulang: '', status: '', warna: '' };
+                        
+                        // Menyesuaikan warna teks sesuai permintaan user
+                        let statusClass = '';
+                        if(cell.warna === 'primary') statusClass = 'status-hijau';
+                        else if(cell.warna === 'warning') statusClass = 'status-kuning';
+                        else if(cell.warna === 'danger') statusClass = 'status-merah';
+
+                        html += `<td>${cell.datang}</td><td>${cell.pulang}</td><td class="${statusClass}">${cell.status}</td>`;
+                    });
+                    html += `</tr>`;
+                }
+                html += `</tbody></table></div>`;
             });
+
+            renderArea.innerHTML = html;
         }
 
-        // --- MANAJEMEN ADMIN & AKUN GURU ---
+        // --- MANAJEMEN ADMIN ---
         function openAdminLogin() { document.getElementById('adminLoginModal').style.display = 'flex'; }
         function verifyAdminPIN() {
             const pin = document.getElementById('admin-pin-input').value;
@@ -505,38 +565,36 @@
         
         function adminGetMyLocation() {
             if (navigator.geolocation) {
-                showToast("Sedang melacak lokasi akurat...", "info");
+                showToast("Melacak lokasi...", "info");
                 navigator.geolocation.getCurrentPosition(
-                    function(position) { document.getElementById('set-lat').value = position.coords.latitude.toFixed(6); document.getElementById('set-lng').value = position.coords.longitude.toFixed(6); showToast("Koordinat sukses didapatkan!", "success"); },
-                    function(error) { showToast("Gagal melacak. Aktifkan GPS HP Anda.", "error"); }, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+                    function(position) { document.getElementById('set-lat').value = position.coords.latitude.toFixed(6); document.getElementById('set-lng').value = position.coords.longitude.toFixed(6); showToast("Selesai!", "success"); },
+                    function(error) { showToast("Gagal melacak.", "error"); }, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
                 );
-            } else { showToast("Browser tidak mendukung lokasi.", "error"); }
+            } else { showToast("Browser tidak mendukung.", "error"); }
         }
 
         function resetDeviceLock() { if(confirm("Yakin hapus kunci HP ini?")) { localStorage.removeItem('locked_teacher_name'); showToast("Kunci direset!", "success"); checkDeviceLock(); } }
         
-        // Render List Admin (Dengan Fitur Tombol ON/OFF)
+        // --- MANAJEMEN TABEL GURU & PERSETUJUAN AKUN ---
         function renderTeacherList() { 
             const list = document.getElementById('admin-teacher-list'); list.innerHTML = ''; 
-            if(teachers.length === 0) { list.innerHTML = '<li style="text-align:center; padding:10px;">Belum ada Pendaftar</li>'; return; }
+            if(teachers.length === 0) { list.innerHTML = '<li style="text-align:center; padding:10px; color:#aaa;">Belum ada Pendaftar</li>'; return; }
             
             teachers.forEach((t) => {
                 let faceIcon = t.face_data ? '<i class="fas fa-user-check" style="color:var(--primary);" title="Wajah Terdaftar"></i>' : '<i class="fas fa-user-times" style="color:var(--warning);" title="Wajah Belum Terdaftar"></i>';
-                
-                // Toggle Button Logic
                 let toggleIcon = t.is_active ? 'fa-toggle-on toggle-on' : 'fa-toggle-off toggle-off';
-                let toggleAction = `toggleAccountStatus(${t.id}, ${!t.is_active})`;
+                let statusText = t.is_active ? '<span style="color:var(--primary); font-size:0.75rem;">Aktif</span>' : '<span style="color:#aaa; font-size:0.75rem;">Nonaktif</span>';
 
                 list.innerHTML += `
                 <li style="display:flex; flex-direction: column; padding:15px; border-bottom:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.3); margin-bottom:10px; border-radius:10px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; width: 100%; margin-bottom: 10px;">
-                        <div style="font-weight: bold; font-size: 1rem;">${t.nama} <span style="font-weight: normal; font-size: 0.8rem; color:#ccc;">(PIN: ${t.pin})</span></div>
-                        <button class="toggle-btn" onclick="${toggleAction}" title="Aktifkan/Matikan Akun"><i class="fas ${toggleIcon}"></i></button>
+                        <div style="font-weight: bold; font-size: 1rem;">${t.nama} <span style="font-weight: normal; font-size: 0.8rem; color:#ccc;">(PIN: ${t.pin})</span> <br>${statusText}</div>
+                        <button class="toggle-btn" onclick="toggleAccountStatus(${t.id}, ${!t.is_active})" title="Aktifkan/Matikan Akun"><i class="fas ${toggleIcon}"></i></button>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; width: 100%; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;">
-                        <div>Status Wajah: ${faceIcon}</div>
+                        <div>Face ID: ${faceIcon}</div>
                         <div>
-                            <button style="background:var(--info); border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer; margin-right:5px; font-size:0.8rem;" onclick="startFaceRegistration(${t.id})"><i class="fas fa-camera"></i> Scan Wajah</button> 
+                            <button style="background:var(--info); border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer; margin-right:5px; font-size:0.8rem;" onclick="startFaceRegistrationAdmin(${t.id})"><i class="fas fa-camera"></i> Wajah</button> 
                             <button style="background:var(--danger); border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:0.8rem;" onclick="deleteTeacher(${t.id}, '${t.nama}')"><i class="fas fa-trash"></i> Hapus</button>
                         </div>
                     </div>
@@ -547,20 +605,19 @@
         async function toggleAccountStatus(id, newStatus) {
             showToast("Mengubah status akun...", "info");
             const { error } = await sb.from('Guru').update({ is_active: newStatus }).eq('id', id);
-            if(error) { showToast("Gagal mengubah status", "error"); }
-            else { showToast("Status akun diperbarui!", "success"); fetchTeachersFromDB(); }
+            if(error) { showToast("Gagal mengubah status", "error"); } else { fetchTeachersFromDB(); }
         }
 
         async function deleteTeacher(id, nama) { 
-            if(confirm(`Yakin hapus akun ${nama} secara permanen?`)) { showToast("Menghapus...", "info"); await sb.from('Guru').delete().eq('id', id); showToast("Akun Terhapus!", "success"); await fetchTeachersFromDB(); } 
+            if(confirm(`Yakin hapus akun ${nama} secara permanen?`)) { showToast("Menghapus...", "info"); await sb.from('Guru').delete().eq('id', id); showToast("Akun Terhapus!", "success"); fetchTeachersFromDB(); } 
         }
 
-        function startFaceRegistration(id) {
+        function startFaceRegistrationAdmin(id) {
             if (!isAiLoaded) { showToast("AI belum siap...", "warning"); return; }
             registeringTeacherId = id; document.getElementById('admin-face-input').click(); 
         }
 
-        async function registerTeacherFace(input) {
+        async function registerTeacherFaceAdmin(input) {
             if (input.files && input.files[0]) {
                 showToast("Memindai Wajah...", "info");
                 const imgUrl = URL.createObjectURL(input.files[0]); const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
