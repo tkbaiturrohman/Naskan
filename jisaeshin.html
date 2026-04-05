@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin TK Baiturrohman</title>
+    <title>Super Admin TK Baiturrohman</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,63 +12,72 @@
     <style>
         :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --bg: #f4f7f6; --text: #333; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 20px; }
+        body { background-color: var(--bg); color: var(--text); padding: 15px; }
         
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { font-size: 1.8rem; color: #2c3e50; }
+        .header { text-align: center; margin-bottom: 30px; padding-top: 20px;}
+        .header h1 { font-size: 1.8rem; color: #2c3e50; font-weight: 700;}
         
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
         
-        select, input[type="password"], input[type="text"], input[type="number"], input[type="time"], input[type="date"], input[type="month"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem; margin-bottom: 15px; outline: none;}
+        select, input[type="password"], input[type="text"], input[type="number"], input[type="time"], input[type="date"], input[type="month"] { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ddd; font-size: 1rem; margin-bottom: 15px; outline: none; background: #fafafa;}
+        select:focus, input:focus { border-color: var(--info); box-shadow: 0 0 5px rgba(0,176,255,0.3);}
         
-        .btn-action { background: var(--info); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px;}
-        .btn-action:hover { opacity: 0.9; } .btn-danger { background: var(--danger); } .btn-success { background: var(--primary); } .btn-warning { background: var(--warning); color: black;}
+        .btn-action { background: var(--info); color: white; border: none; padding: 14px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; width: 100%;}
+        .btn-action:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.1);} 
+        .btn-danger { background: var(--danger); } .btn-success { background: var(--primary); } .btn-warning { background: var(--warning); color: black;}
         
-        .admin-section { background: #fafafa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #eee; border-left: 5px solid var(--info); }
-        .admin-section h4 { margin-bottom: 15px; color: #2c3e50; font-size: 1.1rem; }
+        .admin-section { background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #eee; border-left: 6px solid var(--info); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
+        .admin-section h4 { margin-bottom: 15px; color: #2c3e50; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;}
         
-        .badge { padding: 4px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; color: black; }
+        .badge { padding: 6px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; color: black; display: inline-block;}
         .bg-green { background: var(--primary); } .bg-yellow { background: var(--warning); } .bg-red { background: var(--danger); color: white;} .bg-blue { background: var(--info); color: white; }
         
-        .toggle-btn { font-size: 1.5rem; cursor: pointer; background: none; border: none; outline:none;}
+        .toggle-btn { font-size: 1.8rem; cursor: pointer; background: none; border: none; outline:none; transition: 0.3s;}
         .toggle-on { color: var(--primary); } .toggle-off { color: #ccc; }
 
         /* Login Overlay */
-        #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #2c3e50; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        .login-box { background: white; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 350px; }
+        #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #2c3e50, #3498db); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);}
 
-        /* TOAST */
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: #333; color: white; padding: 15px 25px; border-radius: 10px; border-left: 5px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; animation: slideIn 0.4s forwards;}
-        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: #2c3e50; color: white; padding: 15px 25px; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; animation: slideUp 0.4s forwards; font-size: 0.9rem;}
+        .toast.error { background: var(--danger); } .toast.warning { background: var(--warning); color: black;} .toast.success { background: var(--primary); color: black; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* STYLE CETAK KHUSUS KERTAS A4 LANDSCAPE (Sesuai Sketsa User) */
-        .report-wrapper { display: none; } /* Hanya muncul saat print */
+        /* STYLE CETAK KHUSUS MATRIX A4 LANDSCAPE (Persis Sketsa) */
+        .report-wrapper { display: none; } 
         
         @media print { 
             @page { size: A4 landscape; margin: 10mm; }
-            body { background: white; padding: 0; } 
-            .container, .header, .top-bar, #toast-container { display: none !important; } 
+            body { background: white; padding: 0; font-family: 'Times New Roman', Times, serif;} 
+            .container, .header, #toast-container { display: none !important; } 
             .report-wrapper { display: block !important; width: 100%; }
             
             .report-page { page-break-after: always; margin-bottom: 20mm; }
             .report-page:last-child { page-break-after: auto; }
             
-            .print-title { text-align: center; font-size: 14pt; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; }
+            .print-title { font-size: 12pt; font-weight: bold; text-transform: uppercase; margin-bottom: 10px;}
             
-            .print-table { width: 100%; border-collapse: collapse; font-size: 10pt; font-family: 'Times New Roman', Times, serif; } 
-            .print-table th, .print-table td { border: 1px solid #000; padding: 5px; text-align: center; vertical-align: middle; }
-            .print-table th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; font-weight: bold; }
+            .print-table { width: 100%; border-collapse: collapse; font-size: 8pt; table-layout: fixed;} 
+            .print-table th, .print-table td { border: 1px solid #000; text-align: center; vertical-align: middle; padding: 4px; overflow: hidden; }
+            .print-table th { background-color: #e0e0e0 !important; -webkit-print-color-adjust: exact; font-weight: bold; }
             
-            /* Mengakali nama panjang 4 kata agar melipat rapi */
-            .name-header { font-size: 9pt; text-transform: uppercase; width: 150px; white-space: normal; word-wrap: break-word; }
-            .tgl-col { width: 30px; font-weight: bold; }
+            .col-no { width: 30px; } .col-nama { width: 150px; text-align: left !important; padding-left: 5px !important;}
+            .col-tgl { width: 22px; font-size: 7pt;} .col-ket { width: 25px; } .col-note { width: 100px; }
             
-            .status-hijau { color: #000; font-weight: normal; } /* Saat diprint B/W lebih baik hitam */
-            /* Jika mau warna di kertas diprint: */
-            /* .status-hijau { color: #008000; font-weight: bold; } */
+            /* Status Box Generator */
+            .box-hijau { width: 12px; height: 12px; background: #008000 !important; -webkit-print-color-adjust: exact; margin: auto; }
+            .box-kuning { width: 12px; height: 12px; background: #ffea00 !important; -webkit-print-color-adjust: exact; margin: auto; }
+            .box-merah { width: 12px; height: 12px; background: #ff0000 !important; -webkit-print-color-adjust: exact; margin: auto; }
+            .box-kosong { width: 12px; height: 12px; margin: auto; }
+
+            /* Legend Kanan */
+            .legend-item { border: 1px solid black; padding: 2px; text-align: center; font-size: 7pt; margin-bottom: 2px;}
         }
+
+        /* Responsif Grid Edit Manual */
+        .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .flex-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -77,94 +86,91 @@
 
     <div id="login-overlay">
         <div class="login-box">
-            <h2 style="margin-bottom: 15px; color: #2c3e50;"><i class="fas fa-lock"></i> PIN Admin</h2>
-            <input type="password" id="admin-pin-input" placeholder="Masukkan PIN (1234)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold; font-size: 1.2rem;">
-            <button class="btn-action btn-success" style="width: 100%;" onclick="verifyAdminPIN()"><i class="fas fa-unlock"></i> Buka Panel</button>
+            <h2 style="margin-bottom: 20px; color: #2c3e50;"><i class="fas fa-user-shield"></i> Ruang Kepala</h2>
+            <input type="password" id="admin-pin-input" placeholder="Kode Keamanan" maxlength="4" style="text-align: center; letter-spacing: 8px; font-weight: bold; font-size: 1.3rem;">
+            <button class="btn-action btn-success" onclick="verifyAdminPIN()"><i class="fas fa-unlock"></i> Buka Brankas</button>
         </div>
     </div>
 
     <div id="print-render-area" class="report-wrapper"></div>
 
     <div class="header">
-        <h1><i class="fas fa-user-shield"></i> Ruang Admin TK Baiturrohman</h1>
-        <p id="ai-status" style="font-size: 0.8rem; color: var(--warning);"><i class="fas fa-brain fa-pulse"></i> Menginisialisasi AI...</p>
+        <h1>Manajemen Absensi TK</h1>
+        <p id="ai-status" style="font-size: 0.85rem; color: var(--info); font-weight: 600;"><i class="fas fa-cog fa-spin"></i> Menghubungkan Server...</p>
     </div>
 
     <div class="container">
         
         <div class="admin-section" style="border-left-color: var(--primary);">
-            <h4><i class="fas fa-print"></i> Cetak Laporan Bulanan</h4>
-            <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">Format cetak sudah disesuaikan otomatis menjadi tabel horizontal per 5 guru (Kertas A4 Landscape).</p>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="month" id="report-month" style="flex: 1; margin: 0;">
-                <button class="btn-action btn-success" style="margin: 0;" onclick="generateAndPrintReport()"><i class="fas fa-print"></i> Buat & Cetak</button>
+            <h4><i class="fas fa-print"></i> Cetak Laporan (Format Matrix)</h4>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Mencetak tabel raksasa horizontal. 1 Kertas = Maksimal 5 Guru.</p>
+            <div class="flex-grid" style="align-items: center;">
+                <input type="month" id="report-month" style="margin: 0;">
+                <button class="btn-action btn-success" style="margin: 0;" onclick="generateMatrixReport()"><i class="fas fa-file-pdf"></i> Generate & Print A4</button>
             </div>
         </div>
 
         <div class="admin-section" style="border-left-color: var(--warning);">
-            <h4><i class="fas fa-edit"></i> Edit Absen Manual</h4>
-            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Ubah atau tambahkan absen yang terlewat.</p>
+            <h4><i class="fas fa-edit"></i> Edit Absen Manual & Preview</h4>
             
             <input type="date" id="manual-date" onchange="loadAdminAttendancePreview()">
             
-            <div style="background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;">
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <select id="manual-name" style="flex: 1; min-width: 150px;"><option value="">-Pilih Guru-</option></select>
-                    <select id="manual-tipe" style="flex: 1; min-width: 100px;">
-                        <option value="Datang">Datang</option>
+            <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 20px;">
+                <h5 style="margin-bottom: 15px; color: #333;"><i class="fas fa-plus-circle"></i> Tambah / Revisi Absen</h5>
+                <div class="flex-grid">
+                    <select id="manual-name"><option value="">-Pilih Guru-</option></select>
+                    <select id="manual-tipe">
+                        <option value="Datang">Datang (Masuk)</option>
                         <option value="Pulang">Pulang</option>
                     </select>
-                    <input type="time" id="manual-waktu" style="flex: 1; min-width: 100px; margin-bottom: 0;">
-                    <select id="manual-status" style="flex: 1; min-width: 150px;">
+                    <input type="time" id="manual-waktu">
+                    <select id="manual-status">
                         <option value="Tepat Waktu">Tepat Waktu (Hijau)</option>
                         <option value="Terlambat">Terlambat (Kuning)</option>
-                        <option value="Kurang Disiplin">Kurang Disiplin (Merah)</option>
-                        <option value="Offset">Offset (Kuning Pulang)</option>
-                        <option value="Lupa">Lupa Absen</option>
+                        <option value="Tidak Disiplin">Tidak Disiplin (Merah)</option>
+                        <option value="Offset">Offset Pulang (Kuning)</option>
                     </select>
                 </div>
-                <button class="btn-action btn-warning" style="margin-top: 15px; width: 100%;" onclick="saveManualAttendance()"><i class="fas fa-save"></i> Simpan / Update Absen</button>
+                <button class="btn-action btn-warning" onclick="saveManualAttendance()"><i class="fas fa-save"></i> Terapkan Perubahan</button>
             </div>
 
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
-                    <thead><tr style="background: #eee;"><th>Nama</th><th>Tipe</th><th>Jam</th><th>Status</th><th>Aksi</th></tr></thead>
-                    <tbody id="admin-preview-table"><tr><td colspan="5" style="text-align:center;">Pilih tanggal di atas</td></tr></tbody>
+            <div style="overflow-x: auto; background: #fff; border-radius: 10px; border: 1px solid #eee;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead><tr style="background: #2c3e50; color: white;">
+                        <th style="padding: 12px;">Nama</th><th style="padding: 12px;">Tipe</th><th style="padding: 12px;">Jam</th><th style="padding: 12px;">Status</th><th style="padding: 12px;">Aksi</th>
+                    </tr></thead>
+                    <tbody id="admin-preview-table"><tr><td colspan="5" style="text-align:center; padding: 15px;">Pilih tanggal di atas</td></tr></tbody>
                 </table>
             </div>
         </div>
 
-        <div class="admin-section" style="border-left-color: var(--danger);">
-            <h4><i class="fas fa-users"></i> Persetujuan Akun & Database Guru</h4>
-            <p style="font-size:0.8rem; color:#666; margin-bottom: 15px;">Nyalakan tombol <i class="fas fa-toggle-on" style="color:var(--primary);"></i> untuk mengaktifkan akun guru.</p>
-            <ul id="admin-teacher-list" style="list-style: none;"></ul>
+        <div class="admin-section" style="border-left-color: var(--info);">
+            <h4><i class="fas fa-users"></i> Persetujuan Akun Guru</h4>
+            <p style="font-size:0.85rem; color:#666; margin-bottom: 15px;">Akun baru dari guru tidak bisa dipakai sebelum tombol di-ON-kan.</p>
+            <ul id="admin-teacher-list" style="list-style: none; display: grid; grid-template-columns: 1fr; gap: 10px;"></ul>
         </div>
 
-        <div class="admin-section">
-            <h4><i class="fas fa-cogs"></i> Pengaturan Jam & GPS Server</h4>
+        <div class="admin-section" style="border-left-color: #555;">
+            <h4><i class="fas fa-cogs"></i> Pengaturan Jantung Sistem</h4>
             
-            <label style="font-size:0.8rem; font-weight:bold;">Jam Mulai Buka Absen Pagi</label>
-            <input type="time" id="set-open-time">
-            <label style="font-size:0.8rem; font-weight:bold;">Tepat Waktu (Batas Hijau)</label>
-            <input type="time" id="set-late-time">
-            <label style="font-size:0.8rem; font-weight:bold;">Toleransi Telat (Batas Kuning)</label>
-            <input type="time" id="set-tol-time">
-            <label style="font-size:0.8rem; font-weight:bold;">Mulai Absen Pulang (Biru)</label>
-            <input type="time" id="set-home-time">
-
-            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
-            
-            <label style="font-size:0.8rem; font-weight:bold;">Titik Lokasi GPS Sekolah</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="set-lat" placeholder="Latitude" style="flex:1;">
-                <input type="text" id="set-lng" placeholder="Longitude" style="flex:1;">
+            <div class="flex-grid" style="background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px;">
+                <div><label style="font-size:0.8rem; font-weight:bold; color:#555;">Jam Buka Gerbang Pagi</label><input type="time" id="set-open-time"></div>
+                <div><label style="font-size:0.8rem; font-weight:bold; color:var(--primary);">Batas Hijau (Tepat Wkt)</label><input type="time" id="set-late-time"></div>
+                <div><label style="font-size:0.8rem; font-weight:bold; color:#b38600;">Batas Kuning (Telat)</label><input type="time" id="set-tol-time"></div>
+                <div><label style="font-size:0.8rem; font-weight:bold; color:var(--info);">Mulai Jam Pulang</label><input type="time" id="set-home-time"></div>
             </div>
-            <button class="btn-action btn-info" style="width: 100%; font-size: 0.85rem;" onclick="adminGetMyLocation()"><i class="fas fa-crosshairs"></i> Gunakan Lokasi Saya Saat Ini</button>
             
-            <label style="font-size:0.8rem; font-weight:bold; margin-top: 10px; display:block;">Radius Area Bebas Absen (Meter)</label>
-            <input type="number" id="set-radius" placeholder="Saran: 100">
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd;">
+                <button class="btn-action btn-info" onclick="adminGetMyLocation()"><i class="fas fa-crosshairs"></i> Gunakan Titik Berdiriku Saat Ini</button>
+                <div class="flex-grid">
+                    <input type="text" id="set-lat" placeholder="Garis Lintang (Latitude)">
+                    <input type="text" id="set-lng" placeholder="Garis Bujur (Longitude)">
+                </div>
+                <label style="font-size:0.85rem; font-weight:bold; display:block;">Jangkauan Absen (Meter)</label>
+                <input type="number" id="set-radius" placeholder="Disarankan 50 - 150 meter">
+            </div>
 
-            <button class="btn-action" style="background:var(--text); width: 100%; margin-top: 15px;" onclick="saveSettingsToDB()"><i class="fas fa-cloud-upload-alt"></i> Simpan Pengaturan Sistem</button>
+            <button class="btn-action" style="background:var(--text); margin-top: 20px;" onclick="saveSettingsToDB()"><i class="fas fa-cloud-upload-alt"></i> Simpan Sistem ke Cloud</button>
         </div>
 
     </div>
@@ -172,7 +178,7 @@
     <input type="file" accept="image/*" capture="user" id="admin-face-input" style="display:none;" onchange="registerTeacherFaceAdmin(this)">
 
     <script>
-        // MASUKKAN API KEY SUPABASE KAMU
+        // API SUPABASE
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
@@ -193,16 +199,14 @@
             if(document.getElementById('admin-pin-input').value === '1234') {
                 document.getElementById('login-overlay').style.display = 'none';
                 initAdmin();
-            } else { showToast("PIN Salah!", "error"); }
+            } else { showToast("Akses Ditolak!", "error"); }
         }
 
         async function initAdmin() {
             document.getElementById('report-month').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
             document.getElementById('manual-date').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
             
-            await loadSettingsFromDB();
-            await fetchTeachersFromDB();
-            await loadFaceAPIModels();
+            await loadSettingsFromDB(); await fetchTeachersFromDB(); await loadFaceAPIModels();
             loadAdminAttendancePreview();
         }
 
@@ -213,8 +217,7 @@
                 await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
                 await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
                 isAiLoaded = true;
-                const aiStatus = document.getElementById('ai-status');
-                aiStatus.innerHTML = '<i class="fas fa-check-circle"></i> AI Siap'; aiStatus.style.color = 'var(--primary)';
+                document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> Server Sinkron'; document.getElementById('ai-status').style.color = 'var(--primary)';
             } catch (err) { document.getElementById('ai-status').innerHTML = '<i class="fas fa-times-circle"></i> Gagal Memuat AI.'; document.getElementById('ai-status').style.color = 'var(--danger)'; }
         }
 
@@ -230,25 +233,23 @@
         async function saveSettingsToDB() {
             showToast("Menyimpan ke Cloud...", "info");
             const p = { lat: document.getElementById('set-lat').value, lng: document.getElementById('set-lng').value, radius: parseInt(document.getElementById('set-radius').value), open_time: document.getElementById('set-open-time').value, late_time: document.getElementById('set-late-time').value, tol_time: document.getElementById('set-tol-time').value, home_time: document.getElementById('set-home-time').value };
-            
             if(appSettings.id) { await sb.from('Pengaturan').update(p).eq('id', appSettings.id); }
-            showToast("Pengaturan Disimpan!", "success"); loadSettingsFromDB(); 
+            showToast("Sukses Disimpan!", "success"); loadSettingsFromDB(); 
         }
 
         function adminGetMyLocation() {
             if (navigator.geolocation) {
-                showToast("Melacak lokasi...", "info");
+                showToast("Satelit mengunci lokasi...", "info");
                 navigator.geolocation.getCurrentPosition(
-                    function(position) { document.getElementById('set-lat').value = position.coords.latitude.toFixed(6); document.getElementById('set-lng').value = position.coords.longitude.toFixed(6); showToast("Selesai!", "success"); },
-                    function(error) { showToast("Gagal melacak GPS.", "error"); }, { enableHighAccuracy: true }
+                    function(position) { document.getElementById('set-lat').value = position.coords.latitude.toFixed(6); document.getElementById('set-lng').value = position.coords.longitude.toFixed(6); showToast("Terkunci!", "success"); },
+                    function(error) { showToast("Gagal. Nyalakan GPS HP.", "error"); }, { enableHighAccuracy: true }
                 );
-            } else { showToast("Browser tidak mendukung.", "error"); }
+            } else { showToast("Browser tidak support.", "error"); }
         }
 
         async function fetchTeachersFromDB() {
             const { data } = await sb.from('Guru').select('*').order('nama', { ascending: true });
-            teachers = data || []; 
-            renderTeacherList();
+            teachers = data || []; renderTeacherList();
             
             const sel = document.getElementById('manual-name'); sel.innerHTML = '<option value="">-Pilih Guru-</option>';
             teachers.forEach(t => sel.innerHTML += `<option value="${t.nama}">${t.nama}</option>`);
@@ -257,28 +258,28 @@
         function renderTeacherList() { 
             const list = document.getElementById('admin-teacher-list'); list.innerHTML = ''; 
             teachers.forEach((t) => {
-                let faceIcon = t.face_data ? '<i class="fas fa-user-check" style="color:var(--primary);" title="Wajah OK"></i>' : '<i class="fas fa-user-times" style="color:var(--danger);" title="Belum Ada"></i>';
+                let faceIcon = t.face_data ? '<i class="fas fa-check-circle" style="color:var(--primary);"></i> Terdaftar' : '<i class="fas fa-times-circle" style="color:var(--danger);"></i> Kosong';
                 let toggleIcon = t.is_active ? 'fa-toggle-on toggle-on' : 'fa-toggle-off toggle-off';
                 
                 list.innerHTML += `
-                <li style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee; background: white; margin-bottom:5px; border-radius:5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                <li style="display:flex; justify-content:space-between; align-items:center; padding:15px; border:1px solid #ddd; background: white; border-radius:12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
                     <div style="flex:1;">
-                        <strong style="font-size:0.9rem;">${t.nama}</strong> <span style="font-size:0.75rem; color:#888;">(PIN: ${t.pin})</span><br>
-                        <span style="font-size:0.75rem;">Wajah: ${faceIcon}</span>
+                        <strong style="font-size:1rem; color:#333;">${t.nama}</strong> <span style="font-size:0.8rem; color:#888; background:#eee; padding:2px 6px; border-radius:5px;">PIN: ${t.pin}</span><br>
+                        <span style="font-size:0.75rem; font-weight:600; margin-top:5px; display:block;">Face ID: ${faceIcon}</span>
                     </div>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <button class="toggle-btn" onclick="toggleAccountStatus(${t.id}, ${!t.is_active})" title="Aktif/Nonaktif"><i class="fas ${toggleIcon}"></i></button>
-                        <button class="btn-action btn-info" style="padding:6px; margin:0;" onclick="startFaceRegistrationAdmin(${t.id})"><i class="fas fa-camera"></i></button> 
-                        <button class="btn-action btn-danger" style="padding:6px; margin:0;" onclick="deleteTeacher(${t.id}, '${t.nama}')"><i class="fas fa-trash"></i></button>
+                    <div style="display:flex; gap:12px; align-items:center;">
+                        <button class="toggle-btn" onclick="toggleAccountStatus(${t.id}, ${!t.is_active})" title="On/Off Akses"><i class="fas ${toggleIcon}"></i></button>
+                        <button class="btn-action btn-info" style="padding:8px 12px; margin:0;" onclick="startFaceRegistrationAdmin(${t.id})" title="Rekam Wajah"><i class="fas fa-camera"></i></button> 
+                        <button class="btn-action btn-danger" style="padding:8px 12px; margin:0;" onclick="deleteTeacher(${t.id}, '${t.nama}')" title="Hapus Permanen"><i class="fas fa-trash"></i></button>
                     </div>
                 </li>`; 
             });
         }
         
         async function toggleAccountStatus(id, newStatus) { await sb.from('Guru').update({ is_active: newStatus }).eq('id', id); fetchTeachersFromDB(); }
-        async function deleteTeacher(id, nama) { if(confirm(`Hapus ${nama}?`)) { await sb.from('Guru').delete().eq('id', id); fetchTeachersFromDB(); } }
+        async function deleteTeacher(id, nama) { if(confirm(`Bakar data ${nama}?`)) { await sb.from('Guru').delete().eq('id', id); fetchTeachersFromDB(); } }
 
-        function startFaceRegistrationAdmin(id) { if (!isAiLoaded) { showToast("AI belum siap", "warning"); return; } registeringTeacherId = id; document.getElementById('admin-face-input').click(); }
+        function startFaceRegistrationAdmin(id) { if (!isAiLoaded) { showToast("AI loading", "warning"); return; } registeringTeacherId = id; document.getElementById('admin-face-input').click(); }
         async function registerTeacherFaceAdmin(input) {
             if (input.files && input.files[0]) {
                 showToast("Memindai...", "info");
@@ -286,9 +287,9 @@
                 imgHtml.onload = async () => {
                     try {
                         const detection = await faceapi.detectSingleFace(imgHtml).withFaceLandmarks().withFaceDescriptor();
-                        if (!detection) { showToast("Wajah tidak jelas!", "error"); return; }
+                        if (!detection) { showToast("Wajah buram!", "error"); return; }
                         await sb.from('Guru').update({ face_data: JSON.stringify(Array.from(detection.descriptor)) }).eq('id', registeringTeacherId);
-                        showToast("Face ID Tersimpan!", "success"); fetchTeachersFromDB();
+                        showToast("Face ID Aktif!", "success"); fetchTeachersFromDB();
                     } catch(err) { showToast("Error AI.", "error"); }
                 }
             }
@@ -298,19 +299,19 @@
         async function loadAdminAttendancePreview() {
             const dateInput = document.getElementById('manual-date').value; if(!dateInput) return;
             const dateStr = formatIDToYMD_Revert(dateInput); 
-            const tbody = document.getElementById('admin-preview-table'); tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Memuat...</td></tr>';
+            const tbody = document.getElementById('admin-preview-table'); tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px;">Memuat...</td></tr>';
             
             const { data: logs } = await sb.from('Naskan').select('*').eq('tanggal', dateStr).order('waktu', { ascending: true });
             tbody.innerHTML = '';
-            if(!logs || logs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Tidak ada data.</td></tr>'; return; }
+            if(!logs || logs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px;">Tidak ada data masuk di tanggal ini.</td></tr>'; return; }
 
             logs.forEach(log => {
                 let bg = log.warna === 'primary' ? 'bg-green' : (log.warna === 'warning' ? 'bg-yellow' : 'bg-red');
-                if(log.tipe === 'Pulang' && log.warna === 'primary') bg = 'bg-blue'; // Biru untuk pulang normal
+                if(log.tipe === 'Pulang' && log.warna === 'primary') bg = 'bg-blue'; 
 
-                tbody.innerHTML += `<tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding:8px;">${log.nama}</td><td style="padding:8px;">${log.tipe}</td><td style="padding:8px;">${log.waktu}</td><td style="padding:8px;"><span class="badge ${bg}">${log.status}</span></td>
-                    <td style="padding:8px;"><button style="background:var(--danger); border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="deleteAttendanceRecord(${log.id})"><i class="fas fa-trash"></i></button></td>
+                tbody.innerHTML += `<tr style="border-bottom: 1px solid #ddd; text-align:center;">
+                    <td style="padding:10px; font-weight:600; text-align:left;">${log.nama}</td><td style="padding:10px;">${log.tipe}</td><td style="padding:10px; font-weight:bold;">${log.waktu}</td><td style="padding:10px;"><span class="badge ${bg}">${log.status}</span></td>
+                    <td style="padding:10px;"><button style="background:var(--danger); border:none; color:white; padding:6px 12px; border-radius:5px; cursor:pointer;" onclick="deleteAttendanceRecord(${log.id})"><i class="fas fa-trash"></i></button></td>
                 </tr>`;
             });
         }
@@ -323,31 +324,30 @@
             if(!dateInput || !name || !type || !timeStr || !status) { showToast("Lengkapi form!", "warning"); return; }
             const dateStr = formatIDToYMD_Revert(dateInput);
 
-            // Logika Warna dari user prompt: Datang(Hijau, Kuning, Merah). Pulang(Hijau, Kuning/Offset)
             let warna = 'primary';
             if (status === 'Terlambat' || status === 'Offset') warna = 'warning';
-            else if (status === 'Kurang Disiplin' || status === 'Lupa') warna = 'danger';
+            else if (status === 'Tidak Disiplin' || status === 'Lupa') warna = 'danger';
             
-            showToast("Menyimpan...", "info");
+            showToast("Menyimpan ke Naskan...", "info");
             const { data: existing } = await sb.from('Naskan').select('id').eq('tanggal', dateStr).eq('nama', name).eq('tipe', type);
             if (existing && existing.length > 0) { await sb.from('Naskan').update({ waktu: timeStr, status: status, warna: warna }).eq('id', existing[0].id); } 
             else { await sb.from('Naskan').insert([{ tanggal: dateStr, nama: name, waktu: timeStr, tipe: type, status: status, warna: warna }]); }
             
-            showToast("Berhasil!", "success"); loadAdminAttendancePreview();
+            showToast("Tersimpan!", "success"); loadAdminAttendancePreview();
         }
 
         async function deleteAttendanceRecord(id) { if(confirm("Hapus absen ini?")) { await sb.from('Naskan').delete().eq('id', id); loadAdminAttendancePreview(); } }
 
-        // --- SISTEM CETAK CERDAS PEMBAGI HALAMAN (A4) ---
-        async function generateAndPrintReport() {
+        // --- SISTEM CETAK MATRIX (SANGAT KOMPLEKS SESUAI GAMBAR) ---
+        async function generateMatrixReport() {
             const selectedMonthVal = document.getElementById('report-month').value; 
             if(!selectedMonthVal) { showToast("Pilih bulan dulu!", "warning"); return; }
             const [yearStr, monthStr] = selectedMonthVal.split('-');
             
-            showToast("Menyusun Laporan PDF...", "info");
+            showToast("Merakit Matrix PDF...", "info");
             const { data: logs } = await sb.from('Naskan').select('*');
             const renderArea = document.getElementById('print-render-area');
-            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const monthNames = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
 
             const reportMap = {}; const teachersSet = new Set();
 
@@ -356,55 +356,77 @@
                 if(parts.length === 3 && parseInt(parts[1]) === parseInt(monthStr) && parts[2] === yearStr) {
                     const day = parseInt(parts[0]); teachersSet.add(log.nama);
                     if (!reportMap[log.nama]) reportMap[log.nama] = {};
-                    if (!reportMap[log.nama][day]) reportMap[log.nama][day] = { datang: '-', pulang: '-', status: '', warna: '' };
+                    if (!reportMap[log.nama][day]) reportMap[log.nama][day] = { dtg: '', warnaDtg: '', plg: '', warnaPlg: '' };
 
-                    if (log.tipe === 'Datang') { 
-                        reportMap[log.nama][day].datang = log.waktu; 
-                        reportMap[log.nama][day].status = log.status; // Status kedatangan sbg acuan
-                        reportMap[log.nama][day].warna = log.warna;
-                    } 
-                    else if (log.tipe === 'Pulang') { reportMap[log.nama][day].pulang = log.waktu; }
+                    if (log.tipe === 'Datang') { reportMap[log.nama][day].dtg = log.waktu; reportMap[log.nama][day].warnaDtg = log.warna; } 
+                    else if (log.tipe === 'Pulang') { reportMap[log.nama][day].plg = log.waktu; reportMap[log.nama][day].warnaPlg = log.warna; }
                 }
             });
 
             const uniqueTeachers = Array.from(teachersSet).sort();
-            if (uniqueTeachers.length === 0) { showToast("Belum ada absen di bulan ini.", "error"); return; }
+            if (uniqueTeachers.length === 0) { showToast("Kosong.", "error"); return; }
 
-            // PAGINATION KERTAS A4 (Maksimal 5 Guru per Kertas)
-            const teachersPerPage = 5; 
-            const chunks = [];
+            // Pagination Guru (5 Guru per Kertas Landscape)
+            const teachersPerPage = 5; const chunks = [];
             for (let i = 0; i < uniqueTeachers.length; i += teachersPerPage) { chunks.push(uniqueTeachers.slice(i, i + teachersPerPage)); }
 
-            let html = '';
             const maxDays = new Date(parseInt(yearStr), parseInt(monthStr), 0).getDate();
-            const bulanTahunStr = `${monthNames[parseInt(monthStr)-1]} ${yearStr}`;
+            const titleBulan = `BULAN : ${monthNames[parseInt(monthStr)-1]}`;
 
-            chunks.forEach((chunk) => {
+            let html = '';
+
+            // GENERATOR TABEL 4 BARIS PER GURU (Sesuai Sketsa)
+            chunks.forEach((chunk, chunkIndex) => {
                 html += `<div class="report-page">`;
-                html += `<div class="print-title">LAPORAN ABSENSI TK BAITURROHMAN<br>BULAN: ${bulanTahunStr}</div>`;
-                html += `<table class="print-table"><thead><tr><th rowspan="2" class="tgl-col">TGL</th>`;
+                html += `<div class="print-title">${titleBulan}</div>`;
+                html += `<table class="print-table"><thead><tr><th rowspan="2" class="col-no">No</th><th rowspan="2" class="col-nama">NAMA</th>`;
+                html += `<th colspan="${maxDays}">TANGGAL</th><th colspan="3" class="col-ket">KET</th><th rowspan="2" class="col-note">Note</th></tr><tr>`;
                 
-                chunk.forEach(t => { html += `<th colspan="3" class="name-header">${t}</th>`; });
-                html += `</tr><tr>`;
-                chunk.forEach(() => { html += `<th>Dtg</th><th>Plg</th><th>Status</th>`; });
-                html += `</tr></thead><tbody>`;
+                for(let d=1; d<=maxDays; d++){ html += `<th class="col-tgl">${d}</th>`; }
+                html += `<th class="col-tgl">S</th><th class="col-tgl">I</th><th class="col-tgl">A</th></tr></thead><tbody>`;
 
-                for(let day = 1; day <= maxDays; day++) {
-                    html += `<tr><td class="tgl-col">${day}</td>`;
-                    chunk.forEach(t => {
-                        const cell = reportMap[t] && reportMap[t][day] ? reportMap[t][day] : { datang: '', pulang: '', status: '', warna: '' };
-                        // Warna cetak Hitam/Putih
-                        html += `<td>${cell.datang}</td><td>${cell.pulang}</td><td>${cell.status}</td>`;
-                    });
+                chunk.forEach((t, i) => {
+                    const noUrut = (chunkIndex * teachersPerPage) + i + 1;
+                    
+                    // Baris 1: Jam Datang
+                    html += `<tr><td rowspan="4">${noUrut}</td><td rowspan="4" class="col-nama">${t}</td><td>Jam Dtg</td>`;
+                    for(let d=1; d<=maxDays; d++){ const dtg = reportMap[t] && reportMap[t][d] ? reportMap[t][d].dtg : ''; html += `<td>${dtg}</td>`; }
+                    html += `<td rowspan="4"></td><td rowspan="4"></td><td rowspan="4"></td>`;
+                    if(i===0) html += `<td class="legend-item">DATANG</td>`; else html += `<td></td>`;
                     html += `</tr>`;
-                }
+
+                    // Baris 2: Status Datang (Warna)
+                    html += `<tr><td>Status</td>`;
+                    for(let d=1; d<=maxDays; d++){ 
+                        const wd = reportMap[t] && reportMap[t][d] ? reportMap[t][d].warnaDtg : ''; 
+                        let bCls = 'box-kosong'; if(wd==='primary') bCls='box-hijau'; else if(wd==='warning') bCls='box-kuning'; else if(wd==='danger') bCls='box-merah';
+                        html += `<td><div class="${bCls}"></div></td>`; 
+                    }
+                    if(i===0) html += `<td class="legend-item" style="background:#008000; color:white;">TEPAT WAKTU</td>`; else html += `<td></td>`;
+                    html += `</tr>`;
+
+                    // Baris 3: Jam Pulang
+                    html += `<tr><td>Jam Plg</td>`;
+                    for(let d=1; d<=maxDays; d++){ const plg = reportMap[t] && reportMap[t][d] ? reportMap[t][d].plg : ''; html += `<td>${plg}</td>`; }
+                    if(i===0) html += `<td class="legend-item" style="background:#ffea00;">TERLAMBAT</td>`; else html += `<td></td>`;
+                    html += `</tr>`;
+
+                    // Baris 4: Status Pulang (Warna)
+                    html += `<tr><td>Status</td>`;
+                    for(let d=1; d<=maxDays; d++){ 
+                        const wp = reportMap[t] && reportMap[t][d] ? reportMap[t][d].warnaPlg : ''; 
+                        let bCls = 'box-kosong'; if(wp==='primary' || wp==='info') bCls='box-hijau'; else if(wp==='warning') bCls='box-kuning';
+                        html += `<td><div class="${bCls}"></div></td>`; 
+                    }
+                    if(i===0) html += `<td class="legend-item" style="background:#ff0000; color:white;">TDK DISIPLIN</td>`; else html += `<td></td>`;
+                    html += `</tr>`;
+                });
+
                 html += `</tbody></table></div>`;
             });
 
             renderArea.innerHTML = html;
-            
-            // Tunggu render DOM selesai baru panggil Print
-            setTimeout(() => { window.print(); }, 1000);
+            setTimeout(() => { window.print(); }, 1500);
         }
     </script>
 </body>
