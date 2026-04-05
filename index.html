@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Premium AI TK Baiturrohman</title>
+    <title>Absensi Guru TK Baiturrohman</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -13,34 +13,43 @@
         :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --text-light: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed; background-size: cover; color: var(--text-light); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; overflow-x: hidden; }
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); padding: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; position: relative; }
-        .header h1 { font-size: 1.4rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .header p { font-size: 0.85rem; opacity: 0.8; margin-top: 5px; }
         
-        /* Input Search Datalist */
-        input[list], input[type="password"], input[type="text"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.2); color: white; font-size: 1rem; outline: none; margin-bottom: 15px; }
-        input::placeholder { color: rgba(255,255,255,0.6); }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); padding: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; position: relative;}
+        .header h1 { font-size: 1.5rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .header p { font-size: 0.9rem; opacity: 0.8; margin-top: 5px; }
         
-        .btn-action { background: linear-gradient(135deg, #00b0ff, #0069c0); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: 600; cursor: pointer; transition: 0.3s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;}
-        .btn-action:hover { transform: translateY(-2px); } .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); } .btn-success { background: linear-gradient(135deg, #00e676, #00c853); }
+        /* UI Smart Search Dropdown */
+        .search-container { position: relative; margin-bottom: 15px; text-align: left; }
+        .search-container input { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.3); color: white; font-size: 1rem; outline: none; margin: 0; }
+        .search-container input::placeholder { color: rgba(255,255,255,0.7); }
+        .custom-list { position: absolute; top: 100%; left: 0; right: 0; background: #1a1a2e; border-radius: 8px; border: 1px solid var(--glass-border); max-height: 200px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5); margin-top: 5px;}
+        .list-item { padding: 12px 15px; color: white; cursor: pointer; font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .list-item:hover { background: rgba(255,255,255,0.1); color: var(--info); }
         
-        .status-circle { width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 15px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); border: 2px solid var(--glass-border); transition: all 0.5s ease; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .status-circle i { font-size: 3rem; margin-bottom: 5px; }
+        input[type="password"], input[type="text"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.3); color: white; font-size: 1rem; outline: none; margin-bottom: 15px; }
+        
+        .btn-action { background: linear-gradient(135deg, #00b0ff, #0069c0); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem;}
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,176,255,0.4);} 
+        .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); } .btn-success { background: linear-gradient(135deg, #00e676, #00c853); }
+        
+        .status-circle { width: 160px; height: 160px; border-radius: 50%; margin: 0 auto 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); border: 2px solid var(--glass-border); transition: all 0.5s ease; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .status-circle i { font-size: 3.5rem; margin-bottom: 5px; }
         .scanning { animation: pulse 1.5s infinite; } @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255,255,255,0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
         
-        #selfie-preview, #reg-selfie-preview { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; margin: 0 auto 15px; border: 4px solid var(--primary); display: none; box-shadow: 0 0 20px rgba(0,230,118,0.5); }
-        #ai-loading { font-size: 0.8rem; color: var(--warning); font-weight: bold; margin-bottom: 10px; display: none; }
+        #selfie-preview, #reg-selfie-preview { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 4px solid var(--primary); display: none; box-shadow: 0 0 20px rgba(0,230,118,0.5); }
         
-        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--glass-border); box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: slideUp 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; transition: opacity 0.5s; font-size: 0.85rem;}
+        /* Histori Pojok Kanan Bawah */
+        #history-box { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: none; flex-direction: column; gap: 8px; z-index: 50; box-shadow: 0 5px 20px rgba(0,0,0,0.5); text-align: left; animation: slideUp 0.5s forwards;}
+        .hist-title { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 5px; text-align: center;}
+        .hist-item { font-size: 0.9rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+        .hist-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; box-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        .bg-primary { background: var(--primary); } .bg-warning { background: var(--warning); } .bg-danger { background: var(--danger); } .bg-info { background: var(--info); } .bg-gray { background: gray; }
+
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--glass-border); box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: dropDown 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; transition: opacity 0.5s; font-size: 0.85rem;}
         .toast.error { border-left: 4px solid var(--danger); } .toast.warning { border-left: 4px solid var(--warning); } .toast.success { border-left: 4px solid var(--primary); }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* UI History Box di Pojok Kanan Atas */
-        #history-box { position: fixed; top: 15px; right: 15px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 10px 15px; border-radius: 12px; border: 1px solid var(--glass-border); display: none; flex-direction: column; gap: 5px; z-index: 50; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-align: left;}
-        .hist-item { font-size: 0.75rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
-        .hist-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-        .bg-primary { background: var(--primary); } .bg-warning { background: var(--warning); } .bg-danger { background: var(--danger); } .bg-info { background: var(--info); } .bg-gray { background: gray; }
+        @keyframes dropDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -48,8 +57,10 @@
     <div id="toast-container"></div>
 
     <div id="history-box">
-        <div class="hist-item"><span>Datang: <span id="hist-datang-time">--:--</span></span> <span id="hist-datang-dot" class="hist-dot bg-gray"></span></div>
-        <div class="hist-item"><span>Pulang: <span id="hist-pulang-time">--:--</span></span> <span id="hist-pulang-dot" class="hist-dot bg-gray"></span></div>
+        <div class="hist-title">Histori Hari Ini</div>
+        <div class="hist-item"><span>Masuk</span> <span style="display:flex; align-items:center; gap:8px;"><span id="hist-datang-time">--:--</span><span id="hist-datang-dot" class="hist-dot bg-gray"></span></span></div>
+        <div class="hist-item"><span>Pulang</span> <span style="display:flex; align-items:center; gap:8px;"><span id="hist-pulang-time">--:--</span><span id="hist-pulang-dot" class="hist-dot bg-gray"></span></span></div>
+        <button onclick="logout()" style="margin-top: 10px; background:var(--danger); border:none; color:white; padding:5px; border-radius:5px; cursor:pointer; font-size:0.75rem;"><i class="fas fa-sign-out-alt"></i> Tutup Mode Absen</button>
     </div>
 
     <div class="glass-panel header">
@@ -61,72 +72,80 @@
     <div class="glass-panel" id="login-area">
         <div id="device-lock-msg" style="display: none; margin-bottom: 15px; color: var(--warning); font-size: 0.85rem;"><i class="fas fa-lock"></i> HP Terkunci untuk Guru:</div>
         
-        <div id="select-container">
-            <input list="teacher-datalist" id="teacher-input" placeholder="Ketik/Cari Nama Anda..." autocomplete="off">
-            <datalist id="teacher-datalist"></datalist>
+        <div id="select-container" class="search-container">
+            <input type="text" id="teacher-search" placeholder="Ketik nama Anda di sini..." autocomplete="off" oninput="filterTeachers()" onclick="filterTeachers()">
+            <div id="custom-teacher-list" class="custom-list"></div>
         </div>
 
         <h2 id="locked-name-display" style="display: none; margin-bottom: 15px; color: var(--primary);"></h2>
-        <input type="password" id="teacher-pin" placeholder="Masukkan 4 Digit PIN" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
-        <button class="btn-action" onclick="verifyPIN()"><i class="fas fa-sign-in-alt"></i> Masuk Absensi</button>
+        <input type="password" id="teacher-pin" placeholder="PIN 4 Angka" maxlength="4" style="text-align: center; letter-spacing: 10px; font-weight: bold; font-size: 1.2rem;">
+        <button class="btn-action" onclick="verifyPIN()"><i class="fas fa-sign-in-alt"></i> Verifikasi & Absen</button>
         
-        <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-            <p style="font-size: 0.8rem; margin-bottom: 10px; color: #aaa;">Guru Baru? Silakan daftar akun.</p>
-            <button class="btn-action" style="background: rgba(255,255,255,0.1); color: var(--info);" onclick="openRegister()"><i class="fas fa-user-plus"></i> Daftar Akun Baru</button>
+        <div style="margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px;">
+            <button class="btn-action" style="background: rgba(255,255,255,0.1); color: var(--info); font-size: 0.9rem; padding: 10px;" onclick="openRegister()"><i class="fas fa-user-plus"></i> Guru Baru? Daftar Di Sini</button>
         </div>
     </div>
 
     <div class="glass-panel" id="register-area" style="display: none;">
-        <h2><i class="fas fa-user-plus"></i> Daftar Akun Baru</h2>
-        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajib mendaftarkan wajah (Face ID).</p>
-        <input type="text" id="reg-name" placeholder="Nama Lengkap Guru (Unik)">
+        <h2><i class="fas fa-user-plus"></i> Pendaftaran Guru</h2>
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajib scan wajah (Face ID) untuk keamanan.</p>
+        
+        <input type="text" id="reg-name" placeholder="Nama Lengkap Anda">
         <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
         
-        <div style="margin: 15px 0; padding: 15px; border: 1px dashed var(--info); border-radius: 10px;">
+        <div style="margin: 15px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
             <input type="file" accept="image/*" capture="user" id="reg-camera-input" style="display:none;" onchange="processFaceRegistration(this)">
             <img id="reg-selfie-preview" src="">
             <p id="reg-ai-loading" style="font-size: 0.8rem; color: var(--warning); display:none;"><i class="fas fa-spinner fa-spin"></i> AI Memindai Wajah...</p>
-            <button id="btn-reg-scan" class="btn-action" style="background: var(--info);" onclick="document.getElementById('reg-camera-input').click()"><i class="fas fa-camera"></i> 1. Scan Wajah AI</button>
+            <button id="btn-reg-scan" class="btn-action" style="background: var(--info);" onclick="document.getElementById('reg-camera-input').click()"><i class="fas fa-camera"></i> 1. Scan Wajah</button>
             <p id="reg-face-status" style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*Wajah belum direkam</p>
         </div>
 
         <button id="btn-submit-reg" class="btn-action btn-success" style="display:none;" onclick="submitRegistration()"><i class="fas fa-check"></i> 2. Kirim Pendaftaran</button>
-        <button class="btn-action btn-danger" onclick="cancelRegister()"><i class="fas fa-arrow-left"></i> Kembali</button>
+        <button class="btn-action btn-danger" onclick="cancelRegister()"><i class="fas fa-arrow-left"></i> Batal</button>
     </div>
 
     <div class="glass-panel" id="main-app" style="display: none;">
-        <div id="status-circle" class="status-circle"><i id="status-icon" class="fas fa-satellite-dish"></i><h2 id="status-title" style="font-size:0.9rem;">Memeriksa Lokasi...</h2></div>
-        <p id="info-text" style="font-weight: bold; margin-bottom: 5px;">Menghubungkan ke GPS...</p>
-        <p id="distance-text" style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 15px;"></p>
+        <div id="status-circle" class="status-circle"><i id="status-icon" class="fas fa-satellite-dish"></i><h2 id="status-title" style="font-size:1rem;">Melacak GPS...</h2></div>
+        <p id="info-text" style="font-weight: bold; margin-bottom: 5px;">Mencari satelit...</p>
+        <p id="distance-text" style="font-size: 0.85rem; color: var(--info); margin-bottom: 20px; font-weight: 600;"></p>
 
         <p id="ai-loading"><i class="fas fa-spinner fa-spin"></i> AI Sedang Memindai Wajah...</p>
         <input type="file" accept="image/*" capture="user" id="camera-input" style="display:none;" onchange="processFaceAttendance(this)">
         <img id="selfie-preview" src="">
         
-        <button id="btn-selfie" class="btn-action" style="display:none;" onclick="document.getElementById('camera-input').click()"><i class="fas fa-camera"></i> Verifikasi Wajah AI</button>
-        <button id="btn-kirim-absen" class="btn-action btn-success" style="display:none;" onclick="submitAttendanceToDB()"><i class="fas fa-paper-plane"></i> Kirim Absen</button>
-        <button class="btn-action btn-danger" onclick="logout()"><i class="fas fa-times"></i> Keluar / Batal</button>
+        <button id="btn-selfie" class="btn-action" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="document.getElementById('camera-input').click()"><i class="fas fa-camera"></i> Scan Wajah AI Sekarang</button>
+        <button id="btn-kirim-absen" class="btn-action btn-success" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="submitAttendanceToDB()"><i class="fas fa-paper-plane"></i> Kirim Absen</button>
     </div>
 
     <script>
-        // --- KONFIGURASI SUPABASE ---
-        // MASUKKAN API KEY SUPABASE KAMU DI SINI
+        // KONFIGURASI SUPABASE (Ganti dengan Key aslimu)
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
         let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00" };
         let teachers = []; let tempRegistrationFaceData = null;
-        let selectedTeacherName = ""; let watchId = null; 
+        let selectedTeacherName = ""; let watchId = null; let attendanceLogged = false; 
         let currentAbsenType = ""; let currentStatus = ""; let currentColor = ""; let currentIcon = ""; 
         let isAiLoaded = false;
 
-        const now = new Date(); document.getElementById('current-date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        // TANGGAL & WAKTU (Memaksa format 24 Jam)
+        const now = new Date(); 
+        document.getElementById('current-date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         
+        function getCurrentTime24() {
+            return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':');
+        }
+        function getCurrentDateStr() { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; }
+        function timeToMins(timeStr) { if (!timeStr) return 0; const parts = timeStr.split(':'); return parseInt(parts[0]) * 60 + parseInt(parts[1]); }
+
         window.onload = async () => { 
-            await loadSettingsFromDB(); 
-            await fetchTeachersFromDB(); 
-            await loadFaceAPIModels(); 
+            await loadSettingsFromDB(); await fetchTeachersFromDB(); await loadFaceAPIModels(); 
+            document.addEventListener('click', function(e) {
+                const list = document.getElementById('custom-teacher-list');
+                if(e.target.id !== 'teacher-search' && e.target.className !== 'list-item') list.style.display = 'none';
+            });
         }
 
         function showToast(msg, type = 'success') {
@@ -136,9 +155,6 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3500);
         }
 
-        function getCurrentDateStr() { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; }
-        function timeToMins(timeStr) { if (!timeStr) return 0; const parts = timeStr.split(':'); return parseInt(parts[0]) * 60 + parseInt(parts[1]); }
-
         async function loadFaceAPIModels() {
             try {
                 const MODEL_URL = 'https://vladmandic.github.io/face-api/model/';
@@ -146,9 +162,8 @@
                 await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
                 await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
                 isAiLoaded = true;
-                const aiStatus = document.getElementById('ai-status');
-                aiStatus.innerHTML = '<i class="fas fa-check-circle"></i> AI Siap'; aiStatus.style.color = 'var(--primary)';
-                setTimeout(() => { aiStatus.style.display = 'none'; }, 3000);
+                document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> AI Siap'; document.getElementById('ai-status').style.color = 'var(--primary)';
+                setTimeout(() => { document.getElementById('ai-status').style.display = 'none'; }, 3000);
             } catch (err) { document.getElementById('ai-status').innerHTML = '<i class="fas fa-times-circle"></i> Gagal Memuat AI.'; document.getElementById('ai-status').style.color = 'var(--danger)'; }
         }
 
@@ -165,22 +180,36 @@
             teachers = data || []; checkDeviceLock(); 
         }
 
+        // --- SMART SEARCH DROPDOWN ---
+        function filterTeachers() {
+            const input = document.getElementById('teacher-search'); const list = document.getElementById('custom-teacher-list');
+            const val = input.value.toLowerCase();
+            list.innerHTML = ''; list.style.display = 'block';
+            
+            const activeTeachers = teachers.filter(t => t.is_active === true);
+            const filtered = activeTeachers.filter(t => t.nama.toLowerCase().includes(val));
+            
+            if(activeTeachers.length === 0) { list.innerHTML = '<div class="list-item" style="color:#aaa;">Belum ada akun aktif</div>'; return; }
+            if(filtered.length === 0) { list.innerHTML = '<div class="list-item" style="color:#aaa;">Nama tidak ditemukan</div>'; return; }
+            
+            filtered.forEach(t => {
+                let div = document.createElement('div'); div.className = 'list-item'; div.innerText = t.nama;
+                div.onclick = () => { input.value = t.nama; list.style.display = 'none'; };
+                list.appendChild(div);
+            });
+        }
+
         function checkDeviceLock() {
             const lockedName = localStorage.getItem('locked_teacher_name'); 
-            const datalist = document.getElementById('teacher-datalist');
-            const activeTeachers = teachers.filter(t => t.is_active === true); 
-
             if (lockedName) {
                 document.getElementById('select-container').style.display = 'none'; document.getElementById('device-lock-msg').style.display = 'block'; document.getElementById('locked-name-display').style.display = 'block';
                 document.getElementById('locked-name-display').innerText = lockedName; selectedTeacherName = lockedName;
             } else {
                 document.getElementById('select-container').style.display = 'block'; document.getElementById('device-lock-msg').style.display = 'none'; document.getElementById('locked-name-display').style.display = 'none'; 
-                datalist.innerHTML = '';
-                activeTeachers.forEach(t => datalist.innerHTML += `<option value="${t.nama}">`);
             }
         }
 
-        // --- REGISTRASI GURU ---
+        // --- REGISTRASI ---
         function openRegister() { document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none'; document.getElementById('reg-selfie-preview').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam"; }
         function cancelRegister() { document.getElementById('register-area').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
         
@@ -194,11 +223,10 @@
                     try {
                         const detection = await faceapi.detectSingleFace(imgHtml).withFaceLandmarks().withFaceDescriptor();
                         aiLoading.style.display = 'none';
-                        if (!detection) { showToast("Wajah tidak terdeteksi!", "error"); return; }
-
+                        if (!detection) { showToast("Wajah tidak terdeteksi! Coba lagi.", "error"); return; }
                         tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
                         document.getElementById('reg-selfie-preview').src = imgUrl; document.getElementById('reg-selfie-preview').style.display = 'block';
-                        document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Wajah Terekam</span>";
+                        document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary); font-weight:bold;'><i class='fas fa-check'></i> Wajah Sukses Terekam</span>";
                         document.getElementById('btn-submit-reg').style.display = 'flex'; 
                     } catch(err) { aiLoading.style.display = 'none'; showToast("Error AI.", "error"); }
                 }
@@ -208,82 +236,72 @@
         async function submitRegistration() {
             const name = document.getElementById('reg-name').value.trim(); const pin = document.getElementById('reg-pin').value.trim();
             if(!name || pin.length !== 4) { showToast("Isi Nama dan PIN 4 Angka!", "warning"); return; }
-            if(!tempRegistrationFaceData) { showToast("Scan Wajah terlebih dahulu!", "warning"); return; }
+            if(!tempRegistrationFaceData) { showToast("Scan Wajah dulu!", "warning"); return; }
             
-            showToast("Mendaftarkan akun...", "info");
+            showToast("Mengirim...", "info");
             const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, face_data: tempRegistrationFaceData }]);
-            if(error) { showToast("Gagal mendaftar. Pastikan nama unik.", "error"); }
-            else { showToast("Pendaftaran Sukses! Tunggu Admin menyetujui.", "success"); document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; cancelRegister(); fetchTeachersFromDB(); }
+            if(error) { showToast("Gagal. Nama sudah dipakai.", "error"); }
+            else { showToast("Sukses! Lapor Admin ya.", "success"); document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; cancelRegister(); fetchTeachersFromDB(); }
         }
 
-        // --- PROSES ABSENSI ---
+        // --- PROSES ABSENSI & HISTORY ---
         async function verifyPIN() {
-            const inputName = document.getElementById('teacher-input');
-            const name = localStorage.getItem('locked_teacher_name') ? selectedTeacherName : (inputName ? inputName.value : ""); 
+            const name = localStorage.getItem('locked_teacher_name') ? selectedTeacherName : document.getElementById('teacher-search').value; 
             const pin = document.getElementById('teacher-pin').value;
             
-            if(!name || !pin) { showToast("Pilih/Ketik nama dan isi PIN!", "warning"); return; }
+            if(!name || !pin) { showToast("Pilih nama dan isi PIN!", "warning"); return; }
             
             const teacherData = teachers.find(t => t.nama === name);
             if(teacherData && teacherData.pin === pin) {
-                if(!teacherData.is_active) { showToast("Akun belum diaktifkan Admin!", "error"); return; }
+                if(!teacherData.is_active) { showToast("Akun belum disetujui Admin!", "error"); return; }
                 if(!teacherData.face_data) { showToast("Wajah belum terdaftar!", "warning"); return; }
                 
                 localStorage.setItem('locked_teacher_name', name); selectedTeacherName = name;
                 document.getElementById('login-area').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; document.getElementById('teacher-pin').value = ''; 
                 document.getElementById('selfie-preview').style.display = 'none'; document.getElementById('btn-selfie').style.display = 'none';
                 
-                // Tampilkan Kotak History
-                document.getElementById('history-box').style.display = 'flex';
+                document.getElementById('history-box').style.display = 'flex'; // Tampilkan history
                 startAttendanceCheck();
-            } else { showToast("Nama atau PIN Salah!", "error"); }
+            } else { showToast("PIN Salah!", "error"); }
         }
 
         function logout() { 
             if(watchId) navigator.geolocation.clearWatch(watchId); 
             document.getElementById('main-app').style.display = 'none'; 
             document.getElementById('login-area').style.display = 'block'; 
-            document.getElementById('history-box').style.display = 'none'; // Sembunyikan history
+            document.getElementById('history-box').style.display = 'none';
+            document.getElementById('teacher-search').value = '';
         }
 
-        // LOGIKA CERDAS ANTI-DOUBLE ABSEN
         async function startAttendanceCheck() {
-            setUIState('info', 'fas fa-spinner fa-spin', 'Cek Database...', 'Memeriksa riwayat absen...');
-            const todayStr = getCurrentDateStr(); const currentMins = new Date().getHours() * 60 + new Date().getMinutes();
+            setUIState('info', 'fas fa-spinner fa-spin', 'Cek Data...', 'Memeriksa histori absen...');
+            const todayStr = getCurrentDateStr(); 
+            const currentMins = timeToMins(getCurrentTime24());
             const openMins = timeToMins(appSettings.openTime); const homeMins = timeToMins(appSettings.homeTime);
             
             const { data: logs, error } = await sb.from('Naskan').select('*').eq('tanggal', todayStr).eq('nama', selectedTeacherName);
-            if (error) { setUIState('danger', 'fas fa-wifi', 'Error Data', 'Gagal hubung ke tabel Naskan.'); return; }
+            if (error) { setUIState('danger', 'fas fa-wifi', 'Error Data', 'Gagal hubung ke Naskan.'); return; }
 
             const datangLog = logs.find(log => log.tipe === 'Datang'); const pulangLog = logs.find(log => log.tipe === 'Pulang');
 
-            // UPDATE UI HISTORY BOX
+            // Set History UI
             if(datangLog) { document.getElementById('hist-datang-time').innerText = datangLog.waktu; document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`; }
             if(pulangLog) { document.getElementById('hist-pulang-time').innerText = pulangLog.waktu; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${pulangLog.warna}`; }
 
-            // LOGIKA BLOKIR
+            // Logika Cerdas
             if (!datangLog) {
-                // Belum Absen Datang
-                if (currentMins < openMins) {
-                    setUIState('warning', 'fas fa-clock', 'Belum Buka', `Absen pagi dibuka jam ${appSettings.openTime}`);
-                } else {
-                    currentAbsenType = 'Datang'; startGPS();
-                }
+                if (currentMins < openMins) { setUIState('warning', 'fas fa-clock', 'Belum Buka', `Absen pagi dibuka jam ${appSettings.openTime}`); attendanceLogged = true; } 
+                else { currentAbsenType = 'Datang'; startGPS(); }
             } else if (!pulangLog) {
-                // Sudah Datang, Belum Pulang
-                if (currentMins >= homeMins) {
-                    currentAbsenType = 'Pulang'; startGPS();
-                } else {
-                    setUIState('primary', 'fas fa-check-double', 'Sudah Absen Masuk', `Silakan tunggu jam pulang (${appSettings.homeTime})`);
-                }
+                if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; startGPS(); } 
+                else { setUIState('primary', 'fas fa-check-double', 'Sudah Absen Masuk', `Silakan tunggu jam pulang (${appSettings.homeTime})`); attendanceLogged = true; }
             } else {
-                // Sudah Datang & Pulang
-                setUIState('info', 'fas fa-check-circle', 'Sudah Pulang', 'Terima kasih, hati-hati di jalan!');
+                setUIState('info', 'fas fa-check-circle', 'Selesai Tugas', 'Hati-hati di jalan!'); attendanceLogged = true;
             }
         }
 
         function startGPS() {
-            setUIState('scanning', 'fas fa-location-crosshairs', 'Mencari GPS...', 'Pastikan lokasi HP menyala.');
+            setUIState('scanning', 'fas fa-location-crosshairs', 'Mencari GPS...', 'Tunggu sebentar...');
             if (navigator.geolocation) { watchId = navigator.geolocation.watchPosition(successPosition, errorPosition, { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }); } 
             else { setUIState('danger', 'fas fa-times-circle', 'Error', 'GPS tidak didukung.'); }
         }
@@ -291,30 +309,30 @@
         function successPosition(position) {
             navigator.geolocation.clearWatch(watchId);
             const distance = calculateDistance(position.coords.latitude, position.coords.longitude, parseFloat(appSettings.lat), parseFloat(appSettings.lng));
-            document.getElementById('distance-text').innerText = `Jarak dari sekolah: ${Math.round(distance)} meter`;
+            document.getElementById('distance-text').innerText = `Jarak Anda: ${Math.round(distance)} meter`;
             
             if (distance <= appSettings.radius) { prepareFaceVerification(); } 
-            else { setUIState('danger', 'fas fa-walking', 'Di Luar Radius', `Mendekatlah ke sekolah (Maksimal ${appSettings.radius}m).`); }
+            else { setUIState('danger', 'fas fa-walking', 'Terlalu Jauh', `Masuklah ke area TK (Maksimal ${appSettings.radius}m).`); }
         }
-        function errorPosition(err) { setUIState('danger', 'fas fa-exclamation-triangle', 'GPS Error', 'Izinkan browser mengakses lokasi.'); }
+        function errorPosition(err) { setUIState('danger', 'fas fa-exclamation-triangle', 'GPS Ditolak', 'Izinkan browser melacak lokasi.'); }
 
         function prepareFaceVerification() {
-            const curT = new Date(); const currentMins = curT.getHours() * 60 + curT.getMinutes();
+            const currentMins = timeToMins(getCurrentTime24());
             
-            // Logika Status Sesuai Permintaan User
             if (currentAbsenType === 'Datang') {
                 const tepatMins = timeToMins(appSettings.lateTime); const tolMins = timeToMins(appSettings.tolTime);
                 if (currentMins <= tepatMins) { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-check-circle'; } 
                 else if (currentMins <= tolMins) { currentStatus = 'Terlambat'; currentColor = 'warning'; currentIcon = 'fas fa-exclamation-triangle'; } 
                 else { currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; currentIcon = 'fas fa-times-circle'; }
             } else { 
-                // Pulang (Hijau=Tepat Waktu, Kuning=Offset)
-                // Kita anggap default pulang selalu tepat waktu, atau admin bisa edit manual jadi offset.
-                // Jika ingin logic offset: misal lebih dari jam 15:00 dianggap offset. (Untuk sekarang default Hijau)
-                currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-home'; 
+                // Pulang (Tepat / Offset)
+                const homeMins = timeToMins(appSettings.homeTime);
+                // Jika pulang lebih dari 2 jam dari batas pulang, kita anggap Offset (Kuning)
+                if(currentMins > homeMins + 120) { currentStatus = 'Offset'; currentColor = 'warning'; currentIcon = 'fas fa-business-time'; }
+                else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-home'; }
             }
 
-            setUIState(currentColor, 'fas fa-user-check', 'GPS Sesuai!', `Silakan Selfie (Absen ${currentAbsenType})`);
+            setUIState(currentColor, 'fas fa-user-check', 'GPS Valid!', `Silakan scan wajah untuk absen ${currentAbsenType}.`);
             document.getElementById('btn-selfie').style.display = 'flex'; 
         }
 
@@ -329,7 +347,7 @@
                         const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 }); 
                         const detection = await faceapi.detectSingleFace(imgHtml, options).withFaceLandmarks().withFaceDescriptor();
                         
-                        if (!detection) { showToast("Wajah tidak jelas/terlalu gelap!", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; return; }
+                        if (!detection) { showToast("Wajah kurang terang/jelas!", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; return; }
 
                         const teacherData = teachers.find(t => t.nama === selectedTeacherName);
                         const savedDescriptor = new Float32Array(JSON.parse(teacherData.face_data)); 
@@ -337,31 +355,30 @@
                         aiLoading.style.display = 'none';
 
                         if (distance <= 0.55) {
-                            showToast("Wajah Cocok!", "success");
+                            showToast("Wajah Dikenali!", "success");
                             document.getElementById('selfie-preview').src = imgUrl; document.getElementById('selfie-preview').style.display = 'block'; document.getElementById('selfie-preview').style.borderColor = `var(--${currentColor})`;
-                            document.getElementById('btn-kirim-absen').style.display = 'flex'; // Tampilkan tombol kirim
+                            document.getElementById('btn-kirim-absen').style.display = 'flex'; 
                         } else {
-                            showToast("Wajah Tidak Cocok dengan Database!", "error");
+                            showToast("Verifikasi Gagal. Wajah tidak cocok!", "error");
                             document.getElementById('selfie-preview').src = imgUrl; document.getElementById('selfie-preview').style.display = 'block'; document.getElementById('selfie-preview').style.borderColor = "var(--danger)"; document.getElementById('btn-selfie').style.display = 'flex'; 
                         }
-                    } catch(err) { showToast("Error AI.", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; }
+                    } catch(err) { showToast("Error Server AI.", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; }
                 }
             }
         }
 
         async function submitAttendanceToDB() {
-            const timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }); const dateStr = getCurrentDateStr();
+            const timeStr = getCurrentTime24(); const dateStr = getCurrentDateStr();
             document.getElementById('btn-kirim-absen').style.display = 'none';
-            setUIState('info', 'fas fa-spinner fa-spin', 'Menyimpan...', 'Mencatat ke Database...');
+            setUIState('info', 'fas fa-spinner fa-spin', 'Menyimpan...', 'Kirim data...');
             
             const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: currentAbsenType, status: currentStatus, warna: currentColor }]);
             
             if (error) { 
-                showToast("ERROR DB", "error"); setUIState('danger', 'fas fa-times', 'Gagal Simpan', "Coba ulang."); document.getElementById('btn-kirim-absen').style.display = 'flex'; 
+                showToast("Gagal. Sinyal jelek.", "error"); setUIState('danger', 'fas fa-times', 'Gagal', "Coba klik kirim lagi."); document.getElementById('btn-kirim-absen').style.display = 'flex'; 
             } else { 
-                setUIState(currentColor, currentIcon, `Berhasil Absen!`, `${timeStr} - ${currentStatus}`); showToast(`Absen Diterima!`, 'success'); 
+                setUIState(currentColor, currentIcon, `Berhasil Absen!`, `${timeStr} - ${currentStatus}`); showToast(`Sukses Absen ${currentAbsenType}!`, 'success'); 
                 
-                // Update UI History Live
                 if(currentAbsenType === 'Datang') { document.getElementById('hist-datang-time').innerText = timeStr; document.getElementById('hist-datang-dot').className = `hist-dot bg-${currentColor}`; }
                 else { document.getElementById('hist-pulang-time').innerText = timeStr; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${currentColor}`; }
             }
