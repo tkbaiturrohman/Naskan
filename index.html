@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi Premium AI TK Baiturrohman</title>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -19,7 +20,7 @@
         .admin-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); font-size: 1.2rem; color: white; cursor: pointer; padding: 8px 12px; border-radius: 50%; transition: 0.3s; }
         .header h1 { font-size: 1.4rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .header p { font-size: 0.85rem; opacity: 0.8; margin-top: 5px; }
-        select, input[type="password"], input[type="text"], input[type="number"], input[type="time"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.2); color: white; font-size: 1rem; outline: none; margin-bottom: 15px; color-scheme: dark; }
+        select, input[type="password"], input[type="text"], input[type="number"], input[type="time"], input[type="date"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.2); color: white; font-size: 1rem; outline: none; margin-bottom: 15px; color-scheme: dark; }
         select option { background: #1a1a2e; color: white; }
         .btn-action { background: linear-gradient(135deg, #00b0ff, #0069c0); color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: 600; cursor: pointer; transition: 0.3s; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;}
         .btn-action:hover { transform: translateY(-2px); } .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); } .btn-success { background: linear-gradient(135deg, #00e676, #00c853); } .btn-warning { background: linear-gradient(135deg, #ffea00, #ffb300); color: black;}
@@ -31,7 +32,7 @@
         #ai-loading { font-size: 0.8rem; color: var(--warning); font-weight: bold; margin-bottom: 10px; display: none; }
         
         .fab { position: fixed; bottom: 20px; right: 20px; background: linear-gradient(135deg, #ff4081, #c51162); color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.4); cursor: pointer; z-index: 50; }
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px; }
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 15px; }
         .modal-content { background: #1a1a2e; border: 1px solid var(--glass-border); padding: 25px; border-radius: 15px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; color: white; position: relative; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
         .close-btn { font-size: 1.5rem; cursor: pointer; color: var(--danger); border: none; background: none; }
@@ -44,32 +45,30 @@
         .toast i { font-size: 1.5rem; } .toast.error i { color: var(--danger); } .toast.success i { color: var(--primary); }
         @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         
-        /* Table Style Khusus Cetak Persis Gambar */
-        .report-month-title { color: black; text-align: center; margin-bottom: 20px; font-weight: bold; font-size: 1.5rem; }
-        .table-wrapper { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; overflow-x: auto; color: black; }
-        .print-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; color: black; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;} 
-        .print-table th, .print-table td { border: 1px solid #333; padding: 8px; text-align: center; vertical-align: middle; }
-        .print-table th { background-color: #f8f9fa; font-weight: bold; }
-        .name-header { font-size: 1rem; text-transform: uppercase; background-color: #e9ecef !important; }
-        .tgl-col { width: 40px; font-weight: bold; background-color: #f8f9fa; }
+        /* STYLE CETAK KHUSUS (SESUAI SKETSA GAMBAR USER) */
+        .report-month-title { color: black; text-align: center; margin-bottom: 15px; font-weight: bold; font-size: 1.3rem; }
+        .table-wrapper { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; overflow-x: auto; color: black; }
+        .print-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; color: black; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;} 
+        .print-table th, .print-table td { border: 1px solid #000; padding: 6px; text-align: center; vertical-align: middle; }
+        .print-table th { background-color: #f0f0f0; font-weight: bold; }
+        .name-header { font-size: 0.9rem; text-transform: uppercase; background-color: #e2e2e2 !important; }
         
-        /* Indikator Warna Status di Laporan */
-        .status-hijau { color: #00a000; font-weight: bold; }
-        .status-kuning { color: #d4a000; font-weight: bold; }
-        .status-merah { color: #ff0000; font-weight: bold; }
+        .status-hijau { color: #008000; font-weight: bold; }
+        .status-kuning { color: #b38600; font-weight: bold; }
+        .status-merah { color: #cc0000; font-weight: bold; }
 
         .toggle-btn { font-size: 1.5rem; cursor: pointer; transition: 0.3s; background: none; border: none; }
         .toggle-on { color: var(--primary); } .toggle-off { color: #555; }
 
-        /* Konfigurasi Cerdas Lembar Print */
         @media print { 
             body { background: white; color: black; display: block; padding: 0; } 
             .top-bar, .glass-panel, .fab, .close-btn, .btn-action, #toast-container, .modal-header { display: none !important; } 
             .modal { position: static; background: white; display: block; filter: none; padding: 0; } 
             .modal-content { background: white; color: black; border: none; max-width: 100%; padding: 0; overflow: visible; box-shadow: none; } 
-            .table-wrapper { padding: 0; margin-bottom: 0; page-break-after: always; box-shadow: none; }
-            .table-wrapper:last-child { page-break-after: auto; } /* Hilangkan blank page di akhir */
-            .print-table th { background-color: #f0f0f0 !important; -webkit-print-color-adjust: exact; }
+            .table-wrapper { padding: 0; margin-bottom: 0; page-break-after: always; box-shadow: none; border: none; }
+            .table-wrapper:last-child { page-break-after: auto; } 
+            .print-table th { background-color: #e2e2e2 !important; -webkit-print-color-adjust: exact; }
+            .print-table th, .print-table td { border: 1px solid black !important; }
         }
     </style>
 </head>
@@ -89,13 +88,9 @@
     </div>
 
     <div class="glass-panel" id="login-area">
-        <div id="device-lock-msg" style="display: none; margin-bottom: 15px; color: var(--warning); font-size: 0.85rem;"><i class="fas fa-lock"></i> HP Terkunci untuk Guru:</div>
-        
-        <div id="select-container">
-            <select id="teacher-select"><option value="">-- Memuat Data Guru... --</option></select>
-        </div>
+        <div id="device-lock-msg" style="display: none; margin-bottom: 15px; color: var(--warning); font-size: 0.85rem;"><i class="fas fa-lock"></i> HP Terkunci untuk:</div>
+        <div id="select-container"><select id="teacher-select"><option value="">-- Memuat Data Guru... --</option></select></div>
         <h2 id="locked-name-display" style="display: none; margin-bottom: 15px; color: var(--primary);"></h2>
-        
         <input type="password" id="teacher-pin" placeholder="Masukkan 4 Digit PIN" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
         <button class="btn-action" onclick="verifyPIN()"><i class="fas fa-sign-in-alt"></i> Masuk & Mulai Absen</button>
         
@@ -108,7 +103,6 @@
     <div class="glass-panel" id="register-area" style="display: none;">
         <h2><i class="fas fa-user-plus"></i> Daftar Akun Baru</h2>
         <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajib mendaftarkan wajah (Face ID).</p>
-        
         <input type="text" id="reg-name" placeholder="Nama Lengkap Guru">
         <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
         
@@ -116,7 +110,6 @@
             <input type="file" accept="image/*" capture="user" id="reg-camera-input" style="display:none;" onchange="processFaceRegistration(this)">
             <img id="reg-selfie-preview" src="">
             <p id="reg-ai-loading" style="font-size: 0.8rem; color: var(--warning); display:none;"><i class="fas fa-spinner fa-spin"></i> AI Memindai Wajah...</p>
-            
             <button id="btn-reg-scan" class="btn-action" style="background: var(--info);" onclick="document.getElementById('reg-camera-input').click()"><i class="fas fa-camera"></i> 1. Scan Wajah AI</button>
             <p id="reg-face-status" style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*Wajah belum direkam</p>
         </div>
@@ -158,14 +151,15 @@
                 <button class="close-btn" onclick="closeReport()"><i class="fas fa-times"></i></button>
             </div>
             
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-                <p style="color: #555; font-size: 0.9rem;">Pilih bulan dan klik cetak. Kertas otomatis akan dibagi.</p>
+            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom: 15px; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="color: #333; font-weight: bold;">Pilih Bulan:</label>
+                    <input type="month" id="report-month-filter" onchange="buildSmartReport()" style="width: auto; margin:0; padding: 8px;">
+                </div>
                 <button class="btn-action" onclick="window.print()" style="background: var(--info); width: auto; padding: 10px 20px; margin:0;"><i class="fas fa-print"></i> Cetak Dokumen</button>
             </div>
             
-            <div id="report-render-area">
-                <p style="color: black; text-align: center;">Memuat dan merapikan data...</p>
-            </div>
+            <div id="report-render-area"><p style="color: black; text-align: center;">Memuat dan merapikan data...</p></div>
         </div>
     </div>
 
@@ -173,8 +167,43 @@
         <div class="modal-content">
             <div class="modal-header"><h2><i class="fas fa-cogs"></i> Panel Admin</h2><button class="close-btn" onclick="closeAdmin()"><i class="fas fa-times"></i></button></div>
             
+            <div class="admin-section" style="border-left: 4px solid var(--warning);">
+                <h4><i class="fas fa-list-alt"></i> Preview & Edit Manual Absensi</h4>
+                <p style="font-size:0.75rem; color:#aaa; margin-bottom: 10px;">Gunakan fitur ini jika guru lupa absen atau perlu mengubah status.</p>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <input type="date" id="manual-date" onchange="loadAdminAttendancePreview()" style="flex: 1; margin:0;">
+                </div>
+                
+                <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h5 style="margin-bottom: 10px; color: var(--info);">Form Edit / Tambah Manual</h5>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <select id="manual-name" style="flex: 1; margin-bottom: 10px; min-width: 120px;"><option value="">-Pilih Guru-</option></select>
+                        <select id="manual-tipe" style="flex: 1; margin-bottom: 10px; min-width: 120px;">
+                            <option value="Datang">Datang</option>
+                            <option value="Pulang">Pulang</option>
+                        </select>
+                        <input type="time" id="manual-waktu" style="flex: 1; margin-bottom: 10px; min-width: 100px;">
+                        <select id="manual-status" style="flex: 1; margin-bottom: 10px; min-width: 140px;">
+                            <option value="Tepat Waktu">Tepat Waktu (Hijau)</option>
+                            <option value="Terlambat">Terlambat (Kuning)</option>
+                            <option value="Kurang Disiplin">Kurang Disiplin (Merah)</option>
+                            <option value="Lupa">Lupa (Merah)</option>
+                        </select>
+                    </div>
+                    <button class="btn-action btn-success" onclick="saveManualAttendance()"><i class="fas fa-save"></i> Simpan Data Absen</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; font-size: 0.8rem; color: white;">
+                        <thead><tr><th>Nama</th><th>Tipe</th><th>Waktu</th><th>Status</th><th>Aksi</th></tr></thead>
+                        <tbody id="admin-preview-table"><tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="admin-section">
-                <h4><i class="fas fa-clock"></i> 1. Pengaturan Jam Absen</h4>
+                <h4><i class="fas fa-clock"></i> Pengaturan Jam Absen</h4>
                 <div style="margin-bottom:10px;"><label style="font-size:0.75rem; color:var(--primary); font-weight:bold;">Buka Absen Pagi</label><input type="time" id="set-open-time"></div>
                 <div style="margin-bottom:10px;"><label style="font-size:0.75rem; color:var(--primary); font-weight:bold;">Tepat Waktu (Batas Hijau)</label><input type="time" id="set-late-time"></div>
                 <div style="margin-bottom:10px;"><label style="font-size:0.75rem; color:var(--warning); font-weight:bold;">Toleransi Telat (Batas Kuning)</label><input type="time" id="set-tol-time"></div>
@@ -182,16 +211,16 @@
             </div>
 
             <div class="admin-section">
-                <h4><i class="fas fa-map-marker-alt"></i> 2. Titik Lokasi GPS Sekolah</h4>
-                <button class="btn-action" style="background: var(--info); font-size: 0.85rem;" onclick="adminGetMyLocation()"><i class="fas fa-crosshairs"></i> Deteksi Lokasi Saya Saat Ini</button>
+                <h4><i class="fas fa-map-marker-alt"></i> Titik Lokasi GPS Sekolah</h4>
+                <button class="btn-action" style="background: var(--info); font-size: 0.85rem;" onclick="adminGetMyLocation()"><i class="fas fa-crosshairs"></i> Deteksi Lokasi Saat Ini</button>
                 <input type="text" id="set-lat" placeholder="Latitude"><input type="text" id="set-lng" placeholder="Longitude">
                 <label style="font-size:0.75rem; font-weight:bold; display:block;">Radius Area Absen (Meter)</label>
                 <input type="number" id="set-radius" placeholder="Saran: 100">
             </div>
 
             <div class="admin-section">
-                <h4><i class="fas fa-users"></i> 3. Database Guru & Persetujuan Akun</h4>
-                <p style="font-size:0.75rem; color:#aaa; margin-bottom: 10px;">Guru yang mendaftar mandiri akan berstatus non-aktif. Klik ikon <i class="fas fa-toggle-on" style="color:var(--primary);"></i> untuk mengizinkan mereka absen.</p>
+                <h4><i class="fas fa-users"></i> Database Guru & Persetujuan</h4>
+                <p style="font-size:0.75rem; color:#aaa; margin-bottom: 10px;">Klik ikon <i class="fas fa-toggle-on" style="color:var(--primary);"></i> untuk mengizinkan absen.</p>
                 <ul id="admin-teacher-list" style="list-style: none; font-size:0.9rem;"></ul>
             </div>
             
@@ -221,6 +250,9 @@
             await loadSettingsFromDB(); 
             await fetchTeachersFromDB(); 
             await loadFaceAPIModels(); 
+            // Setup Datepicker Bulan (Default Bulan Ini)
+            const monthInput = document.getElementById('report-month-filter');
+            monthInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
         }
 
         // --- SISTEM TOAST & AI ---
@@ -232,6 +264,8 @@
         }
 
         function timeToMins(timeStr) { if (!timeStr) return 0; const parts = timeStr.split(':'); return parseInt(parts[0]) * 60 + parseInt(parts[1]); }
+        function formatDateToID(dateObj) { return dateObj.toLocaleDateString('id-ID'); }
+        function formatIDToYMD(idStr) { const p = idStr.split('/'); return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`; }
 
         async function loadFaceAPIModels() {
             try {
@@ -244,7 +278,7 @@
                 aiStatus.innerHTML = '<i class="fas fa-check-circle"></i> AI Wajah Siap Digunakan'; aiStatus.style.color = 'var(--primary)';
                 setTimeout(() => { aiStatus.style.display = 'none'; }, 3000);
             } catch (err) {
-                document.getElementById('ai-status').innerHTML = '<i class="fas fa-times-circle"></i> Gagal Memuat AI. Cek Koneksi Internet.'; document.getElementById('ai-status').style.color = 'var(--danger)';
+                document.getElementById('ai-status').innerHTML = '<i class="fas fa-times-circle"></i> Gagal Memuat AI.'; document.getElementById('ai-status').style.color = 'var(--danger)';
             }
         }
 
@@ -254,7 +288,6 @@
             st.innerHTML = error ? '<i class="fas fa-circle" style="color:var(--danger);"></i> Offline' : '<i class="fas fa-circle" style="color:var(--primary);"></i> Online';
         }
 
-        // --- PENGATURAN TERSIMPAN DI DATABASE (CLOUD) ---
         async function loadSettingsFromDB() {
             const { data, error } = await sb.from('Pengaturan').select('*').limit(1);
             if (data && data.length > 0) {
@@ -270,7 +303,6 @@
             const lat = document.getElementById('set-lat').value; const lng = document.getElementById('set-lng').value; const radius = parseInt(document.getElementById('set-radius').value);
             const op = document.getElementById('set-open-time').value; const lt = document.getElementById('set-late-time').value; const tt = document.getElementById('set-tol-time').value; const ht = document.getElementById('set-home-time').value;
             showToast("Menyimpan ke Cloud...", "info");
-            
             if(appSettings.id) {
                 const { error } = await sb.from('Pengaturan').update({ lat: lat, lng: lng, radius: radius, open_time: op, late_time: lt, tol_time: tt, home_time: ht }).eq('id', appSettings.id);
                 if(error) { showToast("Gagal menyimpan ke tabel Pengaturan.", "error"); return; }
@@ -281,8 +313,11 @@
         // --- SISTEM GURU & REGISTRASI WAJAH MANDIRI ---
         async function fetchTeachersFromDB() {
             const { data, error } = await sb.from('Guru').select('*').order('nama', { ascending: true });
-            if (error) { showToast("Tabel 'Guru' bermasalah.", "error"); teachers = []; } else { teachers = data || []; }
-            checkDeviceLock(); renderTeacherList(); 
+            if (error) { teachers = []; } else { teachers = data || []; }
+            checkDeviceLock(); 
+            if(document.getElementById('adminModal').style.display === 'flex') {
+                renderTeacherList(); updateAdminManualTeacherSelect();
+            }
         }
 
         function openRegister() { 
@@ -307,23 +342,23 @@
                         tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
                         document.getElementById('reg-selfie-preview').src = imgUrl; document.getElementById('reg-selfie-preview').style.display = 'block';
                         document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Wajah Terekam</span>";
-                        document.getElementById('btn-submit-reg').style.display = 'flex'; // Munculkan tombol kirim pendaftaran
-                    } catch(err) { aiLoading.style.display = 'none'; showToast("Error pemindaian AI.", "error"); }
+                        document.getElementById('btn-submit-reg').style.display = 'flex'; 
+                    } catch(err) { aiLoading.style.display = 'none'; showToast("Error AI.", "error"); }
                 }
             }
         }
 
         async function submitRegistration() {
             const name = document.getElementById('reg-name').value.trim(); const pin = document.getElementById('reg-pin').value.trim();
-            if(!name || pin.length !== 4) { showToast("Isi Nama dan PIN 4 Angka!", "warning"); return; }
+            if(!name || pin.length !== 4) { showToast("Isi Nama Lengkap dan PIN 4 Angka!", "warning"); return; }
             if(!tempRegistrationFaceData) { showToast("Anda harus Scan Wajah terlebih dahulu!", "warning"); return; }
             
             showToast("Mendaftarkan akun ke sistem...", "info");
             const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, face_data: tempRegistrationFaceData }]);
             
-            if(error) { showToast("Gagal mendaftar. Pastikan jaringan stabil.", "error"); }
+            if(error) { showToast("Gagal mendaftar. Nama mungkin sudah ada.", "error"); }
             else { 
-                showToast("Pendaftaran Sukses! Hubungi Admin untuk mengaktifkan akunmu.", "success"); 
+                showToast("Pendaftaran Sukses! Tunggu Admin.", "success"); 
                 document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = '';
                 cancelRegister(); fetchTeachersFromDB();
             }
@@ -331,7 +366,7 @@
 
         function checkDeviceLock() {
             const lockedName = localStorage.getItem('locked_teacher_name'); const selectEl = document.getElementById('teacher-select');
-            const activeTeachers = teachers.filter(t => t.is_active === true); // Hanya tampilkan yang aktif
+            const activeTeachers = teachers.filter(t => t.is_active === true); 
 
             if (lockedName) {
                 document.getElementById('select-container').style.display = 'none'; document.getElementById('device-lock-msg').style.display = 'block'; document.getElementById('locked-name-display').style.display = 'block';
@@ -349,7 +384,7 @@
             
             const teacherData = teachers.find(t => t.nama === name);
             if(teacherData && teacherData.pin === pin) {
-                if(!teacherData.is_active) { showToast("Akun Anda belum disetujui Admin!", "error"); return; }
+                if(!teacherData.is_active) { showToast("Akun Anda belum diaktifkan Admin!", "error"); return; }
                 if(!teacherData.face_data) { showToast("Wajah belum terdaftar di sistem!", "warning"); return; }
                 
                 localStorage.setItem('locked_teacher_name', name); selectedTeacherName = name;
@@ -361,7 +396,7 @@
 
         function logout() { if(watchId) navigator.geolocation.clearWatch(watchId); document.getElementById('main-app').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
 
-        // --- SISTEM ABSENSI & GPS ---
+        // --- SISTEM ABSENSI OTOMATIS ---
         async function startAttendanceCheck() {
             setUIState('info', 'fas fa-spinner fa-spin', 'Cek Database...', 'Memeriksa riwayat absen...');
             const todayStr = new Date().toLocaleDateString('id-ID'); const currentMins = new Date().getHours() * 60 + new Date().getMinutes();
@@ -421,7 +456,7 @@
 
                 imgHtml.onload = async () => {
                     try {
-                        const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 }); // Diturunkan agar toleran cahaya redup
+                        const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 }); 
                         const detection = await faceapi.detectSingleFace(imgHtml, options).withFaceLandmarks().withFaceDescriptor();
                         
                         if (!detection) { showToast("Wajah tidak terdeteksi! Pastikan tidak gelap.", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; return; }
@@ -431,7 +466,6 @@
                         const distance = faceapi.euclideanDistance(detection.descriptor, savedDescriptor);
                         aiLoading.style.display = 'none';
 
-                        // Ambang batas toleransi 0.55 (Cukup aman)
                         if (distance <= 0.55) {
                             showToast("Wajah Cocok! Menyimpan...", "success");
                             document.getElementById('selfie-preview').src = imgUrl; document.getElementById('selfie-preview').style.display = 'block'; document.getElementById('selfie-preview').style.borderColor = "var(--primary)";
@@ -459,31 +493,32 @@
             document.getElementById('status-icon').className = iconClass; document.getElementById('status-title').innerText = titleText; document.getElementById('info-text').innerText = descText;
         }
 
-        // --- SISTEM LAPORAN CETAK CERDAS (SESUAI GAMBAR SKETSA) ---
-        function openReport() { document.getElementById('reportModal').style.display = 'flex'; buildSmartReport(); }
+        // --- SISTEM LAPORAN CETAK CERDAS (SKETSA USER) ---
+        function openReport() { 
+            document.getElementById('reportModal').style.display = 'flex'; 
+            buildSmartReport(); 
+        }
         function closeReport() { document.getElementById('reportModal').style.display = 'none'; }
 
         async function buildSmartReport() {
             const renderArea = document.getElementById('report-render-area');
             renderArea.innerHTML = '<p style="color: black; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Menyusun Laporan...</p>';
 
-            // Ambil data bulan ini (Sederhana: ambil semua, filter via JS)
+            const selectedMonthVal = document.getElementById('report-month-filter').value; // YYYY-MM
+            if(!selectedMonthVal) return;
+            const [yearStr, monthStr] = selectedMonthVal.split('-');
+
             const { data: logs, error } = await sb.from('Naskan').select('*');
             if (error) { renderArea.innerHTML = '<p style="color:red; text-align:center;">Gagal mengambil data laporan.</p>'; return; }
 
-            const now = new Date();
-            const currentMonthStr = String(now.getMonth() + 1).padStart(2, '0');
-            const currentYearStr = String(now.getFullYear());
             const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
-            // 1. Ekstrak Data
-            const reportMap = {}; // reportMap[nama][tgl (1-31)] = { datang, pulang, status, warna }
+            const reportMap = {}; 
             const teachersSet = new Set();
 
             logs.forEach(log => {
-                // Asumsi log.tanggal format id-ID (DD/MM/YYYY)
-                const parts = log.tanggal.split('/');
-                if(parts.length === 3 && parts[1] === currentMonthStr && parts[2] === currentYearStr) {
+                const parts = log.tanggal.split('/'); // Asumsi format DD/MM/YYYY
+                if(parts.length === 3 && parts[1] === monthStr && parts[2] === yearStr) {
                     const day = parseInt(parts[0]);
                     teachersSet.add(log.nama);
                     
@@ -492,7 +527,7 @@
 
                     if (log.tipe === 'Datang') { 
                         reportMap[log.nama][day].datang = log.waktu; 
-                        reportMap[log.nama][day].status = log.status; // Acuan warna dari kedatangan
+                        reportMap[log.nama][day].status = log.status; 
                         reportMap[log.nama][day].warna = log.warna;
                     } 
                     else if (log.tipe === 'Pulang') { reportMap[log.nama][day].pulang = log.waktu; }
@@ -502,36 +537,31 @@
             const uniqueTeachers = Array.from(teachersSet);
             if (uniqueTeachers.length === 0) { renderArea.innerHTML = '<p style="color: black; text-align: center;">Belum ada absensi di bulan ini.</p>'; return; }
 
-            // 2. Membagi Guru (3 Guru Per Kertas/Tabel agar muat dan rapi)
-            const teachersPerTable = 3;
+            // Pagination Guru (2 Guru Per Halaman agar rapi di kertas A4 Portrait)
+            const teachersPerTable = 2; 
             const chunks = [];
             for (let i = 0; i < uniqueTeachers.length; i += teachersPerTable) {
                 chunks.push(uniqueTeachers.slice(i, i + teachersPerTable));
             }
 
-            // 3. Merender HTML Tabel Berlapis (Sesuai Gambar Sketsa User)
-            let html = `<h3 class="report-month-title">Rekapitulasi Absensi Bulan ${monthNames[now.getMonth()]} ${now.getFullYear()}</h3>`;
+            let html = `<h3 class="report-month-title">Rekapitulasi Absensi Bulan ${monthNames[parseInt(monthStr)-1]} ${yearStr}</h3>`;
             
+            const maxDays = new Date(parseInt(yearStr), parseInt(monthStr), 0).getDate();
+
             chunks.forEach((chunk) => {
                 html += `<div class="table-wrapper">`;
                 html += `<table class="print-table"><thead><tr><th rowspan="2" class="tgl-col">Tgl</th>`;
                 
-                // Baris Nama
-                chunk.forEach(t => { html += `<th colspan="3" class="name-header">${t}</th>`; });
+                chunk.forEach(t => { html += `<th colspan="3" class="name-header">Nama<br>${t}</th>`; });
                 html += `</tr><tr>`;
-                
-                // Baris Datang Pulang Status
                 chunk.forEach(() => { html += `<th>Datang</th><th>Pulang</th><th>Status</th>`; });
                 html += `</tr></thead><tbody>`;
 
-                // Baris Tanggal 1 sampai 31
-                const maxDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); // Jumlah hari dalam bulan tsb
                 for(let day = 1; day <= maxDays; day++) {
                     html += `<tr><td class="tgl-col">${day}</td>`;
                     chunk.forEach(t => {
                         const cell = reportMap[t] && reportMap[t][day] ? reportMap[t][day] : { datang: '', pulang: '', status: '', warna: '' };
                         
-                        // Menyesuaikan warna teks sesuai permintaan user
                         let statusClass = '';
                         if(cell.warna === 'primary') statusClass = 'status-hijau';
                         else if(cell.warna === 'warning') statusClass = 'status-kuning';
@@ -547,7 +577,7 @@
             renderArea.innerHTML = html;
         }
 
-        // --- MANAJEMEN ADMIN ---
+        // --- MANAJEMEN ADMIN (Fitur Tambahan: Preview & Edit Manual) ---
         function openAdminLogin() { document.getElementById('adminLoginModal').style.display = 'flex'; }
         function verifyAdminPIN() {
             const pin = document.getElementById('admin-pin-input').value;
@@ -559,23 +589,102 @@
             document.getElementById('adminModal').style.display = 'flex';
             document.getElementById('set-lat').value = appSettings.lat; document.getElementById('set-lng').value = appSettings.lng; document.getElementById('set-radius').value = appSettings.radius; 
             document.getElementById('set-open-time').value = appSettings.openTime; document.getElementById('set-late-time').value = appSettings.lateTime; document.getElementById('set-tol-time').value = appSettings.tolTime; document.getElementById('set-home-time').value = appSettings.homeTime;
+            
+            // Set Default Tanggal Manual Edit ke Hari ini
+            document.getElementById('manual-date').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            
             renderTeacherList();
+            updateAdminManualTeacherSelect();
+            loadAdminAttendancePreview();
         }
         function closeAdmin() { document.getElementById('adminModal').style.display = 'none'; }
         
+        function updateAdminManualTeacherSelect() {
+            const sel = document.getElementById('manual-name'); sel.innerHTML = '<option value="">-Pilih Guru-</option>';
+            teachers.forEach(t => sel.innerHTML += `<option value="${t.nama}">${t.nama}</option>`);
+        }
+
         function adminGetMyLocation() {
             if (navigator.geolocation) {
-                showToast("Melacak lokasi...", "info");
+                showToast("Sedang melacak lokasi akurat...", "info");
                 navigator.geolocation.getCurrentPosition(
-                    function(position) { document.getElementById('set-lat').value = position.coords.latitude.toFixed(6); document.getElementById('set-lng').value = position.coords.longitude.toFixed(6); showToast("Selesai!", "success"); },
-                    function(error) { showToast("Gagal melacak.", "error"); }, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
+                    function(position) { document.getElementById('set-lat').value = position.coords.latitude.toFixed(6); document.getElementById('set-lng').value = position.coords.longitude.toFixed(6); showToast("Koordinat sukses didapatkan!", "success"); },
+                    function(error) { showToast("Gagal melacak. Aktifkan GPS HP Anda.", "error"); }, { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
                 );
-            } else { showToast("Browser tidak mendukung.", "error"); }
+            } else { showToast("Browser tidak mendukung lokasi.", "error"); }
         }
 
         function resetDeviceLock() { if(confirm("Yakin hapus kunci HP ini?")) { localStorage.removeItem('locked_teacher_name'); showToast("Kunci direset!", "success"); checkDeviceLock(); } }
         
-        // --- MANAJEMEN TABEL GURU & PERSETUJUAN AKUN ---
+        // --- FITUR PREVIEW & EDIT MANUAL ABSEN ---
+        async function loadAdminAttendancePreview() {
+            const dateInput = document.getElementById('manual-date').value; // YYYY-MM-DD
+            if(!dateInput) return;
+            const dateStr = formatIDToYMD_Revert(dateInput); // Convert to DD/MM/YYYY
+
+            const tbody = document.getElementById('admin-preview-table');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>';
+
+            const { data: logs, error } = await sb.from('Naskan').select('*').eq('tanggal', dateStr).order('id', { ascending: false });
+            if(error) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--danger);">Gagal memuat</td></tr>'; return; }
+            
+            tbody.innerHTML = '';
+            if(logs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kosong</td></tr>'; return; }
+
+            logs.forEach(log => {
+                let bg = log.warna === 'primary' ? 'bg-green' : (log.warna === 'warning' ? 'bg-yellow' : (log.warna === 'danger' ? 'bg-red' : 'bg-blue'));
+                tbody.innerHTML += `<tr>
+                    <td>${log.nama}</td><td>${log.tipe}</td><td>${log.waktu}</td><td><span class="badge ${bg}">${log.status}</span></td>
+                    <td><button style="background:var(--danger); border:none; color:white; padding:3px 8px; border-radius:3px; cursor:pointer;" onclick="deleteAttendanceRecord(${log.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+        }
+
+        function formatIDToYMD_Revert(ymdStr) {
+            const p = ymdStr.split('-'); return `${p[2]}/${p[1]}/${p[0]}`;
+        }
+
+        async function saveManualAttendance() {
+            const dateInput = document.getElementById('manual-date').value;
+            const name = document.getElementById('manual-name').value;
+            const type = document.getElementById('manual-tipe').value;
+            const timeStr = document.getElementById('manual-waktu').value;
+            const status = document.getElementById('manual-status').value;
+
+            if(!dateInput || !name || !type || !timeStr || !status) { showToast("Lengkapi semua form manual!", "warning"); return; }
+            const dateStr = formatIDToYMD_Revert(dateInput);
+
+            let warna = 'primary';
+            if (status === 'Terlambat') warna = 'warning';
+            else if (status === 'Kurang Disiplin' || status === 'Lupa') warna = 'danger';
+            else if (type === 'Pulang') warna = 'info';
+
+            showToast("Menyimpan data manual...", "info");
+
+            // Cek apakah data (Nama + Tipe + Tanggal) sudah ada. Jika ada UPDATE, jika tidak INSERT
+            const { data: existing } = await sb.from('Naskan').select('id').eq('tanggal', dateStr).eq('nama', name).eq('tipe', type);
+            
+            if (existing && existing.length > 0) {
+                // Update
+                const { error } = await sb.from('Naskan').update({ waktu: timeStr, status: status, warna: warna }).eq('id', existing[0].id);
+                if(error) showToast("Gagal update manual.", "error"); else showToast("Berhasil diupdate!", "success");
+            } else {
+                // Insert
+                const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: name, waktu: timeStr, tipe: type, status: status, warna: warna }]);
+                if(error) showToast("Gagal simpan manual.", "error"); else showToast("Berhasil ditambahkan!", "success");
+            }
+            loadAdminAttendancePreview();
+        }
+
+        async function deleteAttendanceRecord(id) {
+            if(confirm("Yakin hapus data absen ini?")) {
+                await sb.from('Naskan').delete().eq('id', id);
+                showToast("Data absen dihapus.", "success");
+                loadAdminAttendancePreview();
+            }
+        }
+
+        // --- MANAJEMEN AKUN GURU ADMIN ---
         function renderTeacherList() { 
             const list = document.getElementById('admin-teacher-list'); list.innerHTML = ''; 
             if(teachers.length === 0) { list.innerHTML = '<li style="text-align:center; padding:10px; color:#aaa;">Belum ada Pendaftar</li>'; return; }
