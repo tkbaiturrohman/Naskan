@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Guru TK Baiturrohman</title>
+    <title>Absensi AI TK Baiturrohman</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -12,43 +12,55 @@
     <style>
         :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --text-light: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=2048&auto=format&fit=crop') no-repeat center center fixed; background-size: cover; color: var(--text-light); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; overflow-x: hidden; }
         
-        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); padding: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; position: relative;}
+        /* ANIMASI BACKGROUND PREMIUM Bergerak Lembut */
+        body { 
+            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #1a1a2e); 
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite; 
+            color: var(--text-light); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; overflow-x: hidden; 
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); padding: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; position: relative; animation: fadeIn 0.8s ease-out;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
         .header h1 { font-size: 1.5rem; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .header p { font-size: 0.9rem; opacity: 0.8; margin-top: 5px; }
         
-        /* UI Smart Search Dropdown */
         .search-container { position: relative; margin-bottom: 15px; text-align: left; }
-        .search-container input { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.3); color: white; font-size: 1rem; outline: none; margin: 0; }
-        .search-container input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-container input { width: 100%; padding: 12px 15px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.3); color: white; font-size: 1rem; outline: none; margin: 0; transition: 0.3s;}
+        .search-container input:focus { border-color: var(--info); box-shadow: 0 0 10px rgba(0,176,255,0.3); }
         .custom-list { position: absolute; top: 100%; left: 0; right: 0; background: #1a1a2e; border-radius: 8px; border: 1px solid var(--glass-border); max-height: 200px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.5); margin-top: 5px;}
         .list-item { padding: 12px 15px; color: white; cursor: pointer; font-size: 0.95rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .list-item:hover { background: rgba(255,255,255,0.1); color: var(--info); }
         
         input[type="password"], input[type="text"] { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(0, 0, 0, 0.3); color: white; font-size: 1rem; outline: none; margin-bottom: 15px; }
         
-        .btn-action { background: linear-gradient(135deg, #00b0ff, #0069c0); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem;}
-        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,176,255,0.4);} 
-        .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); } .btn-success { background: linear-gradient(135deg, #00e676, #00c853); }
+        .btn-action { background: linear-gradient(135deg, #00b0ff, #0069c0); color: white; border: none; padding: 14px; border-radius: 10px; width: 100%; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
+        .btn-action:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,176,255,0.4);} 
+        .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); } .btn-success { background: linear-gradient(135deg, #00e676, #00c853); } .btn-warning { background: linear-gradient(135deg, #ffea00, #ffb300); color: black;}
         
-        .status-circle { width: 160px; height: 160px; border-radius: 50%; margin: 0 auto 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); border: 2px solid var(--glass-border); transition: all 0.5s ease; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
-        .status-circle i { font-size: 3.5rem; margin-bottom: 5px; }
+        .status-circle { width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); border: 2px solid var(--glass-border); transition: all 0.5s ease; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .status-circle i { font-size: 3rem; margin-bottom: 5px; }
         .scanning { animation: pulse 1.5s infinite; } @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255,255,255,0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
         
-        #selfie-preview, #reg-selfie-preview { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 4px solid var(--primary); display: none; box-shadow: 0 0 20px rgba(0,230,118,0.5); }
-        
+        /* ANIMASI LASER SCAN WAJAH */
+        .camera-wrapper { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary); display: none; box-shadow: 0 0 20px rgba(0,230,118,0.5); }
+        #selfie-preview, #reg-selfie-preview { width: 100%; height: 100%; object-fit: cover; }
+        .laser { position: absolute; width: 100%; height: 3px; background: rgba(0, 230, 118, 0.8); box-shadow: 0 0 15px rgba(0, 230, 118, 1); top: 0; left: 0; animation: scan 2s infinite linear; display: none; }
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+
         /* Histori Pojok Kanan Bawah */
-        #history-box { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: none; flex-direction: column; gap: 8px; z-index: 50; box-shadow: 0 5px 20px rgba(0,0,0,0.5); text-align: left; animation: slideUp 0.5s forwards;}
+        #history-box { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: none; flex-direction: column; gap: 8px; z-index: 50; box-shadow: 0 5px 20px rgba(0,0,0,0.5); text-align: left; animation: slideUpHist 0.5s forwards;}
         .hist-title { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 5px; text-align: center;}
         .hist-item { font-size: 0.9rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
         .hist-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; box-shadow: 0 0 5px rgba(255,255,255,0.5); }
         .bg-primary { background: var(--primary); } .bg-warning { background: var(--warning); } .bg-danger { background: var(--danger); } .bg-info { background: var(--info); } .bg-gray { background: gray; }
 
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 20px; border-radius: 30px; border: 1px solid var(--glass-border); box-shadow: 0 5px 15px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: dropDown 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; transition: opacity 0.5s; font-size: 0.85rem;}
-        .toast.error { border-left: 4px solid var(--danger); } .toast.warning { border-left: 4px solid var(--warning); } .toast.success { border-left: 4px solid var(--primary); }
-        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px;}
+        .toast { background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px); color: white; padding: 15px 20px; border-radius: 12px; border-left: 5px solid var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: dropDown 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; font-size: 0.9rem; font-weight: 600;}
+        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); }
+        @keyframes slideUpHist { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes dropDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
@@ -57,10 +69,10 @@
     <div id="toast-container"></div>
 
     <div id="history-box">
-        <div class="hist-title">Histori Hari Ini</div>
-        <div class="hist-item"><span>Masuk</span> <span style="display:flex; align-items:center; gap:8px;"><span id="hist-datang-time">--:--</span><span id="hist-datang-dot" class="hist-dot bg-gray"></span></span></div>
+        <div class="hist-title">Status Hari Ini</div>
+        <div class="hist-item"><span>Datang</span> <span style="display:flex; align-items:center; gap:8px;"><span id="hist-datang-time">--:--</span><span id="hist-datang-dot" class="hist-dot bg-gray"></span></span></div>
         <div class="hist-item"><span>Pulang</span> <span style="display:flex; align-items:center; gap:8px;"><span id="hist-pulang-time">--:--</span><span id="hist-pulang-dot" class="hist-dot bg-gray"></span></span></div>
-        <button onclick="logout()" style="margin-top: 10px; background:var(--danger); border:none; color:white; padding:5px; border-radius:5px; cursor:pointer; font-size:0.75rem;"><i class="fas fa-sign-out-alt"></i> Tutup Mode Absen</button>
+        <button onclick="logout()" style="margin-top: 10px; background:rgba(255,255,255,0.1); border:1px solid #555; color:white; padding:8px; border-radius:8px; cursor:pointer; font-size:0.8rem; width:100%; transition:0.3s;"><i class="fas fa-sign-out-alt"></i> Tutup Sistem</button>
     </div>
 
     <div class="glass-panel header">
@@ -79,25 +91,26 @@
 
         <h2 id="locked-name-display" style="display: none; margin-bottom: 15px; color: var(--primary);"></h2>
         <input type="password" id="teacher-pin" placeholder="PIN 4 Angka" maxlength="4" style="text-align: center; letter-spacing: 10px; font-weight: bold; font-size: 1.2rem;">
-        <button class="btn-action" onclick="verifyPIN()"><i class="fas fa-sign-in-alt"></i> Verifikasi & Absen</button>
+        <button class="btn-action" onclick="verifyPIN()"><i class="fas fa-sign-in-alt"></i> Masuk Absensi</button>
         
-        <div style="margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px;">
-            <button class="btn-action" style="background: rgba(255,255,255,0.1); color: var(--info); font-size: 0.9rem; padding: 10px;" onclick="openRegister()"><i class="fas fa-user-plus"></i> Guru Baru? Daftar Di Sini</button>
+        <div style="margin-top: 20px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 15px; display: flex; gap: 10px;">
+            <button class="btn-action" style="flex:1; background: rgba(255,255,255,0.1); color: var(--info); font-size: 0.8rem; padding: 10px;" onclick="openRegister()"><i class="fas fa-user-plus"></i> Guru Baru?</button>
         </div>
     </div>
 
     <div class="glass-panel" id="register-area" style="display: none;">
         <h2><i class="fas fa-user-plus"></i> Pendaftaran Guru</h2>
-        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajib scan wajah (Face ID) untuk keamanan.</p>
-        
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajib scan wajah (Face ID).</p>
         <input type="text" id="reg-name" placeholder="Nama Lengkap Anda">
         <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
         
         <div style="margin: 15px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
             <input type="file" accept="image/*" capture="user" id="reg-camera-input" style="display:none;" onchange="processFaceRegistration(this)">
-            <img id="reg-selfie-preview" src="">
-            <p id="reg-ai-loading" style="font-size: 0.8rem; color: var(--warning); display:none;"><i class="fas fa-spinner fa-spin"></i> AI Memindai Wajah...</p>
-            <button id="btn-reg-scan" class="btn-action" style="background: var(--info);" onclick="document.getElementById('reg-camera-input').click()"><i class="fas fa-camera"></i> 1. Scan Wajah</button>
+            <div class="camera-wrapper" id="reg-cam-wrapper">
+                <img id="reg-selfie-preview" src="">
+                <div class="laser" id="reg-laser"></div>
+            </div>
+            <button id="btn-reg-scan" class="btn-action" style="background: var(--info);" onclick="document.getElementById('reg-camera-input').click()"><i class="fas fa-camera"></i> 1. Scan Wajah AI</button>
             <p id="reg-face-status" style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*Wajah belum direkam</p>
         </div>
 
@@ -106,38 +119,61 @@
     </div>
 
     <div class="glass-panel" id="main-app" style="display: none;">
-        <div id="status-circle" class="status-circle"><i id="status-icon" class="fas fa-satellite-dish"></i><h2 id="status-title" style="font-size:1rem;">Melacak GPS...</h2></div>
-        <p id="info-text" style="font-weight: bold; margin-bottom: 5px;">Mencari satelit...</p>
-        <p id="distance-text" style="font-size: 0.85rem; color: var(--info); margin-bottom: 20px; font-weight: 600;"></p>
-
-        <p id="ai-loading"><i class="fas fa-spinner fa-spin"></i> AI Sedang Memindai Wajah...</p>
-        <input type="file" accept="image/*" capture="user" id="camera-input" style="display:none;" onchange="processFaceAttendance(this)">
-        <img id="selfie-preview" src="">
         
-        <button id="btn-selfie" class="btn-action" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="document.getElementById('camera-input').click()"><i class="fas fa-camera"></i> Scan Wajah AI Sekarang</button>
-        <button id="btn-kirim-absen" class="btn-action btn-success" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="submitAttendanceToDB()"><i class="fas fa-paper-plane"></i> Kirim Absen</button>
+        <div id="holiday-msg" style="display: none; padding: 20px; background: rgba(255,0,0,0.2); border-radius: 15px; border: 1px solid var(--danger); margin-bottom: 15px;">
+            <i class="fas fa-calendar-times" style="font-size: 3rem; color: var(--danger); margin-bottom: 10px;"></i>
+            <h3 style="color: var(--danger);">HARI LIBUR</h3>
+            <p style="font-size: 0.85rem; margin-top: 5px;">Absensi dinonaktifkan untuk hari ini.</p>
+        </div>
+
+        <div id="attendance-module">
+            <div id="status-circle" class="status-circle"><i id="status-icon" class="fas fa-satellite-dish"></i><h2 id="status-title" style="font-size:1rem;">Melacak GPS...</h2></div>
+            <p id="info-text" style="font-weight: bold; margin-bottom: 5px;">Mencari satelit...</p>
+            <p id="distance-text" style="font-size: 0.85rem; color: var(--info); margin-bottom: 20px; font-weight: 600;"></p>
+
+            <input type="file" accept="image/*" capture="user" id="camera-input" style="display:none;" onchange="processFaceAttendance(this)">
+            
+            <div class="camera-wrapper" id="cam-wrapper">
+                <img id="selfie-preview" src="">
+                <div class="laser" id="scan-laser"></div>
+            </div>
+            
+            <button id="btn-selfie" class="btn-action" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="document.getElementById('camera-input').click()"><i class="fas fa-camera"></i> Scan Wajah AI Sekarang</button>
+            <button id="btn-kirim-absen" class="btn-action btn-success" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="submitAttendanceToDB()"><i class="fas fa-paper-plane"></i> Kirim Absen</button>
+            
+            <button id="btn-izin" class="btn-action btn-warning" style="margin-top: 15px; font-size: 0.9rem;" onclick="openIzinForm()"><i class="fas fa-file-medical"></i> Tidak Hadir? Pengajuan Izin / Sakit</button>
+        </div>
+
+        <div id="izin-form" style="display: none; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin-top: 15px;">
+            <h3 style="color: var(--warning); margin-bottom: 15px;"><i class="fas fa-file-medical"></i> Form Pengajuan</h3>
+            <select id="izin-tipe" style="width: 100%; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                <option value="Sakit">Sakit</option>
+                <option value="Izin">Izin (Keperluan Pribadi)</option>
+            </select>
+            <button class="btn-action btn-success" onclick="submitIzinSakit()"><i class="fas fa-paper-plane"></i> Kirim Pengajuan</button>
+            <button class="btn-action" style="background: rgba(255,255,255,0.1);" onclick="cancelIzinForm()"><i class="fas fa-times"></i> Batal</button>
+        </div>
+
     </div>
 
     <script>
-        // KONFIGURASI SUPABASE (Ganti dengan Key aslimu)
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00" };
+        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00", hariLibur: "" };
         let teachers = []; let tempRegistrationFaceData = null;
         let selectedTeacherName = ""; let watchId = null; let attendanceLogged = false; 
         let currentAbsenType = ""; let currentStatus = ""; let currentColor = ""; let currentIcon = ""; 
         let isAiLoaded = false;
 
-        // TANGGAL & WAKTU (Memaksa format 24 Jam)
         const now = new Date(); 
-        document.getElementById('current-date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        document.getElementById('current-date').innerText = `${hariIndo[now.getDay()]}, ${now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`;
         
-        function getCurrentTime24() {
-            return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':');
-        }
+        function getCurrentTime24() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':'); }
         function getCurrentDateStr() { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; }
+        function getCurrentYMD() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function timeToMins(timeStr) { if (!timeStr) return 0; const parts = timeStr.split(':'); return parseInt(parts[0]) * 60 + parseInt(parts[1]); }
 
         window.onload = async () => { 
@@ -162,7 +198,7 @@
                 await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
                 await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
                 isAiLoaded = true;
-                document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> AI Siap'; document.getElementById('ai-status').style.color = 'var(--primary)';
+                document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> AI Wajah Siap'; document.getElementById('ai-status').style.color = 'var(--primary)';
                 setTimeout(() => { document.getElementById('ai-status').style.display = 'none'; }, 3000);
             } catch (err) { document.getElementById('ai-status').innerHTML = '<i class="fas fa-times-circle"></i> Gagal Memuat AI.'; document.getElementById('ai-status').style.color = 'var(--danger)'; }
         }
@@ -171,7 +207,7 @@
             const { data } = await sb.from('Pengaturan').select('*').limit(1);
             if (data && data.length > 0) {
                 const dbSet = data[0];
-                appSettings = { lat: dbSet.lat, lng: dbSet.lng, radius: dbSet.radius, openTime: dbSet.open_time, lateTime: dbSet.late_time, tolTime: dbSet.tol_time, homeTime: dbSet.home_time };
+                appSettings = { lat: dbSet.lat, lng: dbSet.lng, radius: dbSet.radius, openTime: dbSet.open_time, lateTime: dbSet.late_time, tolTime: dbSet.tol_time, homeTime: dbSet.home_time, hariLibur: dbSet.hari_libur || "" };
             }
         }
 
@@ -180,12 +216,9 @@
             teachers = data || []; checkDeviceLock(); 
         }
 
-        // --- SMART SEARCH DROPDOWN ---
         function filterTeachers() {
             const input = document.getElementById('teacher-search'); const list = document.getElementById('custom-teacher-list');
-            const val = input.value.toLowerCase();
-            list.innerHTML = ''; list.style.display = 'block';
-            
+            const val = input.value.toLowerCase(); list.innerHTML = ''; list.style.display = 'block';
             const activeTeachers = teachers.filter(t => t.is_active === true);
             const filtered = activeTeachers.filter(t => t.nama.toLowerCase().includes(val));
             
@@ -194,8 +227,7 @@
             
             filtered.forEach(t => {
                 let div = document.createElement('div'); div.className = 'list-item'; div.innerText = t.nama;
-                div.onclick = () => { input.value = t.nama; list.style.display = 'none'; };
-                list.appendChild(div);
+                div.onclick = () => { input.value = t.nama; list.style.display = 'none'; }; list.appendChild(div);
             });
         }
 
@@ -209,26 +241,30 @@
             }
         }
 
-        // --- REGISTRASI ---
-        function openRegister() { document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none'; document.getElementById('reg-selfie-preview').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam"; }
+        function openRegister() { document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none'; document.getElementById('reg-cam-wrapper').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam"; }
         function cancelRegister() { document.getElementById('register-area').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
         
         async function processFaceRegistration(input) {
             if (!isAiLoaded) { showToast("AI belum siap...", "warning"); return; }
             if (input.files && input.files[0]) {
                 const aiLoading = document.getElementById('reg-ai-loading'); aiLoading.style.display = 'block';
+                const wrapper = document.getElementById('reg-cam-wrapper'); wrapper.style.display = 'block';
+                const laser = document.getElementById('reg-laser'); laser.style.display = 'block';
+                const imgPreview = document.getElementById('reg-selfie-preview');
+                
                 const imgUrl = URL.createObjectURL(input.files[0]); const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
 
                 imgHtml.onload = async () => {
                     try {
                         const detection = await faceapi.detectSingleFace(imgHtml).withFaceLandmarks().withFaceDescriptor();
-                        aiLoading.style.display = 'none';
-                        if (!detection) { showToast("Wajah tidak terdeteksi! Coba lagi.", "error"); return; }
+                        aiLoading.style.display = 'none'; laser.style.display = 'none';
+                        if (!detection) { showToast("Wajah tidak terdeteksi!", "error"); wrapper.style.display = 'none'; return; }
+
                         tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
-                        document.getElementById('reg-selfie-preview').src = imgUrl; document.getElementById('reg-selfie-preview').style.display = 'block';
-                        document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary); font-weight:bold;'><i class='fas fa-check'></i> Wajah Sukses Terekam</span>";
+                        imgPreview.src = imgUrl; imgPreview.style.display = 'block'; wrapper.style.borderColor = "var(--primary)";
+                        document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary); font-weight:bold;'><i class='fas fa-check'></i> Wajah Terekam</span>";
                         document.getElementById('btn-submit-reg').style.display = 'flex'; 
-                    } catch(err) { aiLoading.style.display = 'none'; showToast("Error AI.", "error"); }
+                    } catch(err) { aiLoading.style.display = 'none'; laser.style.display = 'none'; showToast("Error AI.", "error"); wrapper.style.display = 'none';}
                 }
             }
         }
@@ -238,13 +274,20 @@
             if(!name || pin.length !== 4) { showToast("Isi Nama dan PIN 4 Angka!", "warning"); return; }
             if(!tempRegistrationFaceData) { showToast("Scan Wajah dulu!", "warning"); return; }
             
-            showToast("Mengirim...", "info");
+            showToast("Mendaftarkan akun...", "info");
             const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, face_data: tempRegistrationFaceData }]);
             if(error) { showToast("Gagal. Nama sudah dipakai.", "error"); }
             else { showToast("Sukses! Lapor Admin ya.", "success"); document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; cancelRegister(); fetchTeachersFromDB(); }
         }
 
-        // --- PROSES ABSENSI & HISTORY ---
+        // --- CEK LIBUR NASIONAL & MINGGU ---
+        function isHolidayToday() {
+            if (now.getDay() === 0) return true; // 0 = Minggu
+            const todayYMD = getCurrentYMD();
+            if (appSettings.hariLibur && appSettings.hariLibur.includes(todayYMD)) return true;
+            return false;
+        }
+
         async function verifyPIN() {
             const name = localStorage.getItem('locked_teacher_name') ? selectedTeacherName : document.getElementById('teacher-search').value; 
             const pin = document.getElementById('teacher-pin').value;
@@ -258,50 +301,65 @@
                 
                 localStorage.setItem('locked_teacher_name', name); selectedTeacherName = name;
                 document.getElementById('login-area').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; document.getElementById('teacher-pin').value = ''; 
-                document.getElementById('selfie-preview').style.display = 'none'; document.getElementById('btn-selfie').style.display = 'none';
+                document.getElementById('cam-wrapper').style.display = 'none'; document.getElementById('btn-selfie').style.display = 'none';
                 
-                document.getElementById('history-box').style.display = 'flex'; // Tampilkan history
-                startAttendanceCheck();
+                // Cek Libur
+                if(isHolidayToday()) {
+                    document.getElementById('attendance-module').style.display = 'none';
+                    document.getElementById('holiday-msg').style.display = 'block';
+                } else {
+                    document.getElementById('attendance-module').style.display = 'block';
+                    document.getElementById('holiday-msg').style.display = 'none';
+                    document.getElementById('history-box').style.display = 'flex'; 
+                    startAttendanceCheck();
+                }
             } else { showToast("PIN Salah!", "error"); }
         }
 
         function logout() { 
             if(watchId) navigator.geolocation.clearWatch(watchId); 
-            document.getElementById('main-app').style.display = 'none'; 
-            document.getElementById('login-area').style.display = 'block'; 
-            document.getElementById('history-box').style.display = 'none';
-            document.getElementById('teacher-search').value = '';
+            document.getElementById('main-app').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; document.getElementById('history-box').style.display = 'none'; document.getElementById('teacher-search').value = '';
+            document.getElementById('izin-form').style.display = 'none';
         }
 
         async function startAttendanceCheck() {
             setUIState('info', 'fas fa-spinner fa-spin', 'Cek Data...', 'Memeriksa histori absen...');
-            const todayStr = getCurrentDateStr(); 
-            const currentMins = timeToMins(getCurrentTime24());
+            const todayStr = getCurrentDateStr(); const currentMins = timeToMins(getCurrentTime24());
             const openMins = timeToMins(appSettings.openTime); const homeMins = timeToMins(appSettings.homeTime);
             
             const { data: logs, error } = await sb.from('Naskan').select('*').eq('tanggal', todayStr).eq('nama', selectedTeacherName);
-            if (error) { setUIState('danger', 'fas fa-wifi', 'Error Data', 'Gagal hubung ke Naskan.'); return; }
+            if (error) { setUIState('danger', 'fas fa-wifi', 'Error Data', 'Gagal hubung ke Database.'); return; }
 
-            const datangLog = logs.find(log => log.tipe === 'Datang'); const pulangLog = logs.find(log => log.tipe === 'Pulang');
+            const datangLog = logs.find(log => log.tipe === 'Datang' || log.tipe === 'Sakit' || log.tipe === 'Izin' || log.tipe === 'Alpa'); 
+            const pulangLog = logs.find(log => log.tipe === 'Pulang');
 
-            // Set History UI
+            // Reset UI History
+            document.getElementById('hist-datang-time').innerText = '--:--'; document.getElementById('hist-datang-dot').className = `hist-dot bg-gray`;
+            document.getElementById('hist-pulang-time').innerText = '--:--'; document.getElementById('hist-pulang-dot').className = `hist-dot bg-gray`;
+
             if(datangLog) { document.getElementById('hist-datang-time').innerText = datangLog.waktu; document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`; }
             if(pulangLog) { document.getElementById('hist-pulang-time').innerText = pulangLog.waktu; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${pulangLog.warna}`; }
 
-            // Logika Cerdas
+            // Logika Blokir
+            if (datangLog && (datangLog.tipe === 'Sakit' || datangLog.tipe === 'Izin')) {
+                setUIState('warning', 'fas fa-file-medical', `Status: ${datangLog.tipe}`, 'Anda sudah mengajukan ketidakhadiran hari ini.');
+                attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none';
+                return;
+            }
+
             if (!datangLog) {
                 if (currentMins < openMins) { setUIState('warning', 'fas fa-clock', 'Belum Buka', `Absen pagi dibuka jam ${appSettings.openTime}`); attendanceLogged = true; } 
                 else { currentAbsenType = 'Datang'; startGPS(); }
             } else if (!pulangLog) {
-                if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; startGPS(); } 
+                if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; document.getElementById('btn-izin').style.display = 'none'; startGPS(); } 
                 else { setUIState('primary', 'fas fa-check-double', 'Sudah Absen Masuk', `Silakan tunggu jam pulang (${appSettings.homeTime})`); attendanceLogged = true; }
             } else {
-                setUIState('info', 'fas fa-check-circle', 'Selesai Tugas', 'Hati-hati di jalan!'); attendanceLogged = true;
+                setUIState('info', 'fas fa-check-circle', 'Selesai Tugas', 'Hati-hati di jalan!'); attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none';
             }
         }
 
         function startGPS() {
-            setUIState('scanning', 'fas fa-location-crosshairs', 'Mencari GPS...', 'Tunggu sebentar...');
+            setUIState('scanning', 'fas fa-location-crosshairs', 'Mencari GPS...', 'Pastikan lokasi HP menyala.');
             if (navigator.geolocation) { watchId = navigator.geolocation.watchPosition(successPosition, errorPosition, { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }); } 
             else { setUIState('danger', 'fas fa-times-circle', 'Error', 'GPS tidak didukung.'); }
         }
@@ -325,11 +383,7 @@
                 else if (currentMins <= tolMins) { currentStatus = 'Terlambat'; currentColor = 'warning'; currentIcon = 'fas fa-exclamation-triangle'; } 
                 else { currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; currentIcon = 'fas fa-times-circle'; }
             } else { 
-                // Pulang (Tepat / Offset)
-                const homeMins = timeToMins(appSettings.homeTime);
-                // Jika pulang lebih dari 2 jam dari batas pulang, kita anggap Offset (Kuning)
-                if(currentMins > homeMins + 120) { currentStatus = 'Offset'; currentColor = 'warning'; currentIcon = 'fas fa-business-time'; }
-                else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-home'; }
+                currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-home'; 
             }
 
             setUIState(currentColor, 'fas fa-user-check', 'GPS Valid!', `Silakan scan wajah untuk absen ${currentAbsenType}.`);
@@ -340,29 +394,33 @@
             if (!isAiLoaded) { showToast("AI sedang memuat...", "warning"); return; }
             if (input.files && input.files[0]) {
                 const aiLoading = document.getElementById('ai-loading'); aiLoading.style.display = 'block'; document.getElementById('btn-selfie').style.display = 'none';
+                const wrapper = document.getElementById('cam-wrapper'); wrapper.style.display = 'block';
+                const laser = document.getElementById('scan-laser'); laser.style.display = 'block';
+                const imgPreview = document.getElementById('selfie-preview');
+
                 const imgUrl = URL.createObjectURL(input.files[0]); const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
 
                 imgHtml.onload = async () => {
                     try {
                         const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 }); 
                         const detection = await faceapi.detectSingleFace(imgHtml, options).withFaceLandmarks().withFaceDescriptor();
-                        
-                        if (!detection) { showToast("Wajah kurang terang/jelas!", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; return; }
+                        aiLoading.style.display = 'none'; laser.style.display = 'none';
+
+                        if (!detection) { showToast("Wajah kurang terang/jelas!", "error"); wrapper.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; return; }
 
                         const teacherData = teachers.find(t => t.nama === selectedTeacherName);
                         const savedDescriptor = new Float32Array(JSON.parse(teacherData.face_data)); 
                         const distance = faceapi.euclideanDistance(detection.descriptor, savedDescriptor);
-                        aiLoading.style.display = 'none';
-
+                        
                         if (distance <= 0.55) {
                             showToast("Wajah Dikenali!", "success");
-                            document.getElementById('selfie-preview').src = imgUrl; document.getElementById('selfie-preview').style.display = 'block'; document.getElementById('selfie-preview').style.borderColor = `var(--${currentColor})`;
+                            imgPreview.src = imgUrl; imgPreview.style.display = 'block'; wrapper.style.borderColor = `var(--${currentColor})`;
                             document.getElementById('btn-kirim-absen').style.display = 'flex'; 
                         } else {
-                            showToast("Verifikasi Gagal. Wajah tidak cocok!", "error");
-                            document.getElementById('selfie-preview').src = imgUrl; document.getElementById('selfie-preview').style.display = 'block'; document.getElementById('selfie-preview').style.borderColor = "var(--danger)"; document.getElementById('btn-selfie').style.display = 'flex'; 
+                            showToast("Wajah Tidak Cocok dengan Database!", "error");
+                            imgPreview.src = imgUrl; imgPreview.style.display = 'block'; wrapper.style.borderColor = "var(--danger)"; document.getElementById('btn-selfie').style.display = 'flex'; 
                         }
-                    } catch(err) { showToast("Error Server AI.", "error"); aiLoading.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; }
+                    } catch(err) { showToast("Error Server AI.", "error"); aiLoading.style.display = 'none'; laser.style.display = 'none'; wrapper.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; }
                 }
             }
         }
@@ -378,9 +436,32 @@
                 showToast("Gagal. Sinyal jelek.", "error"); setUIState('danger', 'fas fa-times', 'Gagal', "Coba klik kirim lagi."); document.getElementById('btn-kirim-absen').style.display = 'flex'; 
             } else { 
                 setUIState(currentColor, currentIcon, `Berhasil Absen!`, `${timeStr} - ${currentStatus}`); showToast(`Sukses Absen ${currentAbsenType}!`, 'success'); 
-                
-                if(currentAbsenType === 'Datang') { document.getElementById('hist-datang-time').innerText = timeStr; document.getElementById('hist-datang-dot').className = `hist-dot bg-${currentColor}`; }
+                if(currentAbsenType === 'Datang') { document.getElementById('hist-datang-time').innerText = timeStr; document.getElementById('hist-datang-dot').className = `hist-dot bg-${currentColor}`; document.getElementById('btn-izin').style.display = 'none';}
                 else { document.getElementById('hist-pulang-time').innerText = timeStr; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${currentColor}`; }
+            }
+        }
+
+        // --- SISTEM PENGAJUAN IZIN / SAKIT ---
+        function openIzinForm() {
+            if(watchId) navigator.geolocation.clearWatch(watchId);
+            document.getElementById('status-circle').style.display = 'none'; document.getElementById('info-text').style.display = 'none'; document.getElementById('distance-text').style.display = 'none'; document.getElementById('btn-selfie').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none';
+            document.getElementById('izin-form').style.display = 'block';
+        }
+        function cancelIzinForm() {
+            document.getElementById('izin-form').style.display = 'none'; document.getElementById('status-circle').style.display = 'flex'; document.getElementById('info-text').style.display = 'block'; document.getElementById('distance-text').style.display = 'block'; document.getElementById('btn-izin').style.display = 'block';
+            startGPS(); // Lanjut cari GPS lagi
+        }
+        async function submitIzinSakit() {
+            const tipeIzin = document.getElementById('izin-tipe').value;
+            const dateStr = getCurrentDateStr();
+            showToast("Mengirim pengajuan...", "info");
+            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: '-', tipe: tipeIzin, status: tipeIzin, warna: 'warning' }]);
+            if (error) { showToast("Gagal mengirim pengajuan.", "error"); }
+            else {
+                showToast("Pengajuan berhasil!", "success"); document.getElementById('izin-form').style.display = 'none';
+                setUIState('warning', 'fas fa-file-medical', `Status: ${tipeIzin}`, 'Pengajuan Anda telah tercatat hari ini.');
+                document.getElementById('status-circle').style.display = 'flex'; document.getElementById('info-text').style.display = 'block';
+                document.getElementById('hist-datang-time').innerText = tipeIzin; document.getElementById('hist-datang-dot').className = `hist-dot bg-warning`;
             }
         }
 
