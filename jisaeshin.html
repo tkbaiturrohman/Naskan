@@ -7,6 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     
     <style>
         :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --bg: #f4f7f6; --text: #333; }
@@ -35,17 +36,23 @@
         .toggle-btn { font-size: 1.8rem; cursor: pointer; background: none; border: none; outline:none; transition: 0.3s;}
         .toggle-on { color: var(--primary); } .toggle-off { color: #ccc; }
 
-        /* Login Overlay Animasi */
         #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460); background-size: 400% 400%; animation: gradientBG 10s ease infinite; z-index: 1000; display: flex; align-items: center; justify-content: center; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .login-box { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);}
 
-        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px;}
+        /* MODAL KAMERA ADMIN */
+        .modal { display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 15px; }
+        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; position: relative; }
+        .video-wrapper { position: relative; width: 200px; height: 200px; margin: 0 auto 15px; border-radius: 50%; overflow: hidden; border: 4px solid var(--warning); background: #000; }
+        .laser-scan { position: absolute; width: 100%; height: 4px; background: rgba(0, 230, 118, 0.9); box-shadow: 0 0 15px rgba(0, 230, 118, 1); top: 0; left: 0; animation: scanAnim 2s infinite linear; z-index: 10;}
+        @keyframes scanAnim { 0% { top: 0; opacity: 0;} 10% { opacity: 1;} 90% { opacity: 1;} 100% { top: 100%; opacity: 0;} }
+
+        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 999999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px;}
         .toast { background: #2c3e50; color: white; padding: 15px 25px; border-radius: 12px; border-left: 5px solid var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 10px; animation: slideUp 0.4s forwards; font-size: 0.9rem;}
         .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); color: black; background: #fffde7;} .toast.success { border-left-color: var(--primary); }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* STYLE CETAK KHUSUS A4 LANDSCAPE MATRIX (PRESISI TINGGI) */
+        /* STYLE CETAK KHUSUS A4 LANDSCAPE MATRIX PRESISI */
         .report-wrapper { display: none; } 
         @media print { 
             @page { size: A4 landscape; margin: 8mm; }
@@ -59,23 +66,24 @@
             .print-title { font-size: 13pt; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; text-align: center;}
             
             .print-table { width: 100%; border-collapse: collapse; font-size: 8pt; table-layout: fixed;} 
-            .print-table th, .print-table td { border: 1px solid #000; text-align: center; vertical-align: middle; padding: 2px; overflow: hidden; white-space: nowrap;}
+            .print-table th, .print-table td { border: 1px solid #000; text-align: center; vertical-align: middle; padding: 2px 1px; overflow: hidden; white-space: nowrap;}
             .print-table th { background-color: #e0e0e0 !important; -webkit-print-color-adjust: exact; font-weight: bold; }
             
-            .col-no { width: 25px; } 
-            .col-nama { width: 130px; text-align: left !important; padding-left: 5px !important; white-space: normal !important; word-wrap: break-word;}
-            .col-tipe { width: 35px; font-weight: bold;} 
+            .col-no { width: 20px; } 
+            .col-nama { width: 120px; text-align: left !important; padding-left: 4px !important; white-space: normal !important; word-wrap: break-word;}
+            .col-tipe { width: 30px; font-weight: bold;} 
             .col-tgl { width: 24px; font-size: 7.5pt; font-weight: bold;} 
-            .col-ket { width: 20px; font-weight: bold;} 
-            
+            .col-ket { width: 18px; font-weight: bold;} 
             .td-time { font-size: 7.5pt; letter-spacing: -0.5px; } 
             
-            .box-hijau { width: 12px; height: 12px; background: #00e676 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
-            .box-kuning { width: 12px; height: 12px; background: #ffea00 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
-            .box-merah { width: 12px; height: 12px; background: #ff1744 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
-            .box-kosong { width: 12px; height: 12px; margin: auto; display: inline-block;}
+            .box-hijau { width: 10px; height: 10px; background: #00e676 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
+            .box-kuning { width: 10px; height: 10px; background: #ffea00 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
+            .box-merah { width: 10px; height: 10px; background: #ff1744 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
+            .box-biru { width: 10px; height: 10px; background: #00b0ff !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
+            .box-kosong { width: 10px; height: 10px; margin: auto; display: inline-block;}
             
             .cell-libur { background-color: #ffcccc !important; -webkit-print-color-adjust: exact; color: #ff0000; font-weight: bold;}
+            .print-legend { margin-top: 8px; font-size: 8.5pt; font-family: 'Poppins', sans-serif; font-weight: bold; text-align: left; }
         }
         .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media (max-width: 600px) { .flex-grid { grid-template-columns: 1fr; } }
@@ -93,6 +101,21 @@
         </div>
     </div>
 
+    <div id="admin-cam-modal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 10px; color: var(--info);"><i class="fas fa-camera"></i> Perekaman Wajah</h3>
+            <p style="font-size: 0.8rem; color:#888; margin-bottom: 15px;">Arahkan wajah ke kamera.</p>
+            
+            <div class="video-wrapper" id="admin-video-wrapper">
+                <video id="admin-video" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
+                <div class="laser-scan" id="admin-laser"></div>
+            </div>
+            
+            <p id="admin-cam-instruction" style="color: var(--warning); font-weight:bold; margin-bottom: 20px;"><i class="fas fa-spinner fa-spin"></i> Menunggu wajah...</p>
+            <button class="btn-action btn-danger" onclick="closeAdminCamera()"><i class="fas fa-times"></i> Batal</button>
+        </div>
+    </div>
+
     <div id="print-render-area" class="report-wrapper"></div>
 
     <div class="header">
@@ -104,7 +127,7 @@
         
         <div class="admin-section" style="border-left-color: var(--primary);">
             <h4><i class="fas fa-print"></i> Cetak Laporan Matrix A4</h4>
-            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Mencetak tabel raksasa horizontal. 1 Kertas = 5 Guru. Note tergabung rapi di bawah.</p>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Mencetak tabel raksasa horizontal presisi tinggi. 1 Kertas = 5 Guru. Note S/I/A di bawah.</p>
             <div class="flex-grid" style="align-items: center;">
                 <input type="month" id="report-month" style="margin: 0;">
                 <button class="btn-action btn-success" style="margin: 0;" onclick="generateMatrixReport()"><i class="fas fa-file-pdf"></i> Generate & Print A4</button>
@@ -113,7 +136,6 @@
 
         <div class="admin-section" style="border-left-color: var(--warning);">
             <h4><i class="fas fa-edit"></i> Edit Absen Manual & Preview</h4>
-            
             <input type="date" id="manual-date" onchange="loadAdminAttendancePreview()">
             
             <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 20px;">
@@ -134,7 +156,7 @@
                         <option value="Tidak Disiplin">Tidak Disiplin (Merah)</option>
                         <option value="Offset">Offset Pulang (Kuning)</option>
                         <option value="Sakit">Sakit (Kuning)</option>
-                        <option value="Izin">Izin (Kuning)</option>
+                        <option value="Izin">Izin (Biru)</option>
                         <option value="Alpa">Alpa (Merah)</option>
                         <option value="Lupa">Lupa Absen (Merah)</option>
                     </select>
@@ -164,13 +186,14 @@
             <div class="flex-grid" style="background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px;">
                 <div><label style="font-size:0.8rem; font-weight:bold; color:#555;">Buka Gerbang Pagi</label><input type="time" id="set-open-time"></div>
                 <div><label style="font-size:0.8rem; font-weight:bold; color:var(--primary);">Batas Hijau (Tepat Wkt)</label><input type="time" id="set-late-time"></div>
+                <div><label style="font-size:0.8rem; font-weight:bold; color:var(--primary);">Toleransi Tepat (Menit)</label><input type="number" id="set-grace-period" placeholder="Misal: 15" min="0"></div>
                 <div><label style="font-size:0.8rem; font-weight:bold; color:#b38600;">Batas Kuning (Telat)</label><input type="time" id="set-tol-time"></div>
                 <div><label style="font-size:0.8rem; font-weight:bold; color:var(--info);">Mulai Jam Pulang</label><input type="time" id="set-home-time"></div>
             </div>
 
             <div style="background: #fff0f0; padding: 15px; border-radius: 10px; border: 1px solid #ffcdd2; margin-bottom: 15px;">
-                <label style="font-size:0.85rem; font-weight:bold; color:var(--danger);"><i class="fas fa-calendar-times"></i> Hari Libur Nasional</label>
-                <p style="font-size: 0.75rem; color: #666; margin-bottom: 5px;">*Hari Minggu sudah otomatis libur di sistem. Masukkan tanggal libur tambahan (Format: YYYY-MM-DD), pisahkan dengan koma.</p>
+                <label style="font-size:0.85rem; font-weight:bold; color:var(--danger);"><i class="fas fa-calendar-times"></i> Hari Libur Nasional (Opsional)</label>
+                <p style="font-size: 0.75rem; color: #666; margin-bottom: 5px;">*Hari Minggu otomatis libur. Masukkan tanggal (YYYY-MM-DD), pisahkan dengan koma.</p>
                 <textarea id="set-libur" placeholder="Contoh: 2026-04-10, 2026-08-17"></textarea>
             </div>
             
@@ -189,12 +212,12 @@
     </div>
 
     <script>
-        // API SUPABASE
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let appSettings = {}; let teachers = [];
+        let appSettings = {}; let teachers = []; let registeringTeacherId = null; let isAiLoaded = false;
+        let adminVideoStream = null; let adminScanInterval = null;
         const now = new Date();
 
         function showToast(msg, type = 'success') {
@@ -217,8 +240,16 @@
             document.getElementById('manual-date').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
             
             document.getElementById('db-status').innerHTML = '<i class="fas fa-check-circle"></i> Server Sinkron'; document.getElementById('db-status').style.color = 'var(--primary)';
-            await loadSettingsFromDB(); await fetchTeachersFromDB(); 
+            await loadSettingsFromDB(); await fetchTeachersFromDB(); await loadFaceAPIModels();
             loadAdminAttendancePreview();
+        }
+
+        async function loadFaceAPIModels() {
+            try {
+                const MODEL_URL = 'https://vladmandic.github.io/face-api/model/';
+                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL); await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL); await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+                isAiLoaded = true;
+            } catch (err) { showToast("Gagal Memuat AI.", "error"); }
         }
 
         async function loadSettingsFromDB() {
@@ -228,12 +259,13 @@
                 document.getElementById('set-lat').value = appSettings.lat; document.getElementById('set-lng').value = appSettings.lng; document.getElementById('set-radius').value = appSettings.radius; 
                 document.getElementById('set-open-time').value = appSettings.open_time; document.getElementById('set-late-time').value = appSettings.late_time; document.getElementById('set-tol-time').value = appSettings.tol_time; document.getElementById('set-home-time').value = appSettings.home_time;
                 document.getElementById('set-libur').value = appSettings.hari_libur || "";
+                document.getElementById('set-grace-period').value = appSettings.grace_period || 0;
             }
         }
 
         async function saveSettingsToDB() {
             showToast("Menyimpan ke Cloud...", "info");
-            const p = { lat: document.getElementById('set-lat').value, lng: document.getElementById('set-lng').value, radius: parseInt(document.getElementById('set-radius').value), open_time: document.getElementById('set-open-time').value, late_time: document.getElementById('set-late-time').value, tol_time: document.getElementById('set-tol-time').value, home_time: document.getElementById('set-home-time').value, hari_libur: document.getElementById('set-libur').value };
+            const p = { lat: document.getElementById('set-lat').value, lng: document.getElementById('set-lng').value, radius: parseInt(document.getElementById('set-radius').value), open_time: document.getElementById('set-open-time').value, late_time: document.getElementById('set-late-time').value, tol_time: document.getElementById('set-tol-time').value, home_time: document.getElementById('set-home-time').value, hari_libur: document.getElementById('set-libur').value, grace_period: parseInt(document.getElementById('set-grace-period').value) || 0 };
             
             if(appSettings.id) { await sb.from('Pengaturan').update(p).eq('id', appSettings.id); }
             showToast("Pengaturan Disimpan!", "success"); loadSettingsFromDB(); 
@@ -241,10 +273,10 @@
 
         function adminGetMyLocation() {
             if (navigator.geolocation) {
-                showToast("Satelit mengunci lokasi...", "info");
+                showToast("Melacak lokasi...", "info");
                 navigator.geolocation.getCurrentPosition(
                     function(position) { document.getElementById('set-lat').value = position.coords.latitude.toFixed(6); document.getElementById('set-lng').value = position.coords.longitude.toFixed(6); showToast("Terkunci!", "success"); },
-                    function(error) { showToast("Gagal. Nyalakan GPS HP.", "error"); }, { enableHighAccuracy: true }
+                    function(error) { showToast("Gagal melacak.", "error"); }, { enableHighAccuracy: true }
                 );
             } else { showToast("Browser tidak support.", "error"); }
         }
@@ -252,7 +284,6 @@
         async function fetchTeachersFromDB() {
             const { data } = await sb.from('Guru').select('*').order('nama', { ascending: true });
             teachers = data || []; renderTeacherList();
-            
             const sel = document.getElementById('manual-name'); sel.innerHTML = '<option value="">-Pilih Guru-</option>';
             teachers.forEach(t => sel.innerHTML += `<option value="${t.nama}">${t.nama}</option>`);
         }
@@ -271,6 +302,7 @@
                     </div>
                     <div style="display:flex; gap:12px; align-items:center;">
                         <button class="toggle-btn" onclick="toggleAccountStatus(${t.id}, ${!t.is_active})" title="Aktif/Nonaktif"><i class="fas ${toggleIcon}"></i></button>
+                        <button class="btn-action btn-info" style="padding:6px; margin:0;" onclick="startFaceRegistrationAdmin(${t.id})" title="Rekam Wajah"><i class="fas fa-camera"></i></button> 
                         <button class="btn-action btn-danger" style="padding:6px; margin:0;" onclick="deleteTeacher(${t.id}, '${t.nama}')" title="Hapus Permanen"><i class="fas fa-trash"></i></button>
                     </div>
                 </li>`; 
@@ -278,9 +310,48 @@
         }
         
         async function toggleAccountStatus(id, newStatus) { await sb.from('Guru').update({ is_active: newStatus }).eq('id', id); fetchTeachersFromDB(); }
-        async function deleteTeacher(id, nama) { if(confirm(`Bakar data ${nama}?`)) { await sb.from('Guru').delete().eq('id', id); fetchTeachersFromDB(); } }
+        async function deleteTeacher(id, nama) { if(confirm(`Bakar data ${nama}?`)) { await sb.from('Naskan').delete().eq('nama', nama); await sb.from('Guru').delete().eq('id', id); fetchTeachersFromDB(); } }
 
-        // --- SISTEM MANUAL EDIT ---
+        function startFaceRegistrationAdmin(id) { 
+            if (!isAiLoaded) { showToast("AI loading", "warning"); return; } 
+            registeringTeacherId = id; document.getElementById('admin-cam-modal').style.display = 'flex'; openAdminCamera();
+        }
+
+        async function openAdminCamera() {
+            try {
+                adminVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                const videoEl = document.getElementById('admin-video'); videoEl.srcObject = adminVideoStream;
+                document.getElementById('admin-video-wrapper').style.borderColor = "var(--warning)";
+                document.getElementById('admin-cam-instruction').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Arahkan wajah ke kamera...';
+                videoEl.onloadedmetadata = () => { videoEl.play(); scanAdminFace(videoEl); };
+            } catch (err) { showToast("Kamera diblokir browser!", "error"); closeAdminCamera(); }
+        }
+
+        async function scanAdminFace(videoEl) {
+            adminScanInterval = setInterval(async () => {
+                if(videoEl.paused || videoEl.ended) return;
+                const detection = await faceapi.detectSingleFace(videoEl, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 })).withFaceLandmarks().withFaceDescriptor();
+                
+                if(detection) {
+                    clearInterval(adminScanInterval);
+                    document.getElementById('admin-video-wrapper').style.borderColor = "var(--primary)";
+                    document.getElementById('admin-laser').style.display = "none";
+                    document.getElementById('admin-cam-instruction').innerHTML = '<span style="color:var(--primary);"><i class="fas fa-check"></i> Wajah Terkunci! Menyimpan...</span>';
+                    
+                    const faceDataString = JSON.stringify(Array.from(detection.descriptor));
+                    const { error } = await sb.from('Guru').update({ face_data: faceDataString }).eq('id', registeringTeacherId);
+                    
+                    setTimeout(() => { closeAdminCamera(); if(error) { showToast("Gagal.", "error"); } else { showToast("Face ID Aktif!", "success"); fetchTeachersFromDB(); } }, 800);
+                }
+            }, 300);
+        }
+
+        function closeAdminCamera() {
+            if(adminVideoStream) { adminVideoStream.getTracks().forEach(t => t.stop()); adminVideoStream = null; }
+            if(adminScanInterval) { clearInterval(adminScanInterval); adminScanInterval = null; }
+            document.getElementById('admin-laser').style.display = 'block'; document.getElementById('admin-cam-modal').style.display = 'none';
+        }
+
         async function loadAdminAttendancePreview() {
             const dateInput = document.getElementById('manual-date').value; if(!dateInput) return;
             const dateStr = formatIDToYMD_Revert(dateInput); 
@@ -291,7 +362,7 @@
             if(!logs || logs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px;">Tidak ada data.</td></tr>'; return; }
 
             logs.forEach(log => {
-                let bg = log.warna === 'primary' ? 'bg-green' : (log.warna === 'warning' ? 'bg-yellow' : 'bg-red');
+                let bg = log.warna === 'primary' ? 'bg-green' : (log.warna === 'warning' ? 'bg-yellow' : (log.warna === 'info' ? 'bg-blue' : 'bg-red'));
                 if(log.tipe === 'Pulang' && log.warna === 'primary') bg = 'bg-blue'; 
 
                 tbody.innerHTML += `<tr style="border-bottom: 1px solid #ddd; text-align:center;">
@@ -310,7 +381,8 @@
             const dateStr = formatIDToYMD_Revert(dateInput);
 
             let warna = 'primary';
-            if (status === 'Terlambat' || status === 'Offset' || status === 'Sakit' || status === 'Izin') warna = 'warning';
+            if (status === 'Terlambat' || status === 'Offset' || status === 'Sakit') warna = 'warning';
+            else if (status === 'Izin') warna = 'info';
             else if (status === 'Tidak Disiplin' || status === 'Lupa' || status === 'Alpa') warna = 'danger';
             
             showToast("Menyimpan ke Naskan...", "info");
@@ -323,7 +395,7 @@
 
         async function deleteAttendanceRecord(id) { if(confirm("Hapus absen ini?")) { await sb.from('Naskan').delete().eq('id', id); loadAdminAttendancePreview(); } }
 
-        // --- SISTEM CETAK MATRIX A4 LANDSCAPE (PRESISI TINGGI & NOTE DI DALAM TABEL) ---
+        // --- SISTEM CETAK MATRIX A4 LANDSCAPE (ANTI GHOST DATA + PRESISI) ---
         async function generateMatrixReport() {
             const selectedMonthVal = document.getElementById('report-month').value; 
             if(!selectedMonthVal) { showToast("Pilih bulan dulu!", "warning"); return; }
@@ -334,30 +406,35 @@
             const renderArea = document.getElementById('print-render-area');
             const monthNames = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
 
-            const reportMap = {}; const teachersSet = new Set();
+            const uniqueTeachers = teachers.map(t => t.nama).sort();
+            if (uniqueTeachers.length === 0) { showToast("Belum ada akun guru.", "error"); return; }
+
+            const reportMap = {}; 
             const holidayArr = appSettings.hari_libur ? appSettings.hari_libur.split(',').map(s => s.trim()) : [];
 
-            logs.forEach(log => {
-                const parts = log.tanggal.split('/'); 
-                if(parts.length === 3 && parseInt(parts[1]) === parseInt(monthStr) && parts[2] === yearStr) {
-                    const day = parseInt(parts[0]); teachersSet.add(log.nama);
-                    if (!reportMap[log.nama]) reportMap[log.nama] = {};
-                    if (!reportMap[log.nama][day]) reportMap[log.nama][day] = { dtg: '', warnaDtg: '', plg: '', warnaPlg: '', absenTipe: '' };
-
-                    if (log.tipe === 'Sakit' || log.tipe === 'Izin' || log.tipe === 'Alpa' || log.status === 'Sakit' || log.status === 'Izin' || log.status === 'Alpa') {
-                        reportMap[log.nama][day].absenTipe = log.tipe === 'Datang' ? log.status : log.tipe; 
-                    } else if (log.tipe === 'Datang') { 
-                        reportMap[log.nama][day].dtg = log.waktu; reportMap[log.nama][day].warnaDtg = log.warna; 
-                    } else if (log.tipe === 'Pulang') { 
-                        reportMap[log.nama][day].plg = log.waktu; reportMap[log.nama][day].warnaPlg = log.warna; 
-                    }
-                }
+            uniqueTeachers.forEach(namaGuru => {
+                reportMap[namaGuru] = {};
+                for(let d=1; d<=31; d++) { reportMap[namaGuru][d] = { dtg: '', warnaDtg: '', plg: '', warnaPlg: '', absenTipe: '' }; }
             });
 
-            const uniqueTeachers = Array.from(teachersSet).sort();
-            if (uniqueTeachers.length === 0) { showToast("Bulan ini kosong.", "error"); return; }
+            if (logs) {
+                logs.forEach(log => {
+                    const parts = log.tanggal.split('/'); 
+                    if(parts.length === 3 && parseInt(parts[1]) === parseInt(monthStr) && parts[2] === yearStr) {
+                        if (reportMap[log.nama]) {
+                            const day = parseInt(parts[0]); 
+                            if (log.tipe === 'Sakit' || log.tipe === 'Izin' || log.tipe === 'Alpa' || log.status === 'Sakit' || log.status === 'Izin' || log.status === 'Alpa') {
+                                reportMap[log.nama][day].absenTipe = log.tipe === 'Datang' ? log.status : log.tipe; 
+                            } else if (log.tipe === 'Datang') { 
+                                reportMap[log.nama][day].dtg = log.waktu; reportMap[log.nama][day].warnaDtg = log.warna; 
+                            } else if (log.tipe === 'Pulang') { 
+                                reportMap[log.nama][day].plg = log.waktu; reportMap[log.nama][day].warnaPlg = log.warna; 
+                            }
+                        }
+                    }
+                });
+            }
 
-            // Pagination (5 Guru per Halaman)
             const teachersPerPage = 5; const chunks = [];
             for (let i = 0; i < uniqueTeachers.length; i += teachersPerPage) { chunks.push(uniqueTeachers.slice(i, i + teachersPerPage)); }
 
@@ -370,7 +447,6 @@
                 html += `<div class="report-page">`;
                 html += `<div class="print-title">REKAPITULASI ABSENSI TK BAITURROHMAN<br>${titleBulan}</div>`;
                 
-                // HEADER TABEL (Menambahkan Kolom TIPE agar Tidak Melenceng "0")
                 html += `<table class="print-table"><thead><tr><th rowspan="2" class="col-no">No</th><th rowspan="2" class="col-nama">NAMA</th><th rowspan="2" class="col-tipe">TIPE</th>`;
                 html += `<th colspan="${maxDays}">TANGGAL</th><th colspan="3" class="col-ket">KET</th></tr><tr>`;
                 
@@ -387,43 +463,42 @@
                         let currDate = `${yearStr}-${String(monthStr).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
                         let isHoliday = isSunday || holidayArr.includes(currDate);
 
-                        const cell = reportMap[t] && reportMap[t][d] ? reportMap[t][d] : null;
+                        const cell = reportMap[t][d];
                         
                         if(isHoliday) {
                             rowDtg += `<td class="cell-libur">L</td>`; rowWarnaDtg += `<td class="cell-libur">L</td>`;
                             rowPlg += `<td class="cell-libur">L</td>`; rowWarnaPlg += `<td class="cell-libur">L</td>`;
-                        } else if(cell && (cell.absenTipe === 'Sakit' || cell.absenTipe === 'Izin' || cell.absenTipe === 'Alpa')) {
-                            let huruf = cell.absenTipe.charAt(0); // S, I, A
-                            rowDtg += `<td>${huruf}</td>`; rowWarnaDtg += `<td><div class="box-kuning"></div></td>`;
-                            rowPlg += `<td>-</td>`; rowWarnaPlg += `<td><div class="box-kuning"></div></td>`;
+                        } else if(cell.absenTipe === 'Sakit' || cell.absenTipe === 'Izin' || cell.absenTipe === 'Alpa') {
+                            let huruf = cell.absenTipe.charAt(0); 
+                            let bgBox = cell.absenTipe === 'Sakit' ? 'box-kuning' : (cell.absenTipe === 'Izin' ? 'box-biru' : 'box-merah');
+                            rowDtg += `<td>${huruf}</td>`; rowWarnaDtg += `<td><div class="${bgBox}"></div></td>`;
+                            rowPlg += `<td>-</td>`; rowWarnaPlg += `<td><div class="${bgBox}"></div></td>`;
                             if(huruf==='S') countS++; else if(huruf==='I') countI++; else if(huruf==='A') countA++;
                         } else {
-                            rowDtg += `<td class="td-time">${cell ? cell.dtg : ''}</td>`; 
-                            let wdCls = 'box-kosong'; if(cell && cell.warnaDtg==='primary') wdCls='box-hijau'; else if(cell && cell.warnaDtg==='warning') wdCls='box-kuning'; else if(cell && cell.warnaDtg==='danger') wdCls='box-merah';
+                            rowDtg += `<td class="td-time">${cell.dtg}</td>`; 
+                            let wdCls = 'box-kosong'; if(cell.warnaDtg==='primary') wdCls='box-hijau'; else if(cell.warnaDtg==='warning') wdCls='box-kuning'; else if(cell.warnaDtg==='danger') wdCls='box-merah';
                             rowWarnaDtg += `<td><div class="${wdCls}"></div></td>`;
                             
-                            rowPlg += `<td class="td-time">${cell ? cell.plg : ''}</td>`; 
-                            let wpCls = 'box-kosong'; if(cell && (cell.warnaPlg==='primary'||cell.warnaPlg==='info')) wpCls='box-hijau'; else if(cell && cell.warnaPlg==='warning') wpCls='box-kuning';
+                            rowPlg += `<td class="td-time">${cell.plg}</td>`; 
+                            let wpCls = 'box-kosong'; if(cell.warnaPlg==='primary'||cell.warnaPlg==='info') wpCls='box-hijau'; else if(cell.warnaPlg==='warning') wpCls='box-kuning';
                             rowWarnaPlg += `<td><div class="${wpCls}"></div></td>`;
                         }
                     }
 
-                    // Baris 1-4 per Guru
                     html += `<tr><td rowspan="4">${noUrut}</td><td rowspan="4" class="col-nama">${t}</td><td>Dtg</td>${rowDtg}<td rowspan="4">${countS}</td><td rowspan="4">${countI}</td><td rowspan="4">${countA}</td></tr>`;
                     html += `<tr><td>Sts</td>${rowWarnaDtg}</tr>`;
                     html += `<tr><td>Plg</td>${rowPlg}</tr>`;
                     html += `<tr><td>Sts</td>${rowWarnaPlg}</tr>`;
                 });
 
-                // LEGEND WARNA (Masuk di dalam tabel paling bawah)
-                html += `<tr>`;
-                html += `<th colspan="3" style="text-align: right; padding-right: 10px; background-color: #f0f0f0;">KETERANGAN :</th>`;
-                html += `<td colspan="${maxDays + 3}" style="text-align: left; padding-left: 10px; font-size: 8.5pt;">`;
-                html += `<b>DATANG:</b> (<span class="box-hijau"></span> Tepat Waktu) &nbsp; (<span class="box-kuning"></span> Terlambat) &nbsp; (<span class="box-merah"></span> Tidak Disiplin/Lupa/Alpa) &nbsp;&nbsp; | &nbsp;&nbsp; `;
-                html += `<b>PULANG:</b> (<span class="box-hijau"></span> Tepat Waktu) &nbsp; (<span class="box-kuning"></span> Offset) &nbsp;&nbsp; | &nbsp;&nbsp; <b>L</b> = Libur`;
-                html += `</td></tr>`;
-
-                html += `</tbody></table></div>`;
+                html += `</tbody></table>`;
+                
+                // KETERANGAN WARNA DI BAWAH TABEL (Dengan Warna Izin Biru)
+                html += `<div class="print-legend">`;
+                html += `<b>DATANG:</b> (<span class="box-hijau"></span> Tepat Waktu) &nbsp; (<span class="box-kuning"></span> Terlambat) &nbsp; (<span class="box-merah"></span> Tidak Disiplin) &nbsp;&nbsp; | &nbsp;&nbsp; `;
+                html += `<b>PULANG:</b> (<span class="box-hijau"></span> Tepat Waktu) &nbsp; (<span class="box-kuning"></span> Offset) &nbsp;&nbsp; | &nbsp;&nbsp; <b>L</b> = Libur &nbsp;&nbsp; | &nbsp;&nbsp; `;
+                html += `<b>S/I/A:</b> S (<span class="box-kuning"></span> Sakit) &nbsp; I (<span class="box-biru"></span> Izin) &nbsp; A (<span class="box-merah"></span> Alpa)`;
+                html += `</div></div>`;
             });
 
             renderArea.innerHTML = html;
