@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Guru TK Baiturrohman (Liveness AI)</title>
+    <title>Absensi Guru TK Baiturrohman</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -39,14 +39,11 @@
         .status-circle i { font-size: 3rem; margin-bottom: 5px; }
         .scanning { animation: pulse 1.5s infinite; } @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255,255,255,0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
         
-        /* STYLE LIVE VIDEO KAMERA */
-        .video-wrapper { position: relative; width: 220px; height: 220px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary); display: none; box-shadow: 0 0 30px rgba(0,230,118,0.5); background: #000; }
-        video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); /* Efek Cermin */ }
-        canvas { position: absolute; top: 0; left: 0; transform: scaleX(-1); }
-        .laser-scan { position: absolute; width: 100%; height: 4px; background: rgba(0, 230, 118, 0.9); box-shadow: 0 0 15px rgba(0, 230, 118, 1); top: 0; left: 0; animation: scanAnim 2s infinite linear; z-index: 10; }
+        .video-wrapper { position: relative; width: 220px; height: 220px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 4px solid var(--warning); display: none; box-shadow: 0 0 30px rgba(0,0,0,0.5); background: #000; }
+        video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        .laser-scan { position: absolute; width: 100%; height: 4px; background: rgba(0, 230, 118, 0.9); box-shadow: 0 0 15px rgba(0, 230, 118, 1); top: 0; left: 0; animation: scanAnim 2s infinite linear; z-index: 10; display: none;}
         @keyframes scanAnim { 0% { top: 0; opacity: 0;} 10% { opacity: 1;} 90% { opacity: 1;} 100% { top: 100%; opacity: 0;} }
 
-        /* Histori Pojok Kanan Bawah */
         #history-box { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: none; flex-direction: column; gap: 8px; z-index: 50; box-shadow: 0 5px 20px rgba(0,0,0,0.5); text-align: left; animation: slideUpHist 0.5s forwards;}
         .hist-title { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 5px; text-align: center;}
         .hist-item { font-size: 0.9rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
@@ -55,7 +52,7 @@
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px;}
         .toast { background: rgba(26, 26, 46, 0.95); backdrop-filter: blur(10px); color: white; padding: 15px 20px; border-radius: 12px; border-left: 5px solid var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: dropDown 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; font-size: 0.9rem; font-weight: 600;}
-        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); }
+        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); } .toast.info { border-left-color: var(--info); }
         @keyframes slideUpHist { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes dropDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
@@ -102,14 +99,12 @@
         <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
         
         <div style="margin: 15px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
-            
             <div class="video-wrapper" id="reg-video-wrapper">
                 <video id="reg-video" autoplay muted playsinline></video>
                 <div class="laser-scan" id="reg-laser"></div>
             </div>
-
-            <button id="btn-reg-start-cam" class="btn-action" style="background: var(--info);" onclick="startRegistrationCamera()"><i class="fas fa-camera"></i> 1. Nyalakan Kamera</button>
-            <button id="btn-reg-capture" class="btn-action btn-success" style="display:none;" onclick="captureRegistrationFace()"><i class="fas fa-expand"></i> Rekam Wajah Sekarang</button>
+            <p id="reg-instruction" style="font-size: 0.85rem; color: var(--warning); display:none; margin-bottom:10px; font-weight:bold;"><i class="fas fa-spinner fa-spin"></i> Menatap kamera...</p>
+            <button id="btn-reg-start-cam" class="btn-action" style="background: var(--info);" onclick="startRegistrationCamera()"><i class="fas fa-camera"></i> 1. Buka Kamera AI</button>
             <p id="reg-face-status" style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*Wajah belum direkam</p>
         </div>
 
@@ -128,7 +123,7 @@
         <div id="attendance-module">
             <div id="status-circle" class="status-circle"><i id="status-icon" class="fas fa-satellite-dish"></i><h2 id="status-title" style="font-size:1rem;">Melacak GPS...</h2></div>
             <p id="info-text" style="font-weight: bold; margin-bottom: 5px;">Mencari satelit...</p>
-            <p id="distance-text" style="font-size: 0.85rem; color: var(--info); margin-bottom: 20px; font-weight: 600;"></p>
+            <p id="distance-text" style="font-size: 0.85rem; color: var(--warning); margin-bottom: 20px; font-weight: 600;"></p>
 
             <div class="video-wrapper" id="absen-video-wrapper">
                 <video id="absen-video" autoplay muted playsinline></video>
@@ -156,16 +151,15 @@
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00", hariLibur: "" };
+        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00", hariLibur: "", gracePeriod: 0 };
         let teachers = []; let tempRegistrationFaceData = null;
         let selectedTeacherName = ""; let watchId = null; let attendanceLogged = false; 
         let currentAbsenType = ""; let currentStatus = ""; let currentColor = ""; let currentIcon = ""; 
         let isAiLoaded = false;
 
-        // VARIABEL LIVENESS KAMERA
-        let videoStream = null;
-        let scanInterval = null;
-        const BLINK_THRESHOLD = 0.28; // Batas sensitivitas kedipan mata
+        let regVideoStream = null; let regScanInterval = null;
+        let absenVideoStream = null; let absenScanInterval = null;
+        const BLINK_THRESHOLD = 0.28; 
         
         const now = new Date(); const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         document.getElementById('current-date').innerText = `${hariIndo[now.getDay()]}, ${now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`;
@@ -185,7 +179,7 @@
 
         function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
-            let iconClass = type === 'error' ? 'fa-exclamation-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle');
+            let iconClass = type === 'error' ? 'fa-exclamation-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : (type === 'info' ? 'fa-info-circle' : 'fa-check-circle'));
             toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${msg.replace(/\n/g, '<br>')}</span>`; container.appendChild(toast);
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3500);
         }
@@ -193,11 +187,8 @@
         async function loadFaceAPIModels() {
             try {
                 const MODEL_URL = 'https://vladmandic.github.io/face-api/model/';
-                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-                await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-                await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-                isAiLoaded = true;
-                document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> AI Liveness Aktif'; document.getElementById('ai-status').style.color = 'var(--primary)';
+                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL); await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL); await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+                isAiLoaded = true; document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> AI Wajah Siap'; document.getElementById('ai-status').style.color = 'var(--primary)';
                 setTimeout(() => { document.getElementById('ai-status').style.display = 'none'; }, 3000);
             } catch (err) { document.getElementById('ai-status').innerHTML = '<i class="fas fa-times-circle"></i> Gagal Memuat AI.'; document.getElementById('ai-status').style.color = 'var(--danger)'; }
         }
@@ -206,7 +197,7 @@
             const { data } = await sb.from('Pengaturan').select('*').limit(1);
             if (data && data.length > 0) {
                 const dbSet = data[0];
-                appSettings = { lat: dbSet.lat, lng: dbSet.lng, radius: dbSet.radius, openTime: dbSet.open_time, lateTime: dbSet.late_time, tolTime: dbSet.tol_time, homeTime: dbSet.home_time, hariLibur: dbSet.hari_libur || "" };
+                appSettings = { lat: dbSet.lat, lng: dbSet.lng, radius: dbSet.radius, openTime: dbSet.open_time, lateTime: dbSet.late_time, tolTime: dbSet.tol_time, homeTime: dbSet.home_time, hariLibur: dbSet.hari_libur || "", gracePeriod: dbSet.grace_period || 0 };
             }
         }
 
@@ -234,50 +225,46 @@
             } else { document.getElementById('select-container').style.display = 'block'; document.getElementById('device-lock-msg').style.display = 'none'; document.getElementById('locked-name-display').style.display = 'none'; }
         }
 
-        // --- SISTEM KAMERA LIVE UMUM ---
-        function stopKamera() {
-            if (videoStream) { videoStream.getTracks().forEach(track => track.stop()); videoStream = null; }
-            if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+        function stopSemuaKamera() {
+            if (regVideoStream) { regVideoStream.getTracks().forEach(t => t.stop()); regVideoStream = null; }
+            if (regScanInterval) { clearInterval(regScanInterval); regScanInterval = null; }
+            if (absenVideoStream) { absenVideoStream.getTracks().forEach(t => t.stop()); absenVideoStream = null; }
+            if (absenScanInterval) { clearInterval(absenScanInterval); absenScanInterval = null; }
         }
 
-        // --- LIVE REGISTRASI ---
         function openRegister() { 
             document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; 
             tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none'; 
-            document.getElementById('reg-video-wrapper').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam"; 
-            document.getElementById('btn-reg-start-cam').style.display = 'block'; document.getElementById('btn-reg-capture').style.display = 'none';
+            document.getElementById('reg-video-wrapper').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam";
+            document.getElementById('btn-reg-start-cam').style.display = 'block'; document.getElementById('reg-instruction').style.display = 'none';
         }
-        
-        function cancelRegister() { stopKamera(); document.getElementById('register-area').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
+        function cancelRegister() { stopSemuaKamera(); document.getElementById('register-area').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
         
         async function startRegistrationCamera() {
+            if (!isAiLoaded) { showToast("AI belum siap...", "warning"); return; }
             try {
-                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                const videoEl = document.getElementById('reg-video');
-                videoEl.srcObject = videoStream;
-                document.getElementById('reg-video-wrapper').style.display = 'block';
-                document.getElementById('btn-reg-start-cam').style.display = 'none';
-                document.getElementById('btn-reg-capture').style.display = 'block';
-            } catch (err) { showToast("Gagal akses kamera! Izinkan browser.", "error"); }
+                regVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                const videoEl = document.getElementById('reg-video'); videoEl.srcObject = regVideoStream;
+                document.getElementById('reg-video-wrapper').style.display = 'block'; document.getElementById('reg-video-wrapper').style.borderColor = "var(--warning)";
+                document.getElementById('reg-laser').style.display = 'block'; document.getElementById('reg-instruction').style.display = 'block'; document.getElementById('btn-reg-start-cam').style.display = 'none';
+                videoEl.onloadedmetadata = () => { videoEl.play(); scanFaceForRegistration(videoEl); };
+            } catch (err) { showToast("Izinkan akses kamera di browser!", "error"); }
         }
 
-        async function captureRegistrationFace() {
-            if (!isAiLoaded) { showToast("AI belum siap...", "warning"); return; }
-            const videoEl = document.getElementById('reg-video');
-            const aiLoading = document.getElementById('reg-ai-loading'); aiLoading.style.display = 'block';
-            
-            try {
-                const detection = await faceapi.detectSingleFace(videoEl).withFaceLandmarks().withFaceDescriptor();
-                aiLoading.style.display = 'none';
-                if (!detection) { showToast("Wajah tidak terdeteksi! Coba lagi.", "error"); return; }
-
-                tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
-                stopKamera(); // Matikan kamera setelah dapat
+        function scanFaceForRegistration(videoEl) {
+            regScanInterval = setInterval(async () => {
+                if(videoEl.paused || videoEl.ended) return;
+                const detection = await faceapi.detectSingleFace(videoEl, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 })).withFaceLandmarks().withFaceDescriptor();
                 
-                document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary); font-weight:bold;'><i class='fas fa-check'></i> Wajah Sukses Terekam</span>";
-                document.getElementById('btn-reg-capture').style.display = 'none';
-                document.getElementById('btn-submit-reg').style.display = 'flex'; 
-            } catch(err) { aiLoading.style.display = 'none'; showToast("Error AI.", "error"); }
+                if(detection) {
+                    clearInterval(regScanInterval);
+                    tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
+                    document.getElementById('reg-video-wrapper').style.borderColor = "var(--primary)"; document.getElementById('reg-laser').style.display = "none";
+                    document.getElementById('reg-instruction').innerHTML = "<span style='color:var(--primary); font-weight:bold;'><i class='fas fa-check'></i> Wajah Sukses Terekam!</span>";
+                    document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary); font-weight:bold;'><i class='fas fa-check'></i> Siap Dikirim</span>";
+                    setTimeout(() => { if (regVideoStream) { regVideoStream.getTracks().forEach(t => t.stop()); regVideoStream = null;} document.getElementById('btn-submit-reg').style.display = 'flex'; }, 500);
+                }
+            }, 300); 
         }
 
         async function submitRegistration() {
@@ -285,20 +272,27 @@
             if(!name || pin.length !== 4) { showToast("Isi Nama dan PIN 4 Angka!", "warning"); return; }
             if(!tempRegistrationFaceData) { showToast("Scan Wajah dulu!", "warning"); return; }
             
-            showToast("Mengirim...", "info");
+            showToast("Mengirim data...", "info");
             const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, face_data: tempRegistrationFaceData }]);
             if(error) { showToast("Gagal. Nama sudah dipakai.", "error"); }
-            else { showToast("Sukses! Lapor Admin ya.", "success"); document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; cancelRegister(); fetchTeachersFromDB(); }
+            else { 
+                showToast("Sukses! Mengarahkan ke WA Admin...", "success"); 
+                const adminPhone = "6281211862924"; 
+                const pesanWA = `Halo Admin, saya *${name}* baru mendaftar di sistem Absen. Mohon izinkan akun saya.`;
+                const waLink = `https://wa.me/${adminPhone}?text=${encodeURIComponent(pesanWA)}`;
+                
+                document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; cancelRegister(); fetchTeachersFromDB();
+                setTimeout(() => { window.open(waLink, '_blank'); }, 1500);
+            }
         }
 
         function isHolidayToday() {
-            if (now.getDay() === 0) return true; // 0 = Minggu
+            if (now.getDay() === 0) return true; 
             const todayYMD = getCurrentYMD();
             if (appSettings.hariLibur && appSettings.hariLibur.includes(todayYMD)) return true;
             return false;
         }
 
-        // --- LOGIN & MASUK ABSEN (LIVENESS) ---
         async function verifyPIN() {
             const name = localStorage.getItem('locked_teacher_name') ? selectedTeacherName : document.getElementById('teacher-search').value; 
             const pin = document.getElementById('teacher-pin').value;
@@ -323,7 +317,7 @@
         }
 
         function logout() { 
-            stopKamera(); if(watchId) navigator.geolocation.clearWatch(watchId); 
+            stopSemuaKamera(); if(watchId) navigator.geolocation.clearWatch(watchId); 
             document.getElementById('main-app').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; document.getElementById('history-box').style.display = 'none'; document.getElementById('teacher-search').value = '';
             document.getElementById('izin-form').style.display = 'none';
         }
@@ -339,22 +333,33 @@
             const datangLog = logs.find(log => log.tipe === 'Datang' || log.tipe === 'Sakit' || log.tipe === 'Izin' || log.tipe === 'Alpa'); 
             const pulangLog = logs.find(log => log.tipe === 'Pulang');
 
+            // Reset UI History
             document.getElementById('hist-datang-time').innerText = '--:--'; document.getElementById('hist-datang-dot').className = `hist-dot bg-gray`;
             document.getElementById('hist-pulang-time').innerText = '--:--'; document.getElementById('hist-pulang-dot').className = `hist-dot bg-gray`;
+
+            // JIKA GURU SUDAH MENGAJUKAN S/I/A
+            if (datangLog && (datangLog.tipe === 'Sakit' || datangLog.tipe === 'Izin' || datangLog.tipe === 'Alpa')) {
+                setUIState(datangLog.warna, 'fas fa-file-medical', `Status: ${datangLog.tipe}`, 'Ketidakhadiran Anda tercatat seharian.');
+                attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none';
+                
+                // Ubah format History Box: Jangan tampilkan jam, tampilkan status
+                document.getElementById('hist-datang-time').innerText = datangLog.tipe.toUpperCase(); 
+                document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`;
+                document.getElementById('hist-pulang-time').innerText = datangLog.tipe.toUpperCase(); 
+                document.getElementById('hist-pulang-dot').className = `hist-dot bg-${datangLog.warna}`;
+                return;
+            }
+
+            // LOGIKA ABSEN NORMAL
             if(datangLog) { document.getElementById('hist-datang-time').innerText = datangLog.waktu; document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`; }
             if(pulangLog) { document.getElementById('hist-pulang-time').innerText = pulangLog.waktu; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${pulangLog.warna}`; }
 
-            if (datangLog && (datangLog.tipe === 'Sakit' || datangLog.tipe === 'Izin')) {
-                setUIState('warning', 'fas fa-file-medical', `Status: ${datangLog.tipe}`, 'Anda sudah mengajukan ketidakhadiran hari ini.');
-                attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none'; return;
-            }
-
             if (!datangLog) {
                 if (currentMins < openMins) { setUIState('warning', 'fas fa-clock', 'Belum Buka', `Absen pagi dibuka jam ${appSettings.openTime}`); attendanceLogged = true; } 
-                else { currentAbsenType = 'Datang'; startGPS(); }
+                else { currentAbsenType = 'Datang'; attendanceLogged = false; startGPS(); }
             } else if (!pulangLog) {
-                if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; document.getElementById('btn-izin').style.display = 'none'; startGPS(); } 
-                else { setUIState('primary', 'fas fa-check-double', 'Sudah Absen Masuk', `Tunggu jam pulang (${appSettings.homeTime})`); attendanceLogged = true; }
+                if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; attendanceLogged = false; document.getElementById('btn-izin').style.display = 'none'; startGPS(); } 
+                else { setUIState('primary', 'fas fa-check-circle', 'Sudah Absen Masuk', `Tunggu jam pulang (${appSettings.homeTime})`); attendanceLogged = true; }
             } else { setUIState('info', 'fas fa-check-circle', 'Selesai Tugas', 'Hati-hati di jalan!'); attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none'; }
         }
 
@@ -365,45 +370,43 @@
         }
 
         function successPosition(position) {
-            navigator.geolocation.clearWatch(watchId);
+            if (attendanceLogged) { navigator.geolocation.clearWatch(watchId); return; }
             const distance = calculateDistance(position.coords.latitude, position.coords.longitude, parseFloat(appSettings.lat), parseFloat(appSettings.lng));
             document.getElementById('distance-text').innerText = `Jarak Anda: ${Math.round(distance)} meter`;
             
-            if (distance <= appSettings.radius) { prepareFaceVerification(); } 
-            else { setUIState('danger', 'fas fa-walking', 'Terlalu Jauh', `Masuklah ke area TK (Maksimal ${appSettings.radius}m).`); }
+            if (distance <= appSettings.radius) { 
+                navigator.geolocation.clearWatch(watchId); document.getElementById('distance-text').style.color = "var(--primary)"; prepareFaceVerification(); 
+            } else { 
+                setUIState('danger', 'fas fa-walking', 'Terlalu Jauh', `Jalan mendekat! Max ${appSettings.radius}m.`); document.getElementById('distance-text').style.color = "var(--warning)";
+            }
         }
         function errorPosition(err) { setUIState('danger', 'fas fa-exclamation-triangle', 'GPS Ditolak', 'Izinkan browser melacak lokasi.'); }
 
         function prepareFaceVerification() {
             const currentMins = timeToMins(getCurrentTime24());
             if (currentAbsenType === 'Datang') {
-                const tepatMins = timeToMins(appSettings.lateTime); const tolMins = timeToMins(appSettings.tolTime);
+                const tepatMins = timeToMins(appSettings.lateTime) + (parseInt(appSettings.gracePeriod) || 0); 
+                const tolMins = timeToMins(appSettings.tolTime);
                 if (currentMins <= tepatMins) { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-check-circle'; } 
-                else if (currentMins <= tolMins) { currentStatus = 'Terlambat'; currentColor = 'warning'; currentIcon = 'fas fa-exclamation-triangle'; } 
-                else { currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; currentIcon = 'fas fa-times-circle'; }
-            } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-home'; } // offset bisa ditambah nanti logicnya
+                else if (currentMins <= tolMins) { currentStatus = 'Terlambat'; currentColor = 'warning'; currentIcon = 'fas fa-check-circle'; } 
+                else { currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; currentIcon = 'fas fa-check-circle'; }
+            } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-check-circle'; } 
 
-            setUIState(currentColor, 'fas fa-user-check', 'GPS Valid!', `Bersiaplah, kamera akan menyala.`);
-            document.getElementById('status-circle').style.display = 'none'; // Sembunyikan lingkaran agar kamera luas
+            setUIState(currentColor, 'fas fa-user-check', 'GPS Valid!', `Kamera AI sedang dipersiapkan...`);
+            document.getElementById('status-circle').style.display = 'none'; 
             startLivenessCamera();
         }
 
-        // --- RUMUS MATEMATIKA KEDIPAN (EAR) ---
         function getDistance(point1, point2) { return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2)); }
-        function calculateEAR(eye) {
-            const v1 = getDistance(eye[1], eye[5]); const v2 = getDistance(eye[2], eye[4]); const h = getDistance(eye[0], eye[3]);
-            return (v1 + v2) / (2.0 * h);
-        }
+        function calculateEAR(eye) { const v1 = getDistance(eye[1], eye[5]); const v2 = getDistance(eye[2], eye[4]); const h = getDistance(eye[0], eye[3]); return (v1 + v2) / (2.0 * h); }
 
-        // --- KAMERA LIVE DETEKSI KEDIPAN ---
         async function startLivenessCamera() {
             try {
-                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                const videoEl = document.getElementById('absen-video');
-                videoEl.srcObject = videoStream;
-                document.getElementById('absen-video-wrapper').style.display = 'block';
-                document.getElementById('liveness-instruction').style.display = 'block';
-                
+                absenVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                const videoEl = document.getElementById('absen-video'); videoEl.srcObject = absenVideoStream;
+                document.getElementById('absen-video-wrapper').style.display = 'block'; document.getElementById('absen-video-wrapper').style.borderColor = "var(--warning)"; document.getElementById('absen-laser').style.display = 'block';
+                const instructEl = document.getElementById('liveness-instruction');
+                instructEl.style.display = 'block'; instructEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menunggu Wajah Anda...`;
                 videoEl.onloadedmetadata = () => { videoEl.play(); startBlinkDetectionLoop(videoEl); };
             } catch (err) { showToast("Kamera ditolak!", "error"); }
         }
@@ -415,51 +418,39 @@
 
             let faceMatched = false; let isEyesClosed = false;
 
-            scanInterval = setInterval(async () => {
+            absenScanInterval = setInterval(async () => {
                 if(videoEl.paused || videoEl.ended) return;
 
                 const detection = await faceapi.detectSingleFace(videoEl, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 })).withFaceLandmarks().withFaceDescriptor();
 
                 if(detection) {
-                    // 1. Cek Kecocokan Wajah (Face ID)
                     if(!faceMatched) {
                         const distance = faceapi.euclideanDistance(detection.descriptor, savedDescriptor);
                         if(distance <= 0.55) {
-                            faceMatched = true;
-                            document.getElementById('absen-video-wrapper').style.borderColor = `var(--${currentColor})`;
+                            faceMatched = true; document.getElementById('absen-video-wrapper').style.borderColor = `var(--${currentColor})`;
                             instructEl.innerHTML = `<span style="color:var(--primary);"><i class="fas fa-eye"></i> WAJAH COCOK! SILAKAN BERKEDIP 1X</span>`;
-                        } else {
-                            instructEl.innerHTML = `<span style="color:var(--danger);"><i class="fas fa-times"></i> Wajah Tidak Cocok!</span>`;
-                        }
+                        } else { instructEl.innerHTML = `<span style="color:var(--danger);"><i class="fas fa-times"></i> Wajah Tidak Cocok!</span>`; }
                     }
 
-                    // 2. Jika cocok, deteksi KEDIPAN
                     if(faceMatched) {
                         const landmarks = detection.landmarks.positions;
                         const leftEye = landmarks.slice(36, 42); const rightEye = landmarks.slice(42, 48);
-                        const leftEAR = calculateEAR(leftEye); const rightEAR = calculateEAR(rightEye);
-                        const avgEAR = (leftEAR + rightEAR) / 2.0;
+                        const avgEAR = (calculateEAR(leftEye) + calculateEAR(rightEye)) / 2.0;
 
-                        if (avgEAR < BLINK_THRESHOLD) { // Mata mulai tertutup
-                            isEyesClosed = true;
-                        } else if (isEyesClosed && avgEAR > BLINK_THRESHOLD) { // Mata terbuka kembali = 1 KEDIPAN!
-                            isEyesClosed = false;
-                            
-                            // HENTIKAN SCAN, KAMERA MATI, LANGSUNG KIRIM ABSEN!
-                            clearInterval(scanInterval); stopKamera();
+                        if (avgEAR < BLINK_THRESHOLD) { isEyesClosed = true; } 
+                        else if (isEyesClosed && avgEAR > BLINK_THRESHOLD) { 
+                            isEyesClosed = false; clearInterval(absenScanInterval); stopSemuaKamera();
                             instructEl.style.display = 'none'; document.getElementById('absen-video-wrapper').style.display = 'none';
                             submitAttendanceToDB();
                         }
                     }
-                } else {
-                    if(!faceMatched) instructEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menunggu Wajah Anda...`;
-                }
-            }, 100); // Scan 10 frame per detik
+                } else { if(!faceMatched) instructEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menatap ke kamera...`; }
+            }, 100); 
         }
 
         async function submitAttendanceToDB() {
             const timeStr = getCurrentTime24(); const dateStr = getCurrentDateStr();
-            document.getElementById('status-circle').style.display = 'flex'; // Munculkan status
+            document.getElementById('status-circle').style.display = 'flex'; 
             setUIState('info', 'fas fa-spinner fa-spin', 'Menyimpan...', 'Kirim data ke Cloud...');
             
             const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: currentAbsenType, status: currentStatus, warna: currentColor }]);
@@ -467,15 +458,16 @@
             if (error) { 
                 showToast("Gagal Sinyal. Ulangi", "error"); setUIState('danger', 'fas fa-times', 'Gagal', "Harap tutup dan ulangi.");
             } else { 
+                attendanceLogged = true; 
                 setUIState(currentColor, currentIcon, `Berhasil Absen!`, `${timeStr} - ${currentStatus}`); showToast(`Sukses Absen ${currentAbsenType}!`, 'success'); 
                 if(currentAbsenType === 'Datang') { document.getElementById('hist-datang-time').innerText = timeStr; document.getElementById('hist-datang-dot').className = `hist-dot bg-${currentColor}`; document.getElementById('btn-izin').style.display = 'none';}
                 else { document.getElementById('hist-pulang-time').innerText = timeStr; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${currentColor}`; }
             }
         }
 
-        // --- SISTEM IZIN / SAKIT ---
+        // --- SISTEM IZIN / SAKIT (WARNA DIPERBAIKI) ---
         function openIzinForm() {
-            stopKamera(); if(watchId) navigator.geolocation.clearWatch(watchId);
+            stopSemuaKamera(); if(watchId) navigator.geolocation.clearWatch(watchId);
             document.getElementById('status-circle').style.display = 'none'; document.getElementById('info-text').style.display = 'none'; document.getElementById('distance-text').style.display = 'none'; document.getElementById('absen-video-wrapper').style.display = 'none'; document.getElementById('liveness-instruction').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none';
             document.getElementById('izin-form').style.display = 'block';
         }
@@ -483,18 +475,30 @@
             document.getElementById('izin-form').style.display = 'none'; document.getElementById('status-circle').style.display = 'flex'; document.getElementById('info-text').style.display = 'block'; document.getElementById('distance-text').style.display = 'block'; document.getElementById('btn-izin').style.display = 'block';
             startGPS(); 
         }
+
         async function submitIzinSakit() {
-            const tipeIzin = document.getElementById('izin-tipe').value; const dateStr = getCurrentDateStr();
+            const tipeIzin = document.getElementById('izin-tipe').value; 
+            const warnaIzin = tipeIzin === 'Sakit' ? 'warning' : 'info'; // KUNING untuk SAKIT, BIRU (INFO) untuk IZIN
+            const dateStr = getCurrentDateStr();
+            
             showToast("Mengirim...", "info");
-            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: '-', tipe: tipeIzin, status: tipeIzin, warna: 'warning' }]);
+            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: '-', tipe: tipeIzin, status: tipeIzin, warna: warnaIzin }]);
             if (error) { showToast("Gagal.", "error"); }
             else {
                 showToast("Pengajuan berhasil!", "success"); document.getElementById('izin-form').style.display = 'none';
-                setUIState('warning', 'fas fa-file-medical', `Status: ${tipeIzin}`, 'Ketidakhadiran tercatat.');
+                attendanceLogged = true; // Kunci absen seharian
+                
+                setUIState(warnaIzin, 'fas fa-file-medical', `Status: ${tipeIzin}`, 'Ketidakhadiran tercatat seharian.');
                 document.getElementById('status-circle').style.display = 'flex'; document.getElementById('info-text').style.display = 'block';
-                document.getElementById('hist-datang-time').innerText = tipeIzin; document.getElementById('hist-datang-dot').className = `hist-dot bg-warning`;
+                
+                // Ubah Histori Pojok Kanan
+                document.getElementById('hist-datang-time').innerText = tipeIzin.toUpperCase(); 
+                document.getElementById('hist-datang-dot').className = `hist-dot bg-${warnaIzin}`;
+                document.getElementById('hist-pulang-time').innerText = tipeIzin.toUpperCase(); 
+                document.getElementById('hist-pulang-dot').className = `hist-dot bg-${warnaIzin}`;
             }
         }
+
         function setUIState(colorVar, iconClass, titleText, descText) {
             const circle = document.getElementById('status-circle'); circle.className = `status-circle`; circle.style.background = `var(--${colorVar})`;
             document.getElementById('status-icon').className = iconClass; document.getElementById('status-title').innerText = titleText; document.getElementById('info-text').innerText = descText;
