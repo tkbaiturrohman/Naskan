@@ -1,0 +1,16 @@
+{
+  "name": "Absensi TK Baiturrohman",
+  "short_name": "Absen TK",
+  "description": "Aplikasi Absensi Pintar Anti-Titip Absen",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#00b0ff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2942/2942821.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
