@@ -65,6 +65,7 @@
         <div class="hist-title">Status Hari Ini</div>
         <div class="hist-item"><span>Datang</span> <span style="display:flex; align-items:center; gap:8px;"><span id="hist-datang-time">--:--</span><span id="hist-datang-dot" class="hist-dot bg-gray"></span></span></div>
         <div class="hist-item"><span>Pulang</span> <span style="display:flex; align-items:center; gap:8px;"><span id="hist-pulang-time">--:--</span><span id="hist-pulang-dot" class="hist-dot bg-gray"></span></span></div>
+        <div id="hist-alasan-view" style="font-size:0.7rem; color:var(--danger); display:none; margin-top:5px; border-top:1px solid #444; padding-top:5px;"></div>
         <button onclick="logout()" style="margin-top: 10px; background:rgba(255,255,255,0.1); border:1px solid #555; color:white; padding:8px; border-radius:8px; cursor:pointer; font-size:0.8rem; width:100%; transition:0.3s;"><i class="fas fa-sign-out-alt"></i> Tutup Sistem</button>
     </div>
 
@@ -93,10 +94,10 @@
 
     <div class="glass-panel" id="register-area" style="display: none;">
         <h2><i class="fas fa-user-plus"></i> Pendaftaran Guru</h2>
-        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajah Anda akan dipindai secara Live.</p>
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajah Anda dipindai secara Live.</p>
         
-        <input type="text" id="reg-name" placeholder="Nama Lengkap Anda">
-        <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
+        <input type="text" id="reg-name" placeholder="Nama Lengkap">
+        <input type="password" id="reg-pin" placeholder="Buat PIN" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
         
         <div style="margin: 15px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
             <div class="video-wrapper" id="reg-video-wrapper">
@@ -108,22 +109,24 @@
             <p id="reg-face-status" style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*Wajah belum direkam</p>
         </div>
 
-        <button id="btn-submit-reg" class="btn-action btn-success" style="display:none;" onclick="submitRegistration()"><i class="fas fa-check"></i> 2. Kirim Pendaftaran</button>
+        <button id="btn-submit-reg" class="btn-action btn-success" style="display:none;" onclick="submitRegistration()"><i class="fas fa-check"></i> 2. Kirim</button>
         <button class="btn-action btn-danger" onclick="cancelRegister()"><i class="fas fa-arrow-left"></i> Batal</button>
     </div>
 
     <div class="glass-panel" id="main-app" style="display: none;">
-        
         <div id="holiday-msg" style="display: none; padding: 20px; background: rgba(255,0,0,0.2); border-radius: 15px; border: 1px solid var(--danger); margin-bottom: 15px;">
-            <i class="fas fa-calendar-times" style="font-size: 3rem; color: var(--danger); margin-bottom: 10px;"></i>
-            <h3 style="color: var(--danger);">HARI LIBUR</h3>
-            <p style="font-size: 0.85rem; margin-top: 5px;">Absensi dinonaktifkan untuk hari ini.</p>
+            <i class="fas fa-calendar-times" style="font-size: 3rem; color: var(--danger); margin-bottom: 10px;"></i><h3 style="color: var(--danger);">HARI LIBUR</h3>
         </div>
 
         <div id="attendance-module">
             <div id="status-circle" class="status-circle"><i id="status-icon" class="fas fa-satellite-dish"></i><h2 id="status-title" style="font-size:1rem;">Melacak GPS...</h2></div>
             <p id="info-text" style="font-weight: bold; margin-bottom: 5px;">Mencari satelit...</p>
             <p id="distance-text" style="font-size: 0.85rem; color: var(--warning); margin-bottom: 20px; font-weight: 600;"></p>
+
+            <div id="alasan-wrapper" style="display:none; width: 100%; margin-bottom: 15px; text-align: left;">
+                <label style="font-size: 0.85rem; color: var(--danger); font-weight:bold;"><i class="fas fa-exclamation-circle"></i> Alasan Keterlambatan:</label>
+                <input type="text" id="input-alasan" placeholder="Ketik alasan Anda..." style="border: 1px solid var(--danger); background: rgba(255,0,0,0.1); margin-top: 5px;">
+            </div>
 
             <div class="video-wrapper" id="absen-video-wrapper">
                 <video id="absen-video" autoplay muted playsinline></video>
@@ -132,18 +135,18 @@
             <p id="liveness-instruction" style="color:var(--info); font-weight:bold; font-size:0.9rem; margin-bottom: 15px; display:none;"><i class="fas fa-spinner fa-spin"></i> Menunggu Wajah Anda...</p>
 
             <button id="btn-izin" class="btn-action btn-warning" style="margin-top: 15px; font-size: 0.9rem;" onclick="openIzinForm()"><i class="fas fa-file-medical"></i> Pengajuan Izin / Sakit</button>
+            <button id="btn-kirim-absen" class="btn-action btn-success" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="submitAttendanceToDB()"><i class="fas fa-paper-plane"></i> Kirim Absen</button>
         </div>
 
         <div id="izin-form" style="display: none; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin-top: 15px;">
             <h3 style="color: var(--warning); margin-bottom: 15px;"><i class="fas fa-file-medical"></i> Form Pengajuan</h3>
             <select id="izin-tipe" style="width: 100%; padding: 12px; border-radius: 8px; margin-bottom: 15px; background:rgba(0,0,0,0.5); color:white; border:1px solid #555;">
-                <option value="Sakit">Sakit</option>
-                <option value="Izin">Izin (Keperluan Pribadi)</option>
+                <option value="Sakit">Sakit</option><option value="Izin">Izin (Keperluan Pribadi)</option>
             </select>
+            <input type="text" id="izin-alasan" placeholder="Keterangan singkat..." style="width: 100%; padding: 12px; border-radius: 8px; margin-bottom: 15px; background:rgba(0,0,0,0.5); color:white; border:1px solid #555;">
             <button class="btn-action btn-success" onclick="submitIzinSakit()"><i class="fas fa-paper-plane"></i> Kirim Pengajuan</button>
             <button class="btn-action" style="background: rgba(255,255,255,0.1);" onclick="cancelIzinForm()"><i class="fas fa-times"></i> Batal</button>
         </div>
-
     </div>
 
     <script>
@@ -151,8 +154,8 @@
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00", hariLibur: "", gracePeriod: 0 };
-        let teachers = []; let tempRegistrationFaceData = null;
+        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00", hariLibur: "", gracePeriod: 0, batasPelanggaran: 3 };
+        let teachers = []; let tempRegistrationFaceData = null; let pelanggaranCount = 0;
         let selectedTeacherName = ""; let watchId = null; let attendanceLogged = false; 
         let currentAbsenType = ""; let currentStatus = ""; let currentColor = ""; let currentIcon = ""; 
         let isAiLoaded = false;
@@ -197,7 +200,7 @@
             const { data } = await sb.from('Pengaturan').select('*').limit(1);
             if (data && data.length > 0) {
                 const dbSet = data[0];
-                appSettings = { lat: dbSet.lat, lng: dbSet.lng, radius: dbSet.radius, openTime: dbSet.open_time, lateTime: dbSet.late_time, tolTime: dbSet.tol_time, homeTime: dbSet.home_time, hariLibur: dbSet.hari_libur || "", gracePeriod: dbSet.grace_period || 0 };
+                appSettings = { lat: dbSet.lat, lng: dbSet.lng, radius: dbSet.radius, openTime: dbSet.open_time, lateTime: dbSet.late_time, tolTime: dbSet.tol_time, homeTime: dbSet.home_time, hariLibur: dbSet.hari_libur || "", gracePeriod: dbSet.grace_period || 0, batasPelanggaran: dbSet.batas_pelanggaran || 3 };
             }
         }
 
@@ -211,7 +214,6 @@
             const val = input.value.toLowerCase(); list.innerHTML = ''; list.style.display = 'block';
             const activeTeachers = teachers.filter(t => t.is_active === true);
             const filtered = activeTeachers.filter(t => t.nama.toLowerCase().includes(val));
-            
             if(activeTeachers.length === 0) { list.innerHTML = '<div class="list-item" style="color:#aaa;">Belum ada akun aktif</div>'; return; }
             if(filtered.length === 0) { list.innerHTML = '<div class="list-item" style="color:#aaa;">Nama tidak ditemukan</div>'; return; }
             filtered.forEach(t => { let div = document.createElement('div'); div.className = 'list-item'; div.innerText = t.nama; div.onclick = () => { input.value = t.nama; list.style.display = 'none'; }; list.appendChild(div); });
@@ -232,12 +234,7 @@
             if (absenScanInterval) { clearInterval(absenScanInterval); absenScanInterval = null; }
         }
 
-        function openRegister() { 
-            document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; 
-            tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none'; 
-            document.getElementById('reg-video-wrapper').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam";
-            document.getElementById('btn-reg-start-cam').style.display = 'block'; document.getElementById('reg-instruction').style.display = 'none';
-        }
+        function openRegister() { document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none'; document.getElementById('reg-video-wrapper').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam"; document.getElementById('btn-reg-start-cam').style.display = 'block'; document.getElementById('reg-instruction').style.display = 'none'; }
         function cancelRegister() { stopSemuaKamera(); document.getElementById('register-area').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
         
         async function startRegistrationCamera() {
@@ -255,7 +252,6 @@
             regScanInterval = setInterval(async () => {
                 if(videoEl.paused || videoEl.ended) return;
                 const detection = await faceapi.detectSingleFace(videoEl, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 })).withFaceLandmarks().withFaceDescriptor();
-                
                 if(detection) {
                     clearInterval(regScanInterval);
                     tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
@@ -280,7 +276,6 @@
                 const adminPhone = "6281211862924"; 
                 const pesanWA = `Halo Admin, saya *${name}* baru mendaftar di sistem Absen. Mohon izinkan akun saya.`;
                 const waLink = `https://wa.me/${adminPhone}?text=${encodeURIComponent(pesanWA)}`;
-                
                 document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; cancelRegister(); fetchTeachersFromDB();
                 setTimeout(() => { window.open(waLink, '_blank'); }, 1500);
             }
@@ -291,6 +286,14 @@
             const todayYMD = getCurrentYMD();
             if (appSettings.hariLibur && appSettings.hariLibur.includes(todayYMD)) return true;
             return false;
+        }
+
+        // HITUNG PENALTI BULAN INI
+        async function checkPelanggaran(nama) {
+            const monthStr = String(now.getMonth() + 1).padStart(2, '0'); const yearStr = String(now.getFullYear());
+            const { data } = await sb.from('Naskan').select('*').eq('nama', nama).like('tanggal', `%/${monthStr}/${yearStr}`);
+            pelanggaranCount = 0;
+            if(data) { pelanggaranCount = data.filter(l => l.status === 'Tidak Disiplin').length; }
         }
 
         async function verifyPIN() {
@@ -311,6 +314,7 @@
                     document.getElementById('attendance-module').style.display = 'none'; document.getElementById('holiday-msg').style.display = 'block';
                 } else {
                     document.getElementById('attendance-module').style.display = 'block'; document.getElementById('holiday-msg').style.display = 'none'; document.getElementById('history-box').style.display = 'flex'; 
+                    await checkPelanggaran(name); // Cek Histori Pelanggaran Bulan Ini
                     startAttendanceCheck();
                 }
             } else { showToast("PIN Salah!", "error"); }
@@ -319,7 +323,7 @@
         function logout() { 
             stopSemuaKamera(); if(watchId) navigator.geolocation.clearWatch(watchId); 
             document.getElementById('main-app').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; document.getElementById('history-box').style.display = 'none'; document.getElementById('teacher-search').value = '';
-            document.getElementById('izin-form').style.display = 'none';
+            document.getElementById('izin-form').style.display = 'none'; document.getElementById('alasan-wrapper').style.display = 'none'; document.getElementById('input-alasan').value = '';
         }
 
         async function startAttendanceCheck() {
@@ -333,25 +337,22 @@
             const datangLog = logs.find(log => log.tipe === 'Datang' || log.tipe === 'Sakit' || log.tipe === 'Izin' || log.tipe === 'Alpa'); 
             const pulangLog = logs.find(log => log.tipe === 'Pulang');
 
-            // Reset UI History
-            document.getElementById('hist-datang-time').innerText = '--:--'; document.getElementById('hist-datang-dot').className = `hist-dot bg-gray`;
+            document.getElementById('hist-datang-time').innerText = '--:--'; document.getElementById('hist-datang-dot').className = `hist-dot bg-gray`; document.getElementById('hist-alasan-view').style.display = 'none';
             document.getElementById('hist-pulang-time').innerText = '--:--'; document.getElementById('hist-pulang-dot').className = `hist-dot bg-gray`;
 
-            // JIKA GURU SUDAH MENGAJUKAN S/I/A
             if (datangLog && (datangLog.tipe === 'Sakit' || datangLog.tipe === 'Izin' || datangLog.tipe === 'Alpa')) {
                 setUIState(datangLog.warna, 'fas fa-file-medical', `Status: ${datangLog.tipe}`, 'Ketidakhadiran Anda tercatat seharian.');
                 attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none';
-                
-                // Ubah format History Box: Jangan tampilkan jam, tampilkan status
-                document.getElementById('hist-datang-time').innerText = datangLog.tipe.toUpperCase(); 
-                document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`;
-                document.getElementById('hist-pulang-time').innerText = datangLog.tipe.toUpperCase(); 
-                document.getElementById('hist-pulang-dot').className = `hist-dot bg-${datangLog.warna}`;
+                document.getElementById('hist-datang-time').innerText = datangLog.tipe.toUpperCase(); document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`;
+                document.getElementById('hist-pulang-time').innerText = datangLog.tipe.toUpperCase(); document.getElementById('hist-pulang-dot').className = `hist-dot bg-${datangLog.warna}`;
+                if(datangLog.alasan && datangLog.alasan !== '-') { document.getElementById('hist-alasan-view').style.display = 'block'; document.getElementById('hist-alasan-view').innerText = `Note: ${datangLog.alasan}`; }
                 return;
             }
 
-            // LOGIKA ABSEN NORMAL
-            if(datangLog) { document.getElementById('hist-datang-time').innerText = datangLog.waktu; document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`; }
+            if(datangLog) { 
+                document.getElementById('hist-datang-time').innerText = datangLog.waktu; document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`; 
+                if(datangLog.alasan && datangLog.alasan !== '-') { document.getElementById('hist-alasan-view').style.display = 'block'; document.getElementById('hist-alasan-view').innerText = `Alasan: ${datangLog.alasan}`; }
+            }
             if(pulangLog) { document.getElementById('hist-pulang-time').innerText = pulangLog.waktu; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${pulangLog.warna}`; }
 
             if (!datangLog) {
@@ -376,23 +377,35 @@
             
             if (distance <= appSettings.radius) { 
                 navigator.geolocation.clearWatch(watchId); document.getElementById('distance-text').style.color = "var(--primary)"; prepareFaceVerification(); 
-            } else { 
-                setUIState('danger', 'fas fa-walking', 'Terlalu Jauh', `Jalan mendekat! Max ${appSettings.radius}m.`); document.getElementById('distance-text').style.color = "var(--warning)";
-            }
+            } else { setUIState('danger', 'fas fa-walking', 'Terlalu Jauh', `Jalan mendekat! Max ${appSettings.radius}m.`); document.getElementById('distance-text').style.color = "var(--warning)"; }
         }
         function errorPosition(err) { setUIState('danger', 'fas fa-exclamation-triangle', 'GPS Ditolak', 'Izinkan browser melacak lokasi.'); }
 
         function prepareFaceVerification() {
             const currentMins = timeToMins(getCurrentTime24());
+            document.getElementById('alasan-wrapper').style.display = 'none';
+            
             if (currentAbsenType === 'Datang') {
                 const tepatMins = timeToMins(appSettings.lateTime) + (parseInt(appSettings.gracePeriod) || 0); 
                 const tolMins = timeToMins(appSettings.tolTime);
+                
                 if (currentMins <= tepatMins) { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-check-circle'; } 
                 else if (currentMins <= tolMins) { currentStatus = 'Terlambat'; currentColor = 'warning'; currentIcon = 'fas fa-check-circle'; } 
-                else { currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; currentIcon = 'fas fa-check-circle'; }
-            } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-check-circle'; } 
+                else { 
+                    // CEK PENALTI JIKA TIDAK DISIPLIN
+                    const batasToleransi = parseInt(appSettings.batasPelanggaran) || 3;
+                    if(pelanggaranCount >= batasToleransi) {
+                        setUIState('danger', 'fas fa-ban', 'AKUN DIBLOKIR SEMENTARA', `Bulan ini Anda telah ${pelanggaranCount}x tidak disiplin (Batas: ${batasToleransi}x). Hubungi Kepala Sekolah!`);
+                        document.getElementById('status-circle').style.display = 'flex'; document.getElementById('btn-izin').style.display = 'none';
+                        return; // BERHENTI DI SINI
+                    }
+                    
+                    currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; currentIcon = 'fas fa-check-circle'; 
+                    document.getElementById('alasan-wrapper').style.display = 'block'; // MUNCULKAN INPUT ALASAN
+                }
+            } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-check-circle'; }
 
-            setUIState(currentColor, 'fas fa-user-check', 'GPS Valid!', `Kamera AI sedang dipersiapkan...`);
+            setUIState(currentColor, 'fas fa-user-check', 'GPS Valid!', `Kamera AI dipersiapkan...`);
             document.getElementById('status-circle').style.display = 'none'; 
             startLivenessCamera();
         }
@@ -441,6 +454,14 @@
                         else if (isEyesClosed && avgEAR > BLINK_THRESHOLD) { 
                             isEyesClosed = false; clearInterval(absenScanInterval); stopSemuaKamera();
                             instructEl.style.display = 'none'; document.getElementById('absen-video-wrapper').style.display = 'none';
+                            
+                            // VALIDASI ALASAN SEBELUM KIRIM
+                            if(currentStatus === 'Tidak Disiplin' && document.getElementById('input-alasan').value.trim() === '') {
+                                document.getElementById('status-circle').style.display = 'flex';
+                                setUIState('danger', 'fas fa-exclamation-circle', 'Isi Alasan!', 'Anda belum mengetik alasan keterlambatan.');
+                                document.getElementById('btn-kirim-absen').style.display = 'flex'; // Munculkan tombol kirim manual
+                                return;
+                            }
                             submitAttendanceToDB();
                         }
                     }
@@ -449,26 +470,34 @@
         }
 
         async function submitAttendanceToDB() {
+            let alasanText = '-';
+            if(currentStatus === 'Tidak Disiplin') {
+                alasanText = document.getElementById('input-alasan').value.trim();
+                if(!alasanText) { showToast("Alasan harus diisi!", "error"); return; }
+            }
+            
             const timeStr = getCurrentTime24(); const dateStr = getCurrentDateStr();
-            document.getElementById('status-circle').style.display = 'flex'; 
+            document.getElementById('status-circle').style.display = 'flex'; document.getElementById('btn-kirim-absen').style.display = 'none'; document.getElementById('alasan-wrapper').style.display = 'none';
             setUIState('info', 'fas fa-spinner fa-spin', 'Menyimpan...', 'Kirim data ke Cloud...');
             
-            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: currentAbsenType, status: currentStatus, warna: currentColor }]);
+            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: currentAbsenType, status: currentStatus, warna: currentColor, alasan: alasanText }]);
             
             if (error) { 
                 showToast("Gagal Sinyal. Ulangi", "error"); setUIState('danger', 'fas fa-times', 'Gagal', "Harap tutup dan ulangi.");
             } else { 
                 attendanceLogged = true; 
                 setUIState(currentColor, currentIcon, `Berhasil Absen!`, `${timeStr} - ${currentStatus}`); showToast(`Sukses Absen ${currentAbsenType}!`, 'success'); 
-                if(currentAbsenType === 'Datang') { document.getElementById('hist-datang-time').innerText = timeStr; document.getElementById('hist-datang-dot').className = `hist-dot bg-${currentColor}`; document.getElementById('btn-izin').style.display = 'none';}
+                if(currentAbsenType === 'Datang') { 
+                    document.getElementById('hist-datang-time').innerText = timeStr; document.getElementById('hist-datang-dot').className = `hist-dot bg-${currentColor}`; document.getElementById('btn-izin').style.display = 'none';
+                    if(alasanText !== '-') { document.getElementById('hist-alasan-view').style.display = 'block'; document.getElementById('hist-alasan-view').innerText = `Alasan: ${alasanText}`; }
+                }
                 else { document.getElementById('hist-pulang-time').innerText = timeStr; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${currentColor}`; }
             }
         }
 
-        // --- SISTEM IZIN / SAKIT (WARNA DIPERBAIKI) ---
         function openIzinForm() {
             stopSemuaKamera(); if(watchId) navigator.geolocation.clearWatch(watchId);
-            document.getElementById('status-circle').style.display = 'none'; document.getElementById('info-text').style.display = 'none'; document.getElementById('distance-text').style.display = 'none'; document.getElementById('absen-video-wrapper').style.display = 'none'; document.getElementById('liveness-instruction').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none';
+            document.getElementById('status-circle').style.display = 'none'; document.getElementById('info-text').style.display = 'none'; document.getElementById('distance-text').style.display = 'none'; document.getElementById('absen-video-wrapper').style.display = 'none'; document.getElementById('liveness-instruction').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none'; document.getElementById('alasan-wrapper').style.display = 'none';
             document.getElementById('izin-form').style.display = 'block';
         }
         function cancelIzinForm() {
@@ -478,27 +507,23 @@
 
         async function submitIzinSakit() {
             const tipeIzin = document.getElementById('izin-tipe').value; 
-            const warnaIzin = tipeIzin === 'Sakit' ? 'warning' : 'info'; // KUNING untuk SAKIT, BIRU (INFO) untuk IZIN
+            const alasanIzin = document.getElementById('izin-alasan').value.trim() || '-';
+            const warnaIzin = tipeIzin === 'Sakit' ? 'warning' : 'info'; 
             const dateStr = getCurrentDateStr();
             
             showToast("Mengirim...", "info");
-            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: '-', tipe: tipeIzin, status: tipeIzin, warna: warnaIzin }]);
+            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: '-', tipe: tipeIzin, status: tipeIzin, warna: warnaIzin, alasan: alasanIzin }]);
             if (error) { showToast("Gagal.", "error"); }
             else {
                 showToast("Pengajuan berhasil!", "success"); document.getElementById('izin-form').style.display = 'none';
-                attendanceLogged = true; // Kunci absen seharian
-                
+                attendanceLogged = true; 
                 setUIState(warnaIzin, 'fas fa-file-medical', `Status: ${tipeIzin}`, 'Ketidakhadiran tercatat seharian.');
                 document.getElementById('status-circle').style.display = 'flex'; document.getElementById('info-text').style.display = 'block';
-                
-                // Ubah Histori Pojok Kanan
-                document.getElementById('hist-datang-time').innerText = tipeIzin.toUpperCase(); 
-                document.getElementById('hist-datang-dot').className = `hist-dot bg-${warnaIzin}`;
-                document.getElementById('hist-pulang-time').innerText = tipeIzin.toUpperCase(); 
-                document.getElementById('hist-pulang-dot').className = `hist-dot bg-${warnaIzin}`;
+                document.getElementById('hist-datang-time').innerText = tipeIzin.toUpperCase(); document.getElementById('hist-datang-dot').className = `hist-dot bg-${warnaIzin}`;
+                document.getElementById('hist-pulang-time').innerText = tipeIzin.toUpperCase(); document.getElementById('hist-pulang-dot').className = `hist-dot bg-${warnaIzin}`;
+                if(alasanIzin !== '-') { document.getElementById('hist-alasan-view').style.display = 'block'; document.getElementById('hist-alasan-view').innerText = `Note: ${alasanIzin}`; }
             }
         }
-
         function setUIState(colorVar, iconClass, titleText, descText) {
             const circle = document.getElementById('status-circle'); circle.className = `status-circle`; circle.style.background = `var(--${colorVar})`;
             document.getElementById('status-icon').className = iconClass; document.getElementById('status-title').innerText = titleText; document.getElementById('info-text').innerText = descText;
