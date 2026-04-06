@@ -7,7 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     
     <style>
         :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --bg: #f8fafc; --text: #334155; --card: #ffffff; }
@@ -19,7 +18,7 @@
         .login-box { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); padding: 40px; border-radius: 25px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: white;}
         .login-box input { width: 100%; padding: 15px; border-radius: 15px; border: none; text-align: center; letter-spacing: 10px; font-weight: bold; font-size: 1.5rem; margin-bottom: 20px; background: rgba(0,0,0,0.3); color: white; outline: none; }
         
-        /* STRUKTUR SPA (NATIVE APP FEEL) */
+        /* STRUKTUR SPA */
         #main-app-container { display: none; width: 100%; height: 100%; flex-direction: column; }
         
         .top-header { background: white; padding: 20px 20px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); z-index: 10; flex-shrink: 0; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;}
@@ -30,7 +29,7 @@
         .screen-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* BOTTOM NAVIGATION (Gaya Instagram/HR App) */
+        /* BOTTOM NAVIGATION */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-around; padding: 10px 5px 15px; z-index: 20; border-top-left-radius: 25px; border-top-right-radius: 25px;}
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: #94a3b8; background: none; border: none; outline: none; cursor: pointer; transition: 0.3s; width: 25%; }
         .nav-item i { font-size: 1.4rem; transition: 0.3s; }
@@ -39,11 +38,10 @@
         .nav-item.active i { transform: translateY(-5px); }
         .nav-item.active span { opacity: 1; }
 
-        /* KOTAK KONTEN (CARD) */
+        /* CARD & FORMS */
         .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
         .card-title { font-size: 1.1rem; color: #1e293b; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 2px dashed #f1f5f9; padding-bottom: 10px;}
         
-        /* FORM & INPUT */
         select, input[type="text"], input[type="number"], input[type="time"], input[type="date"], input[type="month"], textarea { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 0.95rem; margin-bottom: 15px; outline: none; background: #f8fafc; color: #334155; transition: 0.3s;}
         select:focus, input:focus, textarea:focus { border-color: var(--info); box-shadow: 0 0 0 3px rgba(0,176,255,0.1); background: white;}
         textarea { resize: vertical; min-height: 80px; }
@@ -54,20 +52,20 @@
         .btn-success { background: linear-gradient(135deg, #00e676, #00c853); }
         .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); }
         .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000; }
+        .btn-purple { background: linear-gradient(135deg, #ab47bc, #6a1b9a); }
 
         .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; color: black; display: inline-block;}
         .bg-green { background: var(--primary); } .bg-yellow { background: var(--warning); } .bg-red { background: var(--danger); color: white;} .bg-blue { background: var(--info); color: white; }
         .toggle-btn { font-size: 1.8rem; cursor: pointer; background: none; border: none; outline:none; transition: 0.3s;}
         .toggle-on { color: var(--primary); } .toggle-off { color: #cbd5e1; }
 
-        /* DAFTAR GURU UNIK */
+        /* DAFTAR GURU UI */
         .teacher-list-item { display: flex; flex-direction: column; padding: 15px; border: 1px solid #e2e8f0; background: white; margin-bottom: 12px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .teacher-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .teacher-name { font-size: 1rem; font-weight: 700; color: #1e293b; }
         .teacher-pin { font-size: 0.75rem; background: #f1f5f9; padding: 3px 8px; border-radius: 8px; color: #64748b; font-weight: bold; }
         .teacher-actions { display: flex; gap: 10px; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 10px; }
 
-        /* DAFTAR PREVIEW MANUAL */
         .preview-list { display: flex; flex-direction: column; gap: 10px; }
         .preview-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
         .preview-info { flex: 1; }
@@ -75,31 +73,20 @@
         .preview-detail { font-size: 0.8rem; color: #64748b; margin-top: 3px; }
         .preview-alasan { font-size: 0.75rem; color: var(--danger); font-style: italic; background: #fff0f0; padding: 3px 8px; border-radius: 5px; margin-top: 5px; display: inline-block;}
 
-        /* MODAL KAMERA ADMIN */
-        .modal { display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.9); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 15px; }
-        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 350px; text-align: center; }
-        .video-wrapper { position: relative; width: 180px; height: 180px; margin: 0 auto 15px; border-radius: 50%; overflow: hidden; border: 4px solid var(--warning); background: #000; box-shadow: 0 5px 20px rgba(0,0,0,0.3);}
-        .laser-scan { position: absolute; width: 100%; height: 4px; background: var(--primary); box-shadow: 0 0 15px var(--primary); top: 0; left: 0; animation: scanAnim 2s infinite linear; z-index: 10;}
-        @keyframes scanAnim { 0% { top: 0; opacity: 0;} 10% { opacity: 1;} 90% { opacity: 1;} 100% { top: 100%; opacity: 0;} }
-
-        /* TOAST */
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px;}
         .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 15px; border-left: 5px solid var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; animation: slideDown 0.3s forwards; font-size: 0.85rem; font-weight: 600;}
         .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); color: #000; background: #fef08a;} .toast.success { border-left-color: var(--primary); }
         @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* GRID RESPONSIVE */
         .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media (max-width: 600px) { .flex-grid { grid-template-columns: 1fr; } }
 
-        /* ======================================================= */
-        /* STYLE CETAK KHUSUS A4 LANDSCAPE MATRIX PRESISI LEGA     */
-        /* ======================================================= */
+        /* STYLE CETAK KHUSUS A4 LANDSCAPE MATRIX PRESISI LEGA */
         .report-wrapper { display: none; } 
         @media print { 
             @page { size: A4 landscape; margin: 8mm; }
             body { background: white; padding: 0; font-family: 'Arial', sans-serif; overflow: visible;} 
-            #login-overlay, #main-app-container, .bottom-nav, #toast-container, .modal { display: none !important; } 
+            #login-overlay, #main-app-container, .bottom-nav, #toast-container { display: none !important; } 
             .report-wrapper { display: block !important; width: 100%; }
             
             .report-page { page-break-after: always; margin-bottom: 15mm; }
@@ -132,7 +119,6 @@
 <body>
 
     <div id="toast-container"></div>
-
     <div id="print-render-area" class="report-wrapper"></div>
 
     <div id="login-overlay">
@@ -140,19 +126,6 @@
             <h2 style="margin-bottom: 20px;"><i class="fas fa-fingerprint"></i> Akses Kepala</h2>
             <input type="password" id="admin-pin-input" placeholder="1234" maxlength="4">
             <button class="btn btn-success" onclick="verifyAdminPIN()"><i class="fas fa-unlock"></i> Buka Brankas</button>
-        </div>
-    </div>
-
-    <div id="admin-cam-modal" class="modal">
-        <div class="modal-content">
-            <h3 style="margin-bottom: 10px; color: var(--info); font-size: 1.1rem;"><i class="fas fa-camera"></i> Perekaman Wajah</h3>
-            <p style="font-size: 0.8rem; color:#888; margin-bottom: 15px;">Arahkan wajah ke kamera.</p>
-            <div class="video-wrapper" id="admin-video-wrapper">
-                <video id="admin-video" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
-                <div class="laser-scan" id="admin-laser"></div>
-            </div>
-            <p id="admin-cam-instruction" style="color: var(--warning); font-weight:bold; margin-bottom: 20px; font-size: 0.85rem;"><i class="fas fa-spinner fa-spin"></i> Menunggu wajah...</p>
-            <button class="btn btn-danger" onclick="closeAdminCamera()"><i class="fas fa-times"></i> Batal</button>
         </div>
     </div>
 
@@ -199,14 +172,13 @@
             </div>
 
             <h4 style="font-size: 0.9rem; margin-bottom: 10px; color:#64748b;">Preview Absen Hari Ini:</h4>
-            <div class="preview-list" id="admin-preview-table">
-                </div>
+            <div class="preview-list" id="admin-preview-table"></div>
         </div>
 
         <div id="tab-guru" class="screen-content">
             <div class="card" style="background: rgba(0, 176, 255, 0.1); border-color: rgba(0, 176, 255, 0.2);">
-                <div class="card-title" style="border-bottom:none; margin-bottom:0;"><i class="fas fa-shield-alt" style="color:var(--info);"></i> Otoritas Akun</div>
-                <p style="font-size: 0.8rem; color: #64748b; margin-top:5px;">Nyalakan "Toggle" agar guru bisa absen. Rekam ulang wajah jika gagal scan.</p>
+                <div class="card-title" style="border-bottom:none; margin-bottom:0;"><i class="fas fa-shield-alt" style="color:var(--info);"></i> Otoritas Akun & Reset HP</div>
+                <p style="font-size: 0.8rem; color: #64748b; margin-top:5px;">Nyalakan tombol sakelar agar guru diizinkan absen. <br>Klik <b style="color:var(--danger);">"Reset HP"</b> jika guru ganti HP agar bisa mendaftar ulang perangkatnya.</p>
             </div>
             <div id="admin-teacher-list"></div>
         </div>
@@ -215,11 +187,11 @@
             <div class="card">
                 <div class="card-title"><i class="fas fa-clock" style="color:var(--warning);"></i> Mesin Waktu & Penalty</div>
                 <div class="flex-grid">
-                    <div><label style="font-size:0.75rem; font-weight:600; color:#64748b;">Buka Gerbang Pagi</label><input type="time" id="set-open-time"></div>
-                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--primary);">Batas Hijau (Tepat)</label><input type="time" id="set-late-time"></div>
-                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--primary);">Toleransi Telat (Menit)</label><input type="number" id="set-grace-period" placeholder="Misal: 15" min="0"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:#64748b;">Buka Gerbang</label><input type="time" id="set-open-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--primary);">Batas Hijau</label><input type="time" id="set-late-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--primary);">Toleransi Telat (Mnt)</label><input type="number" id="set-grace-period" placeholder="Misal: 15" min="0"></div>
                     <div><label style="font-size:0.75rem; font-weight:600; color:var(--warning);">Batas Kuning</label><input type="time" id="set-tol-time"></div>
-                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--danger);">Batas Pelanggaran (Bulan)</label><input type="number" id="set-batas-pelanggaran" placeholder="Blokir jika Tdk Disiplin = 3x"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--danger);">Batas Pelanggaran</label><input type="number" id="set-batas-pelanggaran" placeholder="Blokir jika = 3x"></div>
                     <div><label style="font-size:0.75rem; font-weight:600; color:var(--info);">Mulai Jam Pulang</label><input type="time" id="set-home-time"></div>
                 </div>
             </div>
@@ -258,8 +230,7 @@
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let appSettings = {}; let teachers = []; let registeringTeacherId = null; let isAiLoaded = false;
-        let adminVideoStream = null; let adminScanInterval = null;
+        let appSettings = {}; let teachers = [];
         const now = new Date();
 
         function showToast(msg, type = 'success') {
@@ -279,7 +250,6 @@
             } else { showToast("Akses Ditolak!", "error"); }
         }
 
-        // SPA TAB LOGIC
         function switchTab(tabId, title, btnEl) {
             document.querySelectorAll('.screen-content').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -293,16 +263,8 @@
             document.getElementById('manual-date').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
             
             document.getElementById('db-status').innerHTML = '<i class="fas fa-check-circle"></i> Online'; 
-            await loadSettingsFromDB(); await fetchTeachersFromDB(); await loadFaceAPIModels();
+            await loadSettingsFromDB(); await fetchTeachersFromDB();
             loadAdminAttendancePreview();
-        }
-
-        async function loadFaceAPIModels() {
-            try {
-                const MODEL_URL = 'https://vladmandic.github.io/face-api/model/';
-                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL); await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL); await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-                isAiLoaded = true;
-            } catch (err) { showToast("Gagal Memuat AI.", "error"); }
         }
 
         async function loadSettingsFromDB() {
@@ -352,7 +314,7 @@
             if(teachers.length === 0) list.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:20px;">Kosong</div>';
             
             teachers.forEach((t) => {
-                let faceIcon = t.face_data ? '<i class="fas fa-check-circle" style="color:var(--primary);"></i> Wajah Ada' : '<i class="fas fa-times-circle" style="color:var(--danger);"></i> Wajah Kosong';
+                let deviceIcon = t.credential_id ? '<i class="fas fa-link" style="color:var(--primary);"></i> HP Terkunci' : '<i class="fas fa-unlink" style="color:var(--warning);"></i> Belum Terkunci';
                 let toggleIcon = t.is_active ? 'fa-toggle-on toggle-on' : 'fa-toggle-off toggle-off';
                 
                 list.innerHTML += `
@@ -365,8 +327,8 @@
                         <button class="toggle-btn" onclick="toggleAccountStatus(${t.id}, ${!t.is_active})" title="Aktif/Nonaktif"><i class="fas ${toggleIcon}"></i></button>
                     </div>
                     <div class="teacher-actions">
-                        <span style="font-size:0.75rem; font-weight:600; flex:1;">${faceIcon}</span>
-                        <button class="btn btn-outline" style="width:auto; padding:8px 12px; margin:0; color:var(--info); border-color:var(--info);" onclick="startFaceRegistrationAdmin(${t.id})"><i class="fas fa-camera"></i></button> 
+                        <span style="font-size:0.75rem; font-weight:600; flex:1;">${deviceIcon}</span>
+                        <button class="btn btn-purple" style="width:auto; padding:8px 12px; margin:0; font-size:0.8rem;" onclick="resetDeviceLock(${t.id}, '${t.nama}')"><i class="fas fa-sync-alt"></i> Reset HP</button> 
                         <button class="btn btn-outline" style="width:auto; padding:8px 12px; margin:0; color:var(--danger); border-color:var(--danger);" onclick="deleteTeacher(${t.id}, '${t.nama}')"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`; 
@@ -374,49 +336,20 @@
         }
         
         async function toggleAccountStatus(id, newStatus) { await sb.from('Guru').update({ is_active: newStatus }).eq('id', id); fetchTeachersFromDB(); }
+        
+        // FUNGSI RESET DEVICE GURU (Agar mereka bisa daftar HP Baru)
+        async function resetDeviceLock(id, nama) {
+            if(confirm(`Lepaskan kunci HP untuk akun ${nama}? \nAkun ini harus didaftarkan ulang dari HP barunya agar bisa absen.`)) {
+                showToast("Mereset kunci perangkat...", "info");
+                // Mengosongkan Token di Database agar aplikasi guru diizinkan mendaftar baru
+                const { error } = await sb.from('Guru').update({ credential_id: null }).eq('id', id);
+                if(!error) { showToast("HP Berhasil Direset!", "success"); fetchTeachersFromDB(); }
+                else { showToast("Gagal mereset.", "error"); }
+            }
+        }
+
         async function deleteTeacher(id, nama) { if(confirm(`Bakar permanen data ${nama}?`)) { await sb.from('Naskan').delete().eq('nama', nama); await sb.from('Guru').delete().eq('id', id); fetchTeachersFromDB(); } }
 
-        function startFaceRegistrationAdmin(id) { 
-            if (!isAiLoaded) { showToast("AI loading", "warning"); return; } 
-            registeringTeacherId = id; document.getElementById('admin-cam-modal').style.display = 'flex'; openAdminCamera();
-        }
-
-        async function openAdminCamera() {
-            try {
-                adminVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                const videoEl = document.getElementById('admin-video'); videoEl.srcObject = adminVideoStream;
-                document.getElementById('admin-video-wrapper').style.borderColor = "var(--warning)";
-                document.getElementById('admin-cam-instruction').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Arahkan wajah ke kamera...';
-                videoEl.onloadedmetadata = () => { videoEl.play(); scanAdminFace(videoEl); };
-            } catch (err) { showToast("Kamera diblokir!", "error"); closeAdminCamera(); }
-        }
-
-        async function scanAdminFace(videoEl) {
-            adminScanInterval = setInterval(async () => {
-                if(videoEl.paused || videoEl.ended) return;
-                const detection = await faceapi.detectSingleFace(videoEl, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.5 })).withFaceLandmarks().withFaceDescriptor();
-                
-                if(detection) {
-                    clearInterval(adminScanInterval);
-                    document.getElementById('admin-video-wrapper').style.borderColor = "var(--primary)";
-                    document.getElementById('admin-laser').style.display = "none";
-                    document.getElementById('admin-cam-instruction').innerHTML = '<span style="color:var(--primary);"><i class="fas fa-check"></i> Wajah Terkunci!</span>';
-                    
-                    const faceDataString = JSON.stringify(Array.from(detection.descriptor));
-                    const { error } = await sb.from('Guru').update({ face_data: faceDataString }).eq('id', registeringTeacherId);
-                    
-                    setTimeout(() => { closeAdminCamera(); if(!error) { showToast("Face ID Aktif!", "success"); fetchTeachersFromDB(); } }, 800);
-                }
-            }, 300);
-        }
-
-        function closeAdminCamera() {
-            if(adminVideoStream) { adminVideoStream.getTracks().forEach(t => t.stop()); adminVideoStream = null; }
-            if(adminScanInterval) { clearInterval(adminScanInterval); adminScanInterval = null; }
-            document.getElementById('admin-laser').style.display = 'block'; document.getElementById('admin-cam-modal').style.display = 'none';
-        }
-
-        // TAMPILKAN ALASAN DI PREVIEW CARD LIST
         async function loadAdminAttendancePreview() {
             const dateInput = document.getElementById('manual-date').value; if(!dateInput) return;
             const dateStr = formatIDToYMD_Revert(dateInput); 
@@ -429,7 +362,6 @@
             logs.forEach(log => {
                 let bg = log.warna === 'primary' ? 'bg-green' : (log.warna === 'warning' ? 'bg-yellow' : (log.warna === 'info' ? 'bg-blue' : 'bg-red'));
                 if(log.tipe === 'Pulang' && log.warna === 'primary') bg = 'bg-blue'; 
-                
                 let ketAlasan = log.alasan && log.alasan !== '-' ? `<div class="preview-alasan"><i class="fas fa-comment-dots"></i> ${log.alasan}</div>` : '';
 
                 listCon.innerHTML += `
@@ -471,7 +403,7 @@
 
         async function deleteAttendanceRecord(id) { if(confirm("Hapus absen ini?")) { await sb.from('Naskan').delete().eq('id', id); loadAdminAttendancePreview(); } }
 
-        // --- CETAK MATRIX A4 (LAPORAN SEMPURNA) ---
+        // --- CETAK MATRIX A4 ---
         async function generateMatrixReport() {
             const selectedMonthVal = document.getElementById('report-month').value; 
             if(!selectedMonthVal) { showToast("Pilih bulan dulu!", "warning"); return; }
