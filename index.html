@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi AI TK Baiturrohman</title>
+    <title>Absensi Guru TK Baiturrohman (Liveness AI)</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -13,12 +13,7 @@
         :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --glass-bg: rgba(255, 255, 255, 0.1); --glass-border: rgba(255, 255, 255, 0.2); --text-light: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
-        /* ANIMASI BACKGROUND PREMIUM Bergerak Lembut */
-        body { 
-            background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #1a1a2e); 
-            background-size: 400% 400%; animation: gradientBG 15s ease infinite; 
-            color: var(--text-light); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; overflow-x: hidden; 
-        }
+        body { background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #1a1a2e); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text-light); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; overflow-x: hidden; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
         .glass-panel { background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); padding: 25px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; position: relative; animation: fadeIn 0.8s ease-out;}
@@ -44,14 +39,15 @@
         .status-circle i { font-size: 3rem; margin-bottom: 5px; }
         .scanning { animation: pulse 1.5s infinite; } @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255,255,255,0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255,0); } }
         
-        /* ANIMASI LASER SCAN WAJAH */
-        .camera-wrapper { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary); display: none; box-shadow: 0 0 20px rgba(0,230,118,0.5); }
-        #selfie-preview, #reg-selfie-preview { width: 100%; height: 100%; object-fit: cover; }
-        .laser { position: absolute; width: 100%; height: 3px; background: rgba(0, 230, 118, 0.8); box-shadow: 0 0 15px rgba(0, 230, 118, 1); top: 0; left: 0; animation: scan 2s infinite linear; display: none; }
-        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+        /* STYLE LIVE VIDEO KAMERA */
+        .video-wrapper { position: relative; width: 220px; height: 220px; margin: 0 auto 20px; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary); display: none; box-shadow: 0 0 30px rgba(0,230,118,0.5); background: #000; }
+        video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); /* Efek Cermin */ }
+        canvas { position: absolute; top: 0; left: 0; transform: scaleX(-1); }
+        .laser-scan { position: absolute; width: 100%; height: 4px; background: rgba(0, 230, 118, 0.9); box-shadow: 0 0 15px rgba(0, 230, 118, 1); top: 0; left: 0; animation: scanAnim 2s infinite linear; z-index: 10; }
+        @keyframes scanAnim { 0% { top: 0; opacity: 0;} 10% { opacity: 1;} 90% { opacity: 1;} 100% { top: 100%; opacity: 0;} }
 
         /* Histori Pojok Kanan Bawah */
-        #history-box { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: none; flex-direction: column; gap: 8px; z-index: 50; box-shadow: 0 5px 20px rgba(0,0,0,0.5); text-align: left; animation: slideUpHist 0.5s forwards;}
+        #history-box { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); display: none; flex-direction: column; gap: 8px; z-index: 50; box-shadow: 0 5px 20px rgba(0,0,0,0.5); text-align: left; animation: slideUpHist 0.5s forwards;}
         .hist-title { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 5px; text-align: center;}
         .hist-item { font-size: 0.9rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
         .hist-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; box-shadow: 0 0 5px rgba(255,255,255,0.5); }
@@ -100,17 +96,20 @@
 
     <div class="glass-panel" id="register-area" style="display: none;">
         <h2><i class="fas fa-user-plus"></i> Pendaftaran Guru</h2>
-        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajib scan wajah (Face ID).</p>
+        <p style="font-size: 0.8rem; color: #aaa; margin-bottom: 15px;">Wajah Anda akan dipindai secara Live.</p>
+        
         <input type="text" id="reg-name" placeholder="Nama Lengkap Anda">
         <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka)" maxlength="4" style="text-align: center; letter-spacing: 5px; font-weight: bold;">
         
         <div style="margin: 15px 0; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 10px;">
-            <input type="file" accept="image/*" capture="user" id="reg-camera-input" style="display:none;" onchange="processFaceRegistration(this)">
-            <div class="camera-wrapper" id="reg-cam-wrapper">
-                <img id="reg-selfie-preview" src="">
-                <div class="laser" id="reg-laser"></div>
+            
+            <div class="video-wrapper" id="reg-video-wrapper">
+                <video id="reg-video" autoplay muted playsinline></video>
+                <div class="laser-scan" id="reg-laser"></div>
             </div>
-            <button id="btn-reg-scan" class="btn-action" style="background: var(--info);" onclick="document.getElementById('reg-camera-input').click()"><i class="fas fa-camera"></i> 1. Scan Wajah AI</button>
+
+            <button id="btn-reg-start-cam" class="btn-action" style="background: var(--info);" onclick="startRegistrationCamera()"><i class="fas fa-camera"></i> 1. Nyalakan Kamera</button>
+            <button id="btn-reg-capture" class="btn-action btn-success" style="display:none;" onclick="captureRegistrationFace()"><i class="fas fa-expand"></i> Rekam Wajah Sekarang</button>
             <p id="reg-face-status" style="font-size: 0.75rem; color: #aaa; margin-top: 5px;">*Wajah belum direkam</p>
         </div>
 
@@ -131,22 +130,18 @@
             <p id="info-text" style="font-weight: bold; margin-bottom: 5px;">Mencari satelit...</p>
             <p id="distance-text" style="font-size: 0.85rem; color: var(--info); margin-bottom: 20px; font-weight: 600;"></p>
 
-            <input type="file" accept="image/*" capture="user" id="camera-input" style="display:none;" onchange="processFaceAttendance(this)">
-            
-            <div class="camera-wrapper" id="cam-wrapper">
-                <img id="selfie-preview" src="">
-                <div class="laser" id="scan-laser"></div>
+            <div class="video-wrapper" id="absen-video-wrapper">
+                <video id="absen-video" autoplay muted playsinline></video>
+                <div class="laser-scan" id="absen-laser"></div>
             </div>
-            
-            <button id="btn-selfie" class="btn-action" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="document.getElementById('camera-input').click()"><i class="fas fa-camera"></i> Scan Wajah AI Sekarang</button>
-            <button id="btn-kirim-absen" class="btn-action btn-success" style="display:none; padding: 15px; font-size: 1.1rem;" onclick="submitAttendanceToDB()"><i class="fas fa-paper-plane"></i> Kirim Absen</button>
-            
-            <button id="btn-izin" class="btn-action btn-warning" style="margin-top: 15px; font-size: 0.9rem;" onclick="openIzinForm()"><i class="fas fa-file-medical"></i> Tidak Hadir? Pengajuan Izin / Sakit</button>
+            <p id="liveness-instruction" style="color:var(--info); font-weight:bold; font-size:0.9rem; margin-bottom: 15px; display:none;"><i class="fas fa-spinner fa-spin"></i> Menunggu Wajah Anda...</p>
+
+            <button id="btn-izin" class="btn-action btn-warning" style="margin-top: 15px; font-size: 0.9rem;" onclick="openIzinForm()"><i class="fas fa-file-medical"></i> Pengajuan Izin / Sakit</button>
         </div>
 
         <div id="izin-form" style="display: none; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin-top: 15px;">
             <h3 style="color: var(--warning); margin-bottom: 15px;"><i class="fas fa-file-medical"></i> Form Pengajuan</h3>
-            <select id="izin-tipe" style="width: 100%; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+            <select id="izin-tipe" style="width: 100%; padding: 12px; border-radius: 8px; margin-bottom: 15px; background:rgba(0,0,0,0.5); color:white; border:1px solid #555;">
                 <option value="Sakit">Sakit</option>
                 <option value="Izin">Izin (Keperluan Pribadi)</option>
             </select>
@@ -167,8 +162,12 @@
         let currentAbsenType = ""; let currentStatus = ""; let currentColor = ""; let currentIcon = ""; 
         let isAiLoaded = false;
 
-        const now = new Date(); 
-        const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+        // VARIABEL LIVENESS KAMERA
+        let videoStream = null;
+        let scanInterval = null;
+        const BLINK_THRESHOLD = 0.28; // Batas sensitivitas kedipan mata
+        
+        const now = new Date(); const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         document.getElementById('current-date').innerText = `${hariIndo[now.getDay()]}, ${now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}`;
         
         function getCurrentTime24() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':'); }
@@ -198,7 +197,7 @@
                 await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
                 await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
                 isAiLoaded = true;
-                document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> AI Wajah Siap'; document.getElementById('ai-status').style.color = 'var(--primary)';
+                document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> AI Liveness Aktif'; document.getElementById('ai-status').style.color = 'var(--primary)';
                 setTimeout(() => { document.getElementById('ai-status').style.display = 'none'; }, 3000);
             } catch (err) { document.getElementById('ai-status').innerHTML = '<i class="fas fa-times-circle"></i> Gagal Memuat AI.'; document.getElementById('ai-status').style.color = 'var(--danger)'; }
         }
@@ -224,11 +223,7 @@
             
             if(activeTeachers.length === 0) { list.innerHTML = '<div class="list-item" style="color:#aaa;">Belum ada akun aktif</div>'; return; }
             if(filtered.length === 0) { list.innerHTML = '<div class="list-item" style="color:#aaa;">Nama tidak ditemukan</div>'; return; }
-            
-            filtered.forEach(t => {
-                let div = document.createElement('div'); div.className = 'list-item'; div.innerText = t.nama;
-                div.onclick = () => { input.value = t.nama; list.style.display = 'none'; }; list.appendChild(div);
-            });
+            filtered.forEach(t => { let div = document.createElement('div'); div.className = 'list-item'; div.innerText = t.nama; div.onclick = () => { input.value = t.nama; list.style.display = 'none'; }; list.appendChild(div); });
         }
 
         function checkDeviceLock() {
@@ -236,37 +231,53 @@
             if (lockedName) {
                 document.getElementById('select-container').style.display = 'none'; document.getElementById('device-lock-msg').style.display = 'block'; document.getElementById('locked-name-display').style.display = 'block';
                 document.getElementById('locked-name-display').innerText = lockedName; selectedTeacherName = lockedName;
-            } else {
-                document.getElementById('select-container').style.display = 'block'; document.getElementById('device-lock-msg').style.display = 'none'; document.getElementById('locked-name-display').style.display = 'none'; 
-            }
+            } else { document.getElementById('select-container').style.display = 'block'; document.getElementById('device-lock-msg').style.display = 'none'; document.getElementById('locked-name-display').style.display = 'none'; }
         }
 
-        function openRegister() { document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none'; document.getElementById('reg-cam-wrapper').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam"; }
-        function cancelRegister() { document.getElementById('register-area').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
+        // --- SISTEM KAMERA LIVE UMUM ---
+        function stopKamera() {
+            if (videoStream) { videoStream.getTracks().forEach(track => track.stop()); videoStream = null; }
+            if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+        }
+
+        // --- LIVE REGISTRASI ---
+        function openRegister() { 
+            document.getElementById('login-area').style.display = 'none'; document.getElementById('register-area').style.display = 'block'; 
+            tempRegistrationFaceData = null; document.getElementById('btn-submit-reg').style.display = 'none'; 
+            document.getElementById('reg-video-wrapper').style.display = 'none'; document.getElementById('reg-face-status').innerHTML = "*Wajah belum direkam"; 
+            document.getElementById('btn-reg-start-cam').style.display = 'block'; document.getElementById('btn-reg-capture').style.display = 'none';
+        }
         
-        async function processFaceRegistration(input) {
+        function cancelRegister() { stopKamera(); document.getElementById('register-area').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; }
+        
+        async function startRegistrationCamera() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                const videoEl = document.getElementById('reg-video');
+                videoEl.srcObject = videoStream;
+                document.getElementById('reg-video-wrapper').style.display = 'block';
+                document.getElementById('btn-reg-start-cam').style.display = 'none';
+                document.getElementById('btn-reg-capture').style.display = 'block';
+            } catch (err) { showToast("Gagal akses kamera! Izinkan browser.", "error"); }
+        }
+
+        async function captureRegistrationFace() {
             if (!isAiLoaded) { showToast("AI belum siap...", "warning"); return; }
-            if (input.files && input.files[0]) {
-                const aiLoading = document.getElementById('reg-ai-loading'); aiLoading.style.display = 'block';
-                const wrapper = document.getElementById('reg-cam-wrapper'); wrapper.style.display = 'block';
-                const laser = document.getElementById('reg-laser'); laser.style.display = 'block';
-                const imgPreview = document.getElementById('reg-selfie-preview');
+            const videoEl = document.getElementById('reg-video');
+            const aiLoading = document.getElementById('reg-ai-loading'); aiLoading.style.display = 'block';
+            
+            try {
+                const detection = await faceapi.detectSingleFace(videoEl).withFaceLandmarks().withFaceDescriptor();
+                aiLoading.style.display = 'none';
+                if (!detection) { showToast("Wajah tidak terdeteksi! Coba lagi.", "error"); return; }
+
+                tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
+                stopKamera(); // Matikan kamera setelah dapat
                 
-                const imgUrl = URL.createObjectURL(input.files[0]); const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
-
-                imgHtml.onload = async () => {
-                    try {
-                        const detection = await faceapi.detectSingleFace(imgHtml).withFaceLandmarks().withFaceDescriptor();
-                        aiLoading.style.display = 'none'; laser.style.display = 'none';
-                        if (!detection) { showToast("Wajah tidak terdeteksi!", "error"); wrapper.style.display = 'none'; return; }
-
-                        tempRegistrationFaceData = JSON.stringify(Array.from(detection.descriptor));
-                        imgPreview.src = imgUrl; imgPreview.style.display = 'block'; wrapper.style.borderColor = "var(--primary)";
-                        document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary); font-weight:bold;'><i class='fas fa-check'></i> Wajah Terekam</span>";
-                        document.getElementById('btn-submit-reg').style.display = 'flex'; 
-                    } catch(err) { aiLoading.style.display = 'none'; laser.style.display = 'none'; showToast("Error AI.", "error"); wrapper.style.display = 'none';}
-                }
-            }
+                document.getElementById('reg-face-status').innerHTML = "<span style='color:var(--primary); font-weight:bold;'><i class='fas fa-check'></i> Wajah Sukses Terekam</span>";
+                document.getElementById('btn-reg-capture').style.display = 'none';
+                document.getElementById('btn-submit-reg').style.display = 'flex'; 
+            } catch(err) { aiLoading.style.display = 'none'; showToast("Error AI.", "error"); }
         }
 
         async function submitRegistration() {
@@ -274,13 +285,12 @@
             if(!name || pin.length !== 4) { showToast("Isi Nama dan PIN 4 Angka!", "warning"); return; }
             if(!tempRegistrationFaceData) { showToast("Scan Wajah dulu!", "warning"); return; }
             
-            showToast("Mendaftarkan akun...", "info");
+            showToast("Mengirim...", "info");
             const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, face_data: tempRegistrationFaceData }]);
             if(error) { showToast("Gagal. Nama sudah dipakai.", "error"); }
             else { showToast("Sukses! Lapor Admin ya.", "success"); document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; cancelRegister(); fetchTeachersFromDB(); }
         }
 
-        // --- CEK LIBUR NASIONAL & MINGGU ---
         function isHolidayToday() {
             if (now.getDay() === 0) return true; // 0 = Minggu
             const todayYMD = getCurrentYMD();
@@ -288,6 +298,7 @@
             return false;
         }
 
+        // --- LOGIN & MASUK ABSEN (LIVENESS) ---
         async function verifyPIN() {
             const name = localStorage.getItem('locked_teacher_name') ? selectedTeacherName : document.getElementById('teacher-search').value; 
             const pin = document.getElementById('teacher-pin').value;
@@ -301,23 +312,18 @@
                 
                 localStorage.setItem('locked_teacher_name', name); selectedTeacherName = name;
                 document.getElementById('login-area').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; document.getElementById('teacher-pin').value = ''; 
-                document.getElementById('cam-wrapper').style.display = 'none'; document.getElementById('btn-selfie').style.display = 'none';
                 
-                // Cek Libur
                 if(isHolidayToday()) {
-                    document.getElementById('attendance-module').style.display = 'none';
-                    document.getElementById('holiday-msg').style.display = 'block';
+                    document.getElementById('attendance-module').style.display = 'none'; document.getElementById('holiday-msg').style.display = 'block';
                 } else {
-                    document.getElementById('attendance-module').style.display = 'block';
-                    document.getElementById('holiday-msg').style.display = 'none';
-                    document.getElementById('history-box').style.display = 'flex'; 
+                    document.getElementById('attendance-module').style.display = 'block'; document.getElementById('holiday-msg').style.display = 'none'; document.getElementById('history-box').style.display = 'flex'; 
                     startAttendanceCheck();
                 }
             } else { showToast("PIN Salah!", "error"); }
         }
 
         function logout() { 
-            if(watchId) navigator.geolocation.clearWatch(watchId); 
+            stopKamera(); if(watchId) navigator.geolocation.clearWatch(watchId); 
             document.getElementById('main-app').style.display = 'none'; document.getElementById('login-area').style.display = 'block'; document.getElementById('history-box').style.display = 'none'; document.getElementById('teacher-search').value = '';
             document.getElementById('izin-form').style.display = 'none';
         }
@@ -333,18 +339,14 @@
             const datangLog = logs.find(log => log.tipe === 'Datang' || log.tipe === 'Sakit' || log.tipe === 'Izin' || log.tipe === 'Alpa'); 
             const pulangLog = logs.find(log => log.tipe === 'Pulang');
 
-            // Reset UI History
             document.getElementById('hist-datang-time').innerText = '--:--'; document.getElementById('hist-datang-dot').className = `hist-dot bg-gray`;
             document.getElementById('hist-pulang-time').innerText = '--:--'; document.getElementById('hist-pulang-dot').className = `hist-dot bg-gray`;
-
             if(datangLog) { document.getElementById('hist-datang-time').innerText = datangLog.waktu; document.getElementById('hist-datang-dot').className = `hist-dot bg-${datangLog.warna}`; }
             if(pulangLog) { document.getElementById('hist-pulang-time').innerText = pulangLog.waktu; document.getElementById('hist-pulang-dot').className = `hist-dot bg-${pulangLog.warna}`; }
 
-            // Logika Blokir
             if (datangLog && (datangLog.tipe === 'Sakit' || datangLog.tipe === 'Izin')) {
                 setUIState('warning', 'fas fa-file-medical', `Status: ${datangLog.tipe}`, 'Anda sudah mengajukan ketidakhadiran hari ini.');
-                attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none';
-                return;
+                attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none'; return;
             }
 
             if (!datangLog) {
@@ -352,10 +354,8 @@
                 else { currentAbsenType = 'Datang'; startGPS(); }
             } else if (!pulangLog) {
                 if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; document.getElementById('btn-izin').style.display = 'none'; startGPS(); } 
-                else { setUIState('primary', 'fas fa-check-double', 'Sudah Absen Masuk', `Silakan tunggu jam pulang (${appSettings.homeTime})`); attendanceLogged = true; }
-            } else {
-                setUIState('info', 'fas fa-check-circle', 'Selesai Tugas', 'Hati-hati di jalan!'); attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none';
-            }
+                else { setUIState('primary', 'fas fa-check-double', 'Sudah Absen Masuk', `Tunggu jam pulang (${appSettings.homeTime})`); attendanceLogged = true; }
+            } else { setUIState('info', 'fas fa-check-circle', 'Selesai Tugas', 'Hati-hati di jalan!'); attendanceLogged = true; document.getElementById('btn-izin').style.display = 'none'; }
         }
 
         function startGPS() {
@@ -376,64 +376,96 @@
 
         function prepareFaceVerification() {
             const currentMins = timeToMins(getCurrentTime24());
-            
             if (currentAbsenType === 'Datang') {
                 const tepatMins = timeToMins(appSettings.lateTime); const tolMins = timeToMins(appSettings.tolTime);
                 if (currentMins <= tepatMins) { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-check-circle'; } 
                 else if (currentMins <= tolMins) { currentStatus = 'Terlambat'; currentColor = 'warning'; currentIcon = 'fas fa-exclamation-triangle'; } 
                 else { currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; currentIcon = 'fas fa-times-circle'; }
-            } else { 
-                currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-home'; 
-            }
+            } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; currentIcon = 'fas fa-home'; } // offset bisa ditambah nanti logicnya
 
-            setUIState(currentColor, 'fas fa-user-check', 'GPS Valid!', `Silakan scan wajah untuk absen ${currentAbsenType}.`);
-            document.getElementById('btn-selfie').style.display = 'flex'; 
+            setUIState(currentColor, 'fas fa-user-check', 'GPS Valid!', `Bersiaplah, kamera akan menyala.`);
+            document.getElementById('status-circle').style.display = 'none'; // Sembunyikan lingkaran agar kamera luas
+            startLivenessCamera();
         }
 
-        async function processFaceAttendance(input) {
-            if (!isAiLoaded) { showToast("AI sedang memuat...", "warning"); return; }
-            if (input.files && input.files[0]) {
-                const aiLoading = document.getElementById('ai-loading'); aiLoading.style.display = 'block'; document.getElementById('btn-selfie').style.display = 'none';
-                const wrapper = document.getElementById('cam-wrapper'); wrapper.style.display = 'block';
-                const laser = document.getElementById('scan-laser'); laser.style.display = 'block';
-                const imgPreview = document.getElementById('selfie-preview');
+        // --- RUMUS MATEMATIKA KEDIPAN (EAR) ---
+        function getDistance(point1, point2) { return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2)); }
+        function calculateEAR(eye) {
+            const v1 = getDistance(eye[1], eye[5]); const v2 = getDistance(eye[2], eye[4]); const h = getDistance(eye[0], eye[3]);
+            return (v1 + v2) / (2.0 * h);
+        }
 
-                const imgUrl = URL.createObjectURL(input.files[0]); const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
+        // --- KAMERA LIVE DETEKSI KEDIPAN ---
+        async function startLivenessCamera() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                const videoEl = document.getElementById('absen-video');
+                videoEl.srcObject = videoStream;
+                document.getElementById('absen-video-wrapper').style.display = 'block';
+                document.getElementById('liveness-instruction').style.display = 'block';
+                
+                videoEl.onloadedmetadata = () => { videoEl.play(); startBlinkDetectionLoop(videoEl); };
+            } catch (err) { showToast("Kamera ditolak!", "error"); }
+        }
 
-                imgHtml.onload = async () => {
-                    try {
-                        const options = new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 }); 
-                        const detection = await faceapi.detectSingleFace(imgHtml, options).withFaceLandmarks().withFaceDescriptor();
-                        aiLoading.style.display = 'none'; laser.style.display = 'none';
+        async function startBlinkDetectionLoop(videoEl) {
+            const teacherData = teachers.find(t => t.nama === selectedTeacherName);
+            const savedDescriptor = new Float32Array(JSON.parse(teacherData.face_data));
+            const instructEl = document.getElementById('liveness-instruction');
 
-                        if (!detection) { showToast("Wajah kurang terang/jelas!", "error"); wrapper.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; return; }
+            let faceMatched = false; let isEyesClosed = false;
 
-                        const teacherData = teachers.find(t => t.nama === selectedTeacherName);
-                        const savedDescriptor = new Float32Array(JSON.parse(teacherData.face_data)); 
+            scanInterval = setInterval(async () => {
+                if(videoEl.paused || videoEl.ended) return;
+
+                const detection = await faceapi.detectSingleFace(videoEl, new faceapi.SsdMobilenetv1Options({ minConfidence: 0.4 })).withFaceLandmarks().withFaceDescriptor();
+
+                if(detection) {
+                    // 1. Cek Kecocokan Wajah (Face ID)
+                    if(!faceMatched) {
                         const distance = faceapi.euclideanDistance(detection.descriptor, savedDescriptor);
-                        
-                        if (distance <= 0.55) {
-                            showToast("Wajah Dikenali!", "success");
-                            imgPreview.src = imgUrl; imgPreview.style.display = 'block'; wrapper.style.borderColor = `var(--${currentColor})`;
-                            document.getElementById('btn-kirim-absen').style.display = 'flex'; 
+                        if(distance <= 0.55) {
+                            faceMatched = true;
+                            document.getElementById('absen-video-wrapper').style.borderColor = `var(--${currentColor})`;
+                            instructEl.innerHTML = `<span style="color:var(--primary);"><i class="fas fa-eye"></i> WAJAH COCOK! SILAKAN BERKEDIP 1X</span>`;
                         } else {
-                            showToast("Wajah Tidak Cocok dengan Database!", "error");
-                            imgPreview.src = imgUrl; imgPreview.style.display = 'block'; wrapper.style.borderColor = "var(--danger)"; document.getElementById('btn-selfie').style.display = 'flex'; 
+                            instructEl.innerHTML = `<span style="color:var(--danger);"><i class="fas fa-times"></i> Wajah Tidak Cocok!</span>`;
                         }
-                    } catch(err) { showToast("Error Server AI.", "error"); aiLoading.style.display = 'none'; laser.style.display = 'none'; wrapper.style.display = 'none'; document.getElementById('btn-selfie').style.display = 'flex'; }
+                    }
+
+                    // 2. Jika cocok, deteksi KEDIPAN
+                    if(faceMatched) {
+                        const landmarks = detection.landmarks.positions;
+                        const leftEye = landmarks.slice(36, 42); const rightEye = landmarks.slice(42, 48);
+                        const leftEAR = calculateEAR(leftEye); const rightEAR = calculateEAR(rightEye);
+                        const avgEAR = (leftEAR + rightEAR) / 2.0;
+
+                        if (avgEAR < BLINK_THRESHOLD) { // Mata mulai tertutup
+                            isEyesClosed = true;
+                        } else if (isEyesClosed && avgEAR > BLINK_THRESHOLD) { // Mata terbuka kembali = 1 KEDIPAN!
+                            isEyesClosed = false;
+                            
+                            // HENTIKAN SCAN, KAMERA MATI, LANGSUNG KIRIM ABSEN!
+                            clearInterval(scanInterval); stopKamera();
+                            instructEl.style.display = 'none'; document.getElementById('absen-video-wrapper').style.display = 'none';
+                            submitAttendanceToDB();
+                        }
+                    }
+                } else {
+                    if(!faceMatched) instructEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menunggu Wajah Anda...`;
                 }
-            }
+            }, 100); // Scan 10 frame per detik
         }
 
         async function submitAttendanceToDB() {
             const timeStr = getCurrentTime24(); const dateStr = getCurrentDateStr();
-            document.getElementById('btn-kirim-absen').style.display = 'none';
-            setUIState('info', 'fas fa-spinner fa-spin', 'Menyimpan...', 'Kirim data...');
+            document.getElementById('status-circle').style.display = 'flex'; // Munculkan status
+            setUIState('info', 'fas fa-spinner fa-spin', 'Menyimpan...', 'Kirim data ke Cloud...');
             
             const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: currentAbsenType, status: currentStatus, warna: currentColor }]);
             
             if (error) { 
-                showToast("Gagal. Sinyal jelek.", "error"); setUIState('danger', 'fas fa-times', 'Gagal', "Coba klik kirim lagi."); document.getElementById('btn-kirim-absen').style.display = 'flex'; 
+                showToast("Gagal Sinyal. Ulangi", "error"); setUIState('danger', 'fas fa-times', 'Gagal', "Harap tutup dan ulangi.");
             } else { 
                 setUIState(currentColor, currentIcon, `Berhasil Absen!`, `${timeStr} - ${currentStatus}`); showToast(`Sukses Absen ${currentAbsenType}!`, 'success'); 
                 if(currentAbsenType === 'Datang') { document.getElementById('hist-datang-time').innerText = timeStr; document.getElementById('hist-datang-dot').className = `hist-dot bg-${currentColor}`; document.getElementById('btn-izin').style.display = 'none';}
@@ -441,35 +473,32 @@
             }
         }
 
-        // --- SISTEM PENGAJUAN IZIN / SAKIT ---
+        // --- SISTEM IZIN / SAKIT ---
         function openIzinForm() {
-            if(watchId) navigator.geolocation.clearWatch(watchId);
-            document.getElementById('status-circle').style.display = 'none'; document.getElementById('info-text').style.display = 'none'; document.getElementById('distance-text').style.display = 'none'; document.getElementById('btn-selfie').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none';
+            stopKamera(); if(watchId) navigator.geolocation.clearWatch(watchId);
+            document.getElementById('status-circle').style.display = 'none'; document.getElementById('info-text').style.display = 'none'; document.getElementById('distance-text').style.display = 'none'; document.getElementById('absen-video-wrapper').style.display = 'none'; document.getElementById('liveness-instruction').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none';
             document.getElementById('izin-form').style.display = 'block';
         }
         function cancelIzinForm() {
             document.getElementById('izin-form').style.display = 'none'; document.getElementById('status-circle').style.display = 'flex'; document.getElementById('info-text').style.display = 'block'; document.getElementById('distance-text').style.display = 'block'; document.getElementById('btn-izin').style.display = 'block';
-            startGPS(); // Lanjut cari GPS lagi
+            startGPS(); 
         }
         async function submitIzinSakit() {
-            const tipeIzin = document.getElementById('izin-tipe').value;
-            const dateStr = getCurrentDateStr();
-            showToast("Mengirim pengajuan...", "info");
+            const tipeIzin = document.getElementById('izin-tipe').value; const dateStr = getCurrentDateStr();
+            showToast("Mengirim...", "info");
             const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: '-', tipe: tipeIzin, status: tipeIzin, warna: 'warning' }]);
-            if (error) { showToast("Gagal mengirim pengajuan.", "error"); }
+            if (error) { showToast("Gagal.", "error"); }
             else {
                 showToast("Pengajuan berhasil!", "success"); document.getElementById('izin-form').style.display = 'none';
-                setUIState('warning', 'fas fa-file-medical', `Status: ${tipeIzin}`, 'Pengajuan Anda telah tercatat hari ini.');
+                setUIState('warning', 'fas fa-file-medical', `Status: ${tipeIzin}`, 'Ketidakhadiran tercatat.');
                 document.getElementById('status-circle').style.display = 'flex'; document.getElementById('info-text').style.display = 'block';
                 document.getElementById('hist-datang-time').innerText = tipeIzin; document.getElementById('hist-datang-dot').className = `hist-dot bg-warning`;
             }
         }
-
         function setUIState(colorVar, iconClass, titleText, descText) {
             const circle = document.getElementById('status-circle'); circle.className = `status-circle`; circle.style.background = `var(--${colorVar})`;
             document.getElementById('status-icon').className = iconClass; document.getElementById('status-title').innerText = titleText; document.getElementById('info-text').innerText = descText;
         }
-
         function calculateDistance(lat1, lon1, lat2, lon2) { const R = 6371e3; const φ1 = lat1 * Math.PI/180; const φ2 = lat2 * Math.PI/180; const Δφ = (lat2-lat1) * Math.PI/180; const Δλ = (lon2-lon1) * Math.PI/180; const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2); return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); }
     </script>
 </body>
