@@ -37,7 +37,7 @@
         .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000; }
         .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #cbd5e1; box-shadow: none; }
         
-        .btn-solid-blue { background: #00b0ff; color: #000; border: 2px solid #000; font-weight: 800; box-shadow: 3px 3px 0px #000; }
+        .btn-solid-blue { background: #00b0ff; color: #000; border: 2px solid #000; font-weight: 800; box-shadow: 3px 3px 0px #000; transition: 0.2s;}
         .btn-solid-blue:active { box-shadow: 0px 0px 0px #000; transform: translate(3px, 3px); }
 
         .search-wrapper { position: relative; }
@@ -45,19 +45,17 @@
         .search-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; cursor: pointer; }
         .search-item:hover { background: rgba(0,176,255,0.1); color: var(--info); }
 
-        /* ANIMASI GPS RADAR KEREN */
         .radar-container { position: relative; width: 140px; height: 140px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .radar-icon { font-size: 3rem; color: var(--info); z-index: 2; }
         .radar-pulse { position: absolute; width: 100%; height: 100%; background: rgba(0, 176, 255, 0.4); border-radius: 50%; z-index: 1; animation: radarAnim 2s infinite ease-out; }
         .radar-pulse:nth-child(2) { animation-delay: 1s; }
         @keyframes radarAnim { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
 
-        /* ANIMASI FINGERPRINT SCANNER MODERN */
         .fingerprint-box { position: relative; width: 160px; height: 160px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; background: rgba(0, 176, 255, 0.1); border-radius: 50%; border: 3px solid rgba(0, 176, 255, 0.3); box-shadow: 0 0 30px rgba(0, 176, 255, 0.2); overflow: hidden;}
-        .fingerprint-icon { font-size: 5rem; color: var(--info); opacity: 0.7; z-index: 2; }
+        .fingerprint-icon { font-size: 5rem; color: var(--info); opacity: 0.7; z-index: 2; transition: 0.3s;}
         .fingerprint-scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--primary); box-shadow: 0 0 15px var(--primary); animation: scanFinger 2s infinite linear; z-index: 5; }
         @keyframes scanFinger { 0% { top: -10%; opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { top: 110%; opacity: 0; } }
-        .finger-success { color: var(--primary) !important; text-shadow: 0 0 20px var(--primary); transform: scale(1.1); transition: 0.3s;}
+        .finger-success { color: var(--primary) !important; text-shadow: 0 0 20px var(--primary); transform: scale(1.1); opacity: 1;}
 
         .history-list { flex: 1; overflow-y: auto; padding-bottom: 20px; width: 100%; max-width: 400px; margin: 0 auto; }
         .hist-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #475569; }
@@ -103,9 +101,9 @@
             <input type="password" id="teacher-pin" placeholder="PIN" maxlength="4" style="text-align:center; letter-spacing:8px; font-weight:bold; font-size:1.2rem;">
             
             <button class="btn btn-primary" onclick="verifyLoginData()"><i class="fas fa-sign-in-alt"></i> Buka Absensi</button>
-            <button id="btn-daftar-link" class="btn btn-outline" style="font-size:0.85rem; margin-top:10px;" onclick="navTo('screen-register')"><i class="fas fa-fingerprint"></i> Daftar Guru Baru</button>
+            <button id="btn-daftar-link" class="btn btn-outline" style="font-size:0.85rem; margin-top:10px;" onclick="navTo('screen-register')"><i class="fas fa-fingerprint"></i> Daftarkan Sidik Jari / HP (Baru)</button>
             
-            <p id="reset-info" style="display:none; font-size:0.75rem; color:#aaa; text-align:center; margin-top:15px;">Lapor Admin jika ingin ganti HP.</p>
+            <p id="reset-info" style="display:none; font-size:0.75rem; color:#aaa; text-align:center; margin-top:15px;">Lapor Admin jika ganti HP / HP Rusak.</p>
         </div>
     </div>
 
@@ -116,9 +114,9 @@
         </div>
         
         <div class="card">
-            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 20px; text-align:center;">HP ini akan dikunci permanen untuk nama Anda setelah Sidik Jari terdaftar.</p>
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 20px; text-align:center;">Sistem akan mengunci HP ini khusus untuk Anda menggunakan Biometrik / PIN HP.</p>
             <input type="text" id="reg-name" placeholder="Nama Lengkap">
-            <input type="password" id="reg-pin" placeholder="Buat PIN (4 Angka)" maxlength="4" style="text-align:center; letter-spacing:5px;">
+            <input type="password" id="reg-pin" placeholder="Buat PIN Rahasia (4 Angka)" maxlength="4" style="text-align:center; letter-spacing:5px;">
             
             <div style="margin: 20px 0; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; text-align:center;">
                 <div class="fingerprint-box" id="reg-finger-box">
@@ -127,8 +125,9 @@
                 </div>
                 
                 <p id="reg-msg" style="font-size:0.85rem; color:var(--info); margin-bottom:15px; font-weight:600;"><i class="fas fa-shield-alt"></i> Sistem Kriptografi Siap</p>
+                <div id="reg-error-info" style="font-size:0.75rem; color:var(--danger); display:none; margin-bottom:15px;"></div>
                 
-                <button id="btn-reg-start" class="btn btn-solid-blue" onclick="startFingerprintReg()"><i class="fas fa-fingerprint"></i> Daftar Sidik Jari</button>
+                <button id="btn-reg-start" class="btn btn-solid-blue" onclick="startFingerprintReg()"><i class="fas fa-fingerprint"></i> Daftarkan Biometrik / Layar HP</button>
             </div>
         </div>
     </div>
@@ -139,6 +138,7 @@
         </div>
 
         <div class="card" style="text-align:center;">
+            
             <div id="gps-module">
                 <div class="radar-container">
                     <div class="radar-pulse"></div><div class="radar-pulse"></div>
@@ -158,6 +158,7 @@
                 </div>
                 
                 <p id="absen-msg" style="font-size:0.9rem; font-weight:bold; color:var(--info); margin-bottom:15px;">Area Cocok! Silakan Verifikasi</p>
+                <div id="absen-error-info" style="font-size:0.75rem; color:var(--danger); display:none; margin-bottom:15px;"></div>
                 
                 <div id="alasan-box" style="display:none; text-align:left; margin-bottom:15px;">
                     <label style="font-size:0.8rem; color:var(--danger); font-weight:bold;">Alasan Keterlambatan (Wajib):</label>
@@ -168,7 +169,7 @@
             </div>
 
             <button id="btn-izin" class="btn btn-outline" style="display:none; font-size:0.85rem; margin-top:15px; color:var(--warning); border-color:var(--warning);" onclick="showIzinForm()"><i class="fas fa-file-medical"></i> Izin / Sakit?</button>
-            <button class="btn btn-outline" style="margin-top:10px; font-size:0.85rem; border:none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Beranda</button>
+            <button class="btn btn-outline" style="margin-top:10px; font-size:0.85rem; border:none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Beranda Utama</button>
         </div>
 
         <div class="card" id="form-izin-box" style="display:none; margin-top:15px; border-color:var(--warning);">
@@ -280,7 +281,6 @@
             filtered.forEach(t => { let div = document.createElement('div'); div.className = 'search-item'; div.innerText = t.nama; div.onclick = () => { input.value = t.nama; list.style.display = 'none'; }; list.appendChild(div); });
         }
 
-        // KUNCI PERANGKAT PERMANEN UNTUK 1 GURU SAJA (ANTI-TITIP ABSEN)
         function checkDeviceLock() {
             const lockedName = localStorage.getItem('device_owner'); 
             if (lockedName) {
@@ -300,14 +300,18 @@
             if(!name || pin.length !== 4) { showToast("Isi Nama & PIN 4 Angka!", "warning"); return; }
             
             // Cek apakah device ini support fingerprint/webauthn
-            if (!window.PublicKeyCredential) { showToast("Browser HP Anda tidak mendukung Sidik Jari!", "error"); return; }
+            if (!window.PublicKeyCredential) { 
+                showToast("Browser tidak mendukung!", "error"); 
+                document.getElementById('reg-error-info').style.display = 'block';
+                document.getElementById('reg-error-info').innerText = "*Wajib gunakan HTTPS / Live Server, bukan file://";
+                return; 
+            }
 
-            // Nyalakan Animasi
             document.getElementById('reg-laser').style.display = 'block';
-            document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Membuka Sensor Biometrik...";
+            document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Membuka Sensor...";
+            document.getElementById('reg-error-info').style.display = 'none';
 
             try {
-                // Minta OS Buka Sensor Sidik Jari/PIN
                 const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
                 const userId = new Uint8Array(16); window.crypto.getRandomValues(userId);
 
@@ -315,38 +319,38 @@
                     challenge: challenge,
                     rp: { name: "TK Baiturrohman" },
                     user: { id: userId, name: name, displayName: name },
-                    pubKeyCredParams: [{type: "public-key", alg: -7}, {type: "public-key", alg: -257}], // ECDSA & RSA
-                    authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                    pubKeyCredParams: [{type: "public-key", alg: -7}, {type: "public-key", alg: -257}], 
+                    authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "preferred" }, // Diubah ke preferred agar lebih longgar
                     timeout: 60000
                 };
 
                 const credential = await navigator.credentials.create({ publicKey });
                 const credentialIdStr = bufferToBase64url(credential.rawId);
 
-                // Kirim ke database (Pendaftaran)
                 document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mengunci ke Database...";
                 const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, credential_id: credentialIdStr }]);
                 
                 if(error) { 
-                    showToast("Nama sudah dipakai di HP lain! Lapor Admin jika ini HP baru.", "error"); 
+                    showToast("Nama sudah dipakai di HP lain! Lapor Admin.", "error"); 
                     document.getElementById('reg-laser').style.display = 'none'; document.getElementById('reg-msg').innerHTML = "Gagal Didaftarkan.";
                 } else { 
-                    // KUNCI HP INI HANYA UNTUK GURU INI
                     localStorage.setItem('device_owner', name);
                     document.getElementById('reg-finger-icon').classList.add('finger-success');
                     document.getElementById('reg-laser').style.display = 'none';
-                    document.getElementById('reg-msg').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Perangkat Terkunci & Sukses!</span>";
+                    document.getElementById('reg-msg').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Perangkat Terkunci!</span>";
                     
                     showToast("Pendaftaran Sukses!", "success"); 
                     document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; fetchTeachersFromDB();
                     setTimeout(() => { 
                         navTo('screen-login'); 
-                        window.open(`https://wa.me/6281211862924?text=Halo Admin, saya *${name}* daftar absen Sidik Jari. Mohon di-ACC.`, '_blank'); 
+                        window.open(`https://wa.me/6281211862924?text=Halo Admin, saya *${name}* daftar absen perangkat. Mohon di-ACC.`, '_blank'); 
                     }, 2000);
                 }
             } catch (err) { 
                 document.getElementById('reg-laser').style.display = 'none'; document.getElementById('reg-msg').innerHTML = "Pendaftaran dibatalkan.";
-                showToast("Sensor ditutup atau tidak didukung.", "error"); 
+                document.getElementById('reg-error-info').style.display = 'block';
+                document.getElementById('reg-error-info').innerText = "Pastikan: 1. Link menggunakan HTTPS. 2. HP Anda memiliki Kunci Layar (PIN/Pola).";
+                showToast("Ditolak sistem operasi HP.", "error"); 
             }
         }
 
@@ -364,7 +368,6 @@
         }
 
         async function verifyLoginData() {
-            // Paksa pakai nama yang dikunci di LocalStorage (Anti Tukar Nama)
             const name = localStorage.getItem('device_owner') || document.getElementById('teacher-search').value; 
             const pin = document.getElementById('teacher-pin').value;
             
@@ -373,11 +376,10 @@
             const teacherData = teachers.find(t => t.nama === name);
             if(teacherData && teacherData.pin === pin) {
                 if(!teacherData.is_active) { showToast("Akun belum di-ACC Admin!", "error"); return; }
-                if(!teacherData.credential_id) { showToast("Sidik jari tidak ditemukan! Hapus data browser lalu daftar ulang.", "error"); return; }
+                if(!teacherData.credential_id) { showToast("Sidik jari belum terdaftar di HP ini!", "error"); return; }
                 
                 document.getElementById('teacher-pin').value = ''; 
                 document.getElementById('absen-greeting').innerText = `Halo, ${name}`;
-                
                 navTo('screen-absen');
                 
                 if(isHolidayToday()) {
@@ -454,6 +456,8 @@
             document.getElementById('btn-izin').style.display = 'none';
             document.getElementById('absen-finger-icon').classList.remove('finger-success');
             document.getElementById('absen-laser').style.display = 'block';
+            document.getElementById('absen-msg').innerHTML = 'Area Cocok! Silakan Verifikasi';
+            document.getElementById('absen-error-info').style.display = 'none';
             
             if (currentAbsenType === 'Datang') {
                 const tepatMins = timeToMins(appSettings.lateTime) + (parseInt(appSettings.gracePeriod) || 0); 
@@ -472,28 +476,30 @@
             } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; } 
         }
 
-        // ================= PROSES VERIFIKASI SIDIK JARI SAAT ABSEN =================
+        // ================= PROSES VERIFIKASI SIDIK JARI ABSEN =================
         async function triggerAbsenFingerprint() {
             if(currentStatus === 'Tidak Disiplin' && document.getElementById('input-alasan').value.trim() === '') {
                 showToast("Alasan Keterlambatan Wajib Diisi dulu!", "error"); return;
             }
 
             const teacherData = teachers.find(t => t.nama === selectedTeacherName);
-            if(!teacherData || !teacherData.credential_id) return;
+            if(!teacherData || !teacherData.credential_id) {
+                showToast("Data kunci tidak ditemukan. Lapor Admin.", "error"); return;
+            }
 
+            document.getElementById('absen-laser').style.display = 'block';
             document.getElementById('absen-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Memverifikasi Sidik Jari...";
+            document.getElementById('absen-error-info').style.display = 'none';
 
             try {
-                // Cek sensor HP dengan kredensial yang tersimpan
                 const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
                 const allowCredential = { type: "public-key", id: base64urlToBuffer(teacherData.credential_id) };
 
-                // Ini akan memunculkan pop-up sensor sidik jari bawaan HP
                 const assertion = await navigator.credentials.get({
-                    publicKey: { challenge: challenge, allowCredentials: [allowCredential], userVerification: "required" }
+                    publicKey: { challenge: challenge, allowCredentials: [allowCredential], userVerification: "preferred" }
                 });
 
-                // JIKA SAMPAI BARIS INI BERARTI SIDIK JARI COCOK 100%!
+                // SIDIK JARI COCOK 100%!
                 document.getElementById('absen-laser').style.display = 'none';
                 document.getElementById('absen-finger-icon').classList.add('finger-success');
                 document.getElementById('absen-msg').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Verifikasi Berhasil!</span>";
@@ -501,8 +507,11 @@
                 submitAttendanceToDB();
 
             } catch (err) {
+                document.getElementById('absen-laser').style.display = 'none';
                 document.getElementById('absen-msg').innerHTML = "<span style='color:var(--danger);'><i class='fas fa-times'></i> Gagal / Dibatalkan</span>";
-                showToast("Verifikasi Sidik Jari gagal.", "error");
+                document.getElementById('absen-error-info').style.display = 'block';
+                document.getElementById('absen-error-info').innerText = "Pastikan pakai HTTPS & sidik jari/PIN sesuai dengan HP ini.";
+                showToast("Verifikasi ditolak.", "error");
             }
         }
 
