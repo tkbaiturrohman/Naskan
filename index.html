@@ -320,10 +320,16 @@
 
                 const publicKey = {
                     challenge: challenge,
-                    rp: { name: "TK Baiturrohman" }, // Tanpa rpId agar Chrome mendeteksi host secara otomatis (Aman di GitHub Pages)
+                    rp: { 
+                        name: "TK Baiturrohman",
+                        id: window.location.hostname // Tambahkan ini agar lebih stabil di Chrome/Android
+                    },
                     user: { id: userId, name: name, displayName: name },
                     pubKeyCredParams: [{type: "public-key", alg: -7}, {type: "public-key", alg: -257}], 
-                    authenticatorSelection: { userVerification: "preferred" }, // Preferred sangat fleksibel untuk semua merk HP
+                    authenticatorSelection: { 
+                        authenticatorAttachment: "platform", // KUNCI UTAMA: Wajib pakai sensor bawaan HP, jangan cari USB/Bluetooth
+                        userVerification: "required" // Wajibkan layar kunci / sidik jari
+                    },
                     timeout: 60000
                 };
 
@@ -507,15 +513,20 @@
             document.getElementById('absen-error-info').style.display = 'none';
 
             try {
-                // 1. PANGGIL SIDIK JARI LANGSUNG (Tanpa memikirkan rpId)
+                // 1. PANGGIL SIDIK JARI LANGSUNG 
                 const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
-                const allowCredential = { type: "public-key", id: base64urlToBuffer(teacherData.credential_id) };
+                const allowCredential = { 
+                    type: "public-key", 
+                    id: base64urlToBuffer(teacherData.credential_id),
+                    transports: ["internal"] // KUNCI UTAMA: Blokir pencarian eksternal, langsung tembak sensor internal HP
+                };
 
                 const assertion = await navigator.credentials.get({
                     publicKey: { 
                         challenge: challenge, 
                         allowCredentials: [allowCredential], 
-                        userVerification: "preferred" // Sangat fleksibel anti-macet
+                        userVerification: "required", // Paksa harus pakai sidik jari/layar kunci yang valid
+                        timeout: 60000
                     } 
                 });
 
