@@ -90,16 +90,15 @@
         .top-navbar button:active { transform: translateX(-5px); }
         .top-navbar h2 { font-size: 1.2rem; font-weight: 600; }
         
-        /* INDIKATOR LIVE SYNC */
-        #live-indicator { position: fixed; top: 10px; right: 10px; width: 12px; height: 12px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); animation: blinkLive 1.5s infinite; z-index: 9999; display: none;}
-        @keyframes blinkLive { 0% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0.3; transform: scale(0.8); } }
+        /* INDIKATOR SYNC GRATISAN */
+        #sync-indicator { position: fixed; top: 15px; right: 15px; font-size: 0.8rem; color: var(--primary); z-index: 9999; display: none; opacity: 0.7;}
     </style>
 </head>
 <body>
 
     <div class="bg-animated"></div>
     <div id="toast-container"></div>
-    <div id="live-indicator" title="Realtime Active"></div>
+    <div id="sync-indicator"><i class="fas fa-sync fa-spin"></i></div>
 
     <button class="fab" id="fab-history" onclick="navTo('screen-history')"><i class="fas fa-list-alt"></i></button>
 
@@ -215,7 +214,6 @@
     </div>
 
     <script>
-        // API SUPABASE
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
@@ -276,43 +274,33 @@
             } else { navTo('screen-login'); }
         });
 
-        // ================= SISTEM LIVE REAL-TIME (WEBSOCKETS) =================
-        // Menangkap perubahan data dari Supabase tanpa harus Refresh Layar
-        function setupRealtimeLiveSync() {
-            document.getElementById('live-indicator').style.display = 'block'; // Indikator Live Nyala
-            
-            sb.channel('realtime-guru-channel')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'Pengaturan' }, payload => { 
-                    loadSettingsFromDB(); 
-                    console.log("Pengaturan Auto-Updated!");
-                })
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'Guru' }, payload => { 
-                    fetchTeachersFromDB(); 
-                    console.log("Data Guru Auto-Updated!");
-                })
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'Naskan' }, payload => { 
-                    if (document.getElementById('screen-history').classList.contains('active')) {
-                        fetchHistoryData(); // Auto refresh history saat dilihat
-                    }
-                })
-                .subscribe();
+        // ================= JURUS "SMART POLLING" (Pengganti Fitur Berbayar Realtime) =================
+        function triggerSilentSync() {
+            const ind = document.getElementById('sync-indicator');
+            ind.style.display = 'block';
+            Promise.all([loadSettingsFromDB(), fetchTeachersFromDB()]).then(() => {
+                setTimeout(() => { ind.style.display = 'none'; }, 1000);
+            });
         }
 
-        // ================= AWAL APLIKASI =================
+        // Cek data tiap 30 detik tanpa mengganggu layar
+        setInterval(triggerSilentSync, 30000);
+
+        // Langsung cek data baru SAAT LAYAR HP DINYALAKAN atau BUKA TAB BARU!
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") triggerSilentSync();
+        });
+        window.addEventListener("focus", () => { triggerSilentSync(); });
+
         window.onload = async () => { 
             document.getElementById('current-date').innerText = `${hariIndo[now.getDay()]}, ${now.getDate()} ${bulanIndo[now.getMonth()]} ${now.getFullYear()}`;
             history.replaceState({ screen: 'screen-login' }, "", "#screen-login");
             await loadSettingsFromDB(); await fetchTeachersFromDB(); 
             
-            setupRealtimeLiveSync(); // Nyalakan Sihir Realtime
-            
             document.addEventListener('click', (e) => {
                 const list = document.getElementById('teacher-list');
                 if(e.target.id !== 'teacher-search' && !e.target.classList.contains('search-item')) list.style.display = 'none';
             });
-
-            // Fallback: Jika HP habis ditinggal lama, paksa ambil data baru saat layar diklik/aktif lagi
-            window.addEventListener('focus', () => { loadSettingsFromDB(); fetchTeachersFromDB(); });
         }
 
         function showToast(msg, type = 'success') {
@@ -348,7 +336,6 @@
 
         function checkDeviceLock() {
             const lockedName = localStorage.getItem('device_owner'); 
-            
             if (lockedName) {
                 document.getElementById('search-wrapper').style.display = 'none'; document.getElementById('btn-daftar-link').style.display = 'none';
                 document.getElementById('lock-msg').style.display = 'block'; document.getElementById('locked-name').style.display = 'block';
@@ -360,15 +347,14 @@
             }
         }
 
-        // ================= PENDAFTARAN HARDWARE HP (INPUT MANUAL) =================
+        // ================= PENDAFTARAN HARDWARE HP KE DATABASE =================
         async function startDeviceBinding() {
-            // PERBAIKAN: AMBIL DARI INPUT TEXT BEBAS KETIK
             let name = document.getElementById('reg-name').value.trim(); 
             const pin = document.getElementById('reg-pin').value.trim();
             
             if(!name || pin.length !== 4) { showToast("Ketik Nama & Isi PIN 4 Angka!", "warning"); return; }
             
-            // Standarisasi Nama (Huruf Pertama Kapital agar Rapi)
+            // Standarisasi Nama: Huruf Pertama Kapital
             name = name.replace(/\b\w/g, l => l.toUpperCase());
 
             document.getElementById('btn-reg-start').style.display = 'none';
@@ -376,16 +362,13 @@
 
             try {
                 const deviceDNA = await getDeviceDNA();
-
-                // Kita ambil data guru berdasarkan input manual
-                const { data: cekData } = await sb.from('Guru').select('id, credential_id, pin').ilike('nama', name); // ilike tidak case-sensitive
+                const { data: cekData } = await sb.from('Guru').select('id, credential_id, pin').ilike('nama', name);
                 
                 let isSuccess = false;
                 
                 if (cekData && cekData.length > 0) {
                     const dbData = cekData[0];
 
-                    // CEK JIKA PIN SALAH KETIK
                     if (dbData.pin && dbData.pin !== pin) {
                         showToast("PIN Lama Anda Salah!", "error");
                         document.getElementById('reg-msg').innerHTML = "Pendaftaran Gagal.";
@@ -393,7 +376,6 @@
                         return;
                     }
 
-                    // JIKA AKUN SUDAH TERKUNCI HP LAIN (Belum direset Kepala Sekolah)
                     if (dbData.credential_id !== null && dbData.credential_id !== '') {
                         showToast("AKSES DITOLAK! Akun ini sudah aktif di HP lain.", "error");
                         document.getElementById('reg-msg').innerHTML = "<span style='color:var(--danger);'>Lapor Kepala Sekolah untuk Reset HP.</span>";
@@ -401,13 +383,11 @@
                         return;
                     }
 
-                    // UPDATE JIKA KOSONG (Baru atau sudah di-reset)
                     document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan ke Server...";
                     const { error } = await sb.from('Guru').update({ credential_id: deviceDNA, pin: pin }).eq('id', dbData.id);
                     if(!error) isSuccess = true;
 
                 } else {
-                    // INSERT JIKA GURU BARU DAFTAR (Nama belum ada di database)
                     document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mendaftarkan Guru Baru...";
                     const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, credential_id: deviceDNA }]);
                     if(!error) isSuccess = true;
@@ -424,10 +404,7 @@
                     showToast("Pendaftaran Berhasil!", "success"); 
                     
                     document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; fetchTeachersFromDB();
-                    setTimeout(() => { 
-                        navTo('screen-login'); 
-                        window.open(`https://wa.me/6281211862924?text=Halo Admin, saya *${name}* sudah mendaftarkan HP saya (Anti-Titip Absen). Mohon diaktifkan.`, '_blank'); 
-                    }, 2000);
+                    setTimeout(() => { navTo('screen-login'); window.open(`https://wa.me/6281211862924?text=Halo Admin, saya *${name}* sudah mendaftarkan HP saya (Anti-Titip Absen). Mohon diaktifkan.`, '_blank'); }, 2000);
                 }
             } catch(err) {
                 showToast("Terjadi Kesalahan Sistem", "error");
@@ -462,13 +439,11 @@
                 showToast("Memindai Perangkat...", "info");
                 const currentDeviceDNA = await getDeviceDNA();
 
-                // COCOKKAN DNA HP SAAT INI DENGAN DATABASE
                 if(teacherData.credential_id !== currentDeviceDNA) {
                     showToast("AKSES DITOLAK! HP ini tidak terdaftar untuk akun Anda.", "danger"); 
                     return; 
                 }
                 
-                // SIMPAN KEMBALI NAMA KE LOCALSTORAGE (Jaga-jaga kalau dia habis hapus cache)
                 localStorage.setItem('device_owner', name);
 
                 document.getElementById('teacher-pin').value = ''; 
@@ -516,7 +491,6 @@
                 if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; attendanceLogged = false; startGPS(); } 
                 else { 
                     document.getElementById('gps-module').innerHTML = `<h3 style="color:var(--primary);"><i class="fas fa-check-double"></i> Masuk Sukses</h3><p>Belum waktunya pulang.</p>`; 
-                    // FITUR PULANG CEPAT MUNCUL
                     document.getElementById('btn-pulang-awal').style.display = 'block';
                     attendanceLogged = true; 
                 }
@@ -569,10 +543,9 @@
                 }
             } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; } 
 
-            // JIKA STATUS AMAN, LANGSUNG AUTO ABSEN!
             if (currentStatus !== 'Tidak Disiplin') {
                 document.getElementById('auto-absen-area').style.display = 'block';
-                setTimeout(() => { triggerAbsen(); }, 1500); // Otomatis tembak ke DB setelah 1.5 detik
+                setTimeout(() => { triggerAbsen(); }, 1500); 
             }
         }
 
@@ -621,7 +594,6 @@
             if (!error) { showToast("Berhasil!", "success"); hideFormTambahan(); attendanceLogged = true; document.getElementById('gps-module').innerHTML = `<h3 style="color:var(--${warna});"><i class="fas fa-file-medical"></i> ${tipe} Tercatat</h3>`; document.getElementById('gps-module').style.display = 'block'; setTimeout(() => { navTo('screen-history'); }, 1500); }
         }
 
-        // FITUR BARU: PULANG AWAL DARURAT
         function showPulangAwalForm() { document.getElementById('gps-module').style.display = 'none'; document.getElementById('btn-pulang-awal').style.display = 'none'; document.getElementById('form-pulang-awal-box').style.display = 'block'; }
         async function submitPulangAwal() {
             const alasan = document.getElementById('pulang-awal-alasan').value.trim();
