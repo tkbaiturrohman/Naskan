@@ -4,111 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Absensi Guru TK Baiturrohman</title>
-    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b1120">
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --dark-bg: #0b1120; --card-bg: rgba(15, 23, 42, 0.85); }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        :root { --primary: #00e676; --warning: #FFD700; --warning-dark: #F39C12; --danger: #ff1744; --info: #00b0ff; --dark-bg: #0b1120; --card-bg: rgba(15, 23, 42, 0.85); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+        
         body, html { width: 100%; height: 100%; overflow: hidden; background: var(--dark-bg); color: white; }
         
         .bg-animated { position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, #1e293b 0%, #0b1120 80%); z-index: -1; animation: rotateBg 40s linear infinite; }
         @keyframes rotateBg { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .app-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 20px; overflow-y: auto; overflow-x: hidden; opacity: 0; transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(0.95); }
+        .app-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 20px; overflow-y: auto; overflow-x: hidden; opacity: 0; transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(0.97); }
         .app-screen.active { display: flex; opacity: 1; z-index: 10; transform: scale(1); }
 
-        .app-header { text-align: center; margin-bottom: 20px; padding-top: 10px; flex-shrink: 0; position: relative;}
-        .app-header h1 { font-size: 1.4rem; font-weight: 700; background: linear-gradient(90deg, #00b0ff, #00e676); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .app-header p { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; }
+        .app-header { text-align: center; margin-bottom: 25px; padding-top: 15px; flex-shrink: 0;}
+        .app-header img.logo { width: 95px; height: auto; object-fit: contain; margin-bottom: 5px; drop-shadow: 0 5px 10px rgba(0,0,0,0.5); }
+        .app-header h1 { font-size: 1.6rem; font-weight: 800; background: linear-gradient(90deg, #00b0ff, #00e676); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 1px;}
+        .app-header p { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; font-weight: 600;}
 
-        /* NOTIFIKASI LONCENG */
-        .bell-icon { position: absolute; top: 10px; right: 10px; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: 0.3s; }
-        .bell-icon.active { color: var(--warning); animation: ring 1s infinite alternate; }
-        .bell-badge { position: absolute; top: 5px; right: 5px; background: var(--danger); color: white; font-size: 0.6rem; font-weight: 800; width: 15px; height: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; display: none; }
-        @keyframes ring { 0% { transform: rotate(-15deg); } 100% { transform: rotate(15deg); } }
-
-        /* MODAL PENGUMUMAN */
-        #pengumuman-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px);}
-        .pengumuman-box { background: var(--card-bg); border: 2px solid var(--warning); border-radius: 25px; padding: 25px; text-align: center; width: 100%; max-width: 350px; box-shadow: 0 10px 40px rgba(255,234,0,0.2); animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        .card { background: var(--card-bg); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; width: 100%; max-width: 400px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card { 
+            position: relative;
+            background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                        linear-gradient(45deg, var(--info), transparent 40%, var(--primary), transparent 60%) border-box;
+            border: 2px solid transparent;
+            border-radius: 35px;
+            padding: 30px 25px; 
+            width: 100%; max-width: 400px; 
+            margin: 0 auto 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            background-size: 200% 200%;
+            animation: gradientBorder 4s linear infinite;
+        }
+        @keyframes gradientBorder { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
-        input[type="text"], input[type="password"], select { width: 100%; padding: 14px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: white; font-size: 1rem; outline: none; margin-bottom: 15px; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--info); box-shadow: 0 0 15px rgba(0,176,255,0.3); background: rgba(0,0,0,0.6);}
+        input[type="text"], input[type="password"], select { width: 100%; padding: 18px 20px; border-radius: 25px; border: 1.5px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); color: white; font-size: 1rem; outline: none; margin-bottom: 18px; transition: 0.3s; font-weight: 600;}
+        input:focus, select:focus { border-color: var(--info); box-shadow: 0 0 20px rgba(0,176,255,0.2); background: rgba(0,0,0,0.6);}
         select option { background: var(--dark-bg); color: white; }
         
-        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 600; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .btn:active { transform: scale(0.95); }
+        .btn { width: 100%; padding: 16px; border-radius: 50px; border: none; font-size: 1rem; font-weight: 700; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; margin-bottom: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); text-transform: uppercase; letter-spacing: 1px;}
+        .btn:active { transform: scale(0.96); }
         .btn-primary { background: linear-gradient(135deg, #00b0ff, #0069c0); }
         .btn-success { background: linear-gradient(135deg, #00e676, #00c853); }
         .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); }
-        .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000; font-weight: 800;}
-        .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #cbd5e1; box-shadow: none; }
         
+        /* Tombol Kuning Keemasan Premium */
+        .btn-warning { background: linear-gradient(135deg, var(--warning), var(--warning-dark)); color: #000 !important; font-weight: 800; box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4); }
+        
+        .btn-outline { background: rgba(0, 176, 255, 0.1); border: 2px solid var(--info); color: white; box-shadow: 0 0 15px rgba(0, 176, 255, 0.2); }
+        .btn-outline:active { background: var(--info); color: black; }
+        .btn-outline-warning { background: rgba(255, 215, 0, 0.1); border: 2px solid var(--warning); color: white; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); }
+
         .search-wrapper { position: relative; }
-        .search-list { position: absolute; top: 100%; left: 0; right: 0; background: #1e293b; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); max-height: 180px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.6); margin-top: 5px; }
-        .search-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; cursor: pointer; }
-        .search-item:hover { background: rgba(0,176,255,0.1); color: var(--info); }
+        .search-list { position: absolute; top: 100%; left: 0; right: 0; background: #1e293b; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); max-height: 180px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.8); margin-top: 5px; overflow: hidden;}
+        .search-item { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; cursor: pointer; font-weight: 600;}
+        .search-item:hover { background: rgba(0,176,255,0.15); color: var(--info); }
 
-        .radar-container { position: relative; width: 130px; height: 130px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        .radar-gif { width: 90px; height: 90px; border-radius: 50%; z-index: 2; object-fit: cover; box-shadow: 0 0 30px var(--info); border: 2px solid rgba(0, 176, 255, 0.6); }
-        .radar-pulse { position: absolute; width: 100%; height: 100%; background: rgba(0, 176, 255, 0.3); border-radius: 50%; z-index: 1; animation: radarAnim 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1); border: 2px solid rgba(0, 176, 255, 0.5); }
+        /* PERBAIKAN ANIMASI RADAR (Pulse dipaskan ukurannya) */
+        .radar-container { position: relative; width: 140px; height: 140px; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center; }
+        .radar-gif { width: 90px; height: 90px; border-radius: 50%; z-index: 2; object-fit: cover; box-shadow: 0 0 30px var(--info); border: 2px solid rgba(0, 176, 255, 0.6); position: relative;}
+        .radar-pulse { position: absolute; width: 90px; height: 90px; background: rgba(0, 176, 255, 0.15); border-radius: 50%; z-index: 1; animation: radarAnim 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1); border: 2px solid var(--info); }
         .radar-pulse:nth-child(2) { animation-delay: 1s; }
-        @keyframes radarAnim { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
+        @keyframes radarAnim { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
 
-        .auto-absen-spinner { font-size: 4rem; color: var(--primary); animation: spin 1.5s linear infinite; margin-bottom: 15px;}
+        .auto-absen-spinner { font-size: 4rem; color: var(--primary); animation: spin 1.5s linear infinite; margin-bottom: 15px; text-shadow: 0 0 20px var(--primary);}
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .tap-btn-container { position: relative; width: 180px; height: 180px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
-        .tap-btn { width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, #00e676, #00c853); border: none; color: white; font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 230, 118, 0.4); z-index: 3; transition: 0.2s; display: flex; flex-direction: column; gap: 5px; }
-        .tap-btn i { font-size: 2.5rem; }
-        .tap-btn:active { transform: scale(0.9); box-shadow: 0 5px 15px rgba(0, 230, 118, 0.3); }
+        .tap-btn-container { position: relative; width: 190px; height: 190px; margin: 0 auto 25px; display: flex; align-items: center; justify-content: center; }
+        .tap-btn { width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #00e676, #00b0ff, #1de9b6); background-size: 300% 300%; border: 4px solid rgba(255,255,255,0.4); color: white; font-size: 1.4rem; font-weight: 800; cursor: pointer; z-index: 3; transition: 0.2s; display: flex; flex-direction: column; gap: 8px; animation: kedipWarna 3s infinite, pulseGlow 1.5s infinite alternate; }
+        .tap-btn i { font-size: 2.8rem; }
+        .tap-btn:active { transform: scale(0.9); border-color: white;}
+        @keyframes kedipWarna { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 20px rgba(0, 230, 118, 0.4); } 100% { box-shadow: 0 0 50px rgba(0, 176, 255, 0.8), 0 0 30px rgba(0, 230, 118, 0.6); } }
 
         .history-list { flex: 1; overflow-y: auto; padding-bottom: 20px; width: 100%; max-width: 400px; margin: 0 auto; }
-        .hist-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #475569; transition: 0.3s; }
-        .hist-card:hover { background: rgba(255,255,255,0.1); }
-        .hist-date { font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px; font-weight: 600;}
-        .hist-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; }
+        .hist-card { background: rgba(30, 41, 59, 0.6); border-radius: 25px; padding: 20px; margin-bottom: 15px; border-left: 6px solid var(--info); box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);}
+        .hist-date { font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px; font-weight: 700; letter-spacing: 0.5px;}
+        .hist-row { display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 6px; font-weight: 600;}
+        .hist-note { font-size: 0.8rem; color: var(--warning); font-style: italic; margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px; }
 
-        .fab { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, #ff4081, #c51162); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 5px 20px rgba(197,17,98,0.5); border: none; cursor: pointer; z-index: 100; transition: 0.3s; display: none; }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; border-radius: 50%; background: linear-gradient(135deg, #ff4081, #c51162); color: white; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: 0 10px 30px rgba(197,17,98,0.6); border: none; cursor: pointer; z-index: 100; transition: 0.3s; display: none; }
         .fab:active { transform: scale(0.9); }
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px;}
-        .toast { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 18px; border-radius: 12px; border-left: 4px solid var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: slideDown 0.3s forwards; font-size: 0.85rem; font-weight: 600;}
-        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); color: black; background: var(--warning);} .toast.info { border-left-color: var(--info); }
+        .toast { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); color: white; padding: 15px 20px; border-radius: 20px; border-left: 5px solid var(--primary); box-shadow: 0 15px 35px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; animation: slideDown 0.3s forwards; font-size: 0.9rem; font-weight: 700;}
+        
+        /* PERBAIKAN WARNA TOAST (Kuning Keemasan Jelas) */
+        .toast.error { border-left-color: var(--danger); } 
+        .toast.warning { border-left-color: var(--warning-dark); color: #000; background: linear-gradient(135deg, var(--warning), var(--warning-dark)); } 
+        .toast.info { border-left-color: var(--info); }
+        
         @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        .top-navbar { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; position: sticky; top: 0; background: var(--dark-bg); z-index: 5;}
-        .top-navbar button { background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; transition: 0.2s;}
-        .top-navbar button:active { transform: translateX(-5px); }
-        .top-navbar h2 { font-size: 1.2rem; font-weight: 600; }
+        .top-navbar { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; position: sticky; top: 0; background: var(--dark-bg); z-index: 5;}
+        .top-navbar button { background: rgba(255,255,255,0.05); border: none; color: white; font-size: 1.2rem; cursor: pointer; transition: 0.2s; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
+        .top-navbar button:active { transform: scale(0.9); background: rgba(255,255,255,0.1); }
+        .top-navbar h2 { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.5px;}
         
-        #sync-indicator { position: fixed; top: 15px; right: 15px; font-size: 0.8rem; color: var(--info); z-index: 9999; display: none; opacity: 0.7;}
+        #sync-indicator { position: fixed; top: 20px; right: 20px; font-size: 1rem; color: var(--info); z-index: 9999; display: none; opacity: 0.8;}
+        
+        .bell-icon { position: absolute; top: 15px; right: 15px; font-size: 1.6rem; color: #94a3b8; cursor: pointer; transition: 0.3s; z-index: 10;}
+        .bell-icon.active { color: var(--warning); animation: ring 1s infinite alternate; text-shadow: 0 0 15px var(--warning);}
+        .bell-badge { position: absolute; top: 10px; right: 10px; background: var(--danger); color: white; font-size: 0.65rem; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; display: none; z-index: 11;}
+        @keyframes ring { 0% { transform: rotate(-15deg); } 100% { transform: rotate(15deg); } }
+
+        #pengumuman-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px);}
+        .pengumuman-box { background: var(--card-bg); border: 2px solid var(--warning); border-radius: 30px; padding: 30px; text-align: center; width: 100%; max-width: 350px; box-shadow: 0 15px 40px rgba(243, 156, 18, 0.3); animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        /* UI KHUSUS MODE DARURAT YANG ELEGAN */
+        #alert-darurat {
+            display: none; 
+            background: linear-gradient(135deg, var(--danger), #8e0000); 
+            padding: 15px 20px; 
+            border-radius: 20px; 
+            margin: 0 auto 20px; 
+            width: 100%; max-width: 400px; 
+            text-align: center; 
+            color: white; 
+            box-shadow: 0 10px 25px rgba(255, 23, 68, 0.4);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
     </style>
 </head>
 <body>
 
     <div class="bg-animated"></div>
     <div id="toast-container"></div>
-    <div id="sync-indicator"><i class="fas fa-sync fa-spin"></i></div>
-    
-    <audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+    <div id="sync-indicator"><i class="fas fa-satellite-dish fa-spin"></i></div>
 
-    <button class="fab" id="fab-history" onclick="navTo('screen-history')"><i class="fas fa-list-alt"></i></button>
+    <button class="fab" id="fab-history" onclick="navTo('screen-history')"><i class="fas fa-chart-bar"></i></button>
 
     <div id="pengumuman-modal">
         <div class="pengumuman-box">
-            <i class="fas fa-bullhorn" style="font-size: 3rem; color: var(--warning); margin-bottom: 15px;"></i>
-            <h2 style="color: white; margin-bottom: 10px;">Pengumuman Admin</h2>
-            <p id="pengumuman-text" style="font-size: 0.95rem; color: #cbd5e1; margin-bottom: 20px; line-height: 1.5;"></p>
-            <button class="btn btn-warning" onclick="closePengumuman()"><i class="fas fa-check-double"></i> Saya Mengerti</button>
+            <i class="fas fa-bullhorn" style="font-size: 3.5rem; color: var(--warning); margin-bottom: 20px; text-shadow: 0 0 20px rgba(243,156,18,0.5);"></i>
+            <h2 style="color: white; margin-bottom: 12px; font-weight: 800;">Pengumuman</h2>
+            <p id="pengumuman-text" style="font-size: 1rem; color: #e2e8f0; margin-bottom: 25px; line-height: 1.6;"></p>
+            <button class="btn btn-warning" onclick="closePengumuman()"><i class="fas fa-check-circle"></i> Saya Mengerti</button>
         </div>
     </div>
 
@@ -117,48 +153,58 @@
             <i class="fas fa-bell bell-icon" id="bell-icon" onclick="showPengumuman()"></i>
             <div class="bell-badge" id="bell-badge">1</div>
             
+            <img src="https://files.catbox.moe/dlbpqp.png" alt="Logo TK" class="logo">
             <h1>TK Baiturrohman</h1>
             <p id="current-date"></p>
         </div>
         
-        <div id="alert-darurat" style="display:none; background: rgba(255, 23, 68, 0.2); border: 1px solid var(--danger); padding: 10px; border-radius: 12px; margin: 0 auto 15px; width: 100%; max-width: 400px; text-align: center; color: white; font-size: 0.85rem; font-weight: 600;">
-            <i class="fas fa-unlock-alt" style="color:var(--warning);"></i> MODE DARURAT AKTIF.<br>Bebas absen dari HP siapapun.
+        <div id="alert-darurat">
+            <i class="fas fa-unlock-alt" style="font-size: 1.8rem; color: var(--warning); margin-bottom: 8px;"></i>
+            <h3 style="font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; margin-bottom: 2px;">MODE DARURAT AKTIF</h3>
+            <p style="font-size: 0.85rem; opacity: 0.9; font-weight: 400;">Akses login bebas dari perangkat mana saja.</p>
         </div>
 
         <div class="card">
-            <div id="lock-msg" style="display:none; text-align:center; color:var(--primary); font-size:0.85rem; margin-bottom:15px; font-weight:600;"><i class="fas fa-mobile-alt"></i> HP Terkunci Untuk:</div>
+            <div id="lock-msg" style="display:none; text-align:center; color:var(--primary); font-size:0.9rem; margin-bottom:15px; font-weight:700;"><i class="fas fa-shield-check"></i> HP Terkunci Untuk:</div>
             
             <div class="search-wrapper" id="search-wrapper">
-                <input type="text" id="teacher-search" placeholder="🔍 Cari Nama Anda..." autocomplete="off" oninput="filterTeachers()" onclick="filterTeachers()">
+                <input type="text" id="teacher-search" placeholder="Cari Nama Anda..." autocomplete="off" oninput="filterTeachers()" onclick="filterTeachers()">
                 <div id="teacher-list" class="search-list"></div>
             </div>
 
-            <h2 id="locked-name" style="display:none; text-align:center; color:white; margin-bottom:20px; font-size:1.5rem;"></h2>
-            <input type="password" id="teacher-pin" placeholder="PIN" maxlength="4" style="text-align:center; letter-spacing:8px; font-weight:bold; font-size:1.2rem;">
+            <h2 id="locked-name" style="display:none; text-align:center; color:white; margin-bottom:25px; font-size:1.6rem; letter-spacing: 1px;"></h2>
+            <input type="password" id="teacher-pin" placeholder="PIN" maxlength="4" style="text-align:center; letter-spacing:15px; font-weight:800; font-size:1.4rem;">
             
             <button class="btn btn-primary" onclick="verifyLoginData()"><i class="fas fa-sign-in-alt"></i> Masuk Sistem</button>
-            <button id="btn-daftar-link" class="btn btn-outline" style="font-size:0.85rem; margin-top:10px;" onclick="navTo('screen-register')"><i class="fas fa-user-plus"></i> Daftarkan Guru</button>
+            <button id="btn-daftar-link" class="btn btn-outline" onclick="navTo('screen-register')"><i class="fas fa-user-plus"></i> Daftarkan Guru</button>
+            
+            <p id="reset-info" style="display:none; font-size:0.8rem; color:#64748b; text-align:center; margin-top:20px; font-weight: 600;">Lapor Kepala Sekolah jika ganti HP.</p>
         </div>
     </div>
 
     <div id="screen-register" class="app-screen">
         <div class="top-navbar">
             <button onclick="navTo('screen-login')"><i class="fas fa-arrow-left"></i></button>
-            <h2>Pendaftaran Guru</h2>
+            <h2>Registrasi Guru</h2>
         </div>
+        
         <div class="card">
-            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 20px; text-align:center;">Sistem akan merekam <b style="color:var(--warning);">DNA Fisik HP Anda</b> agar tidak bisa diakses dari HP lain.</p>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 25px; text-align:center; line-height: 1.5;">Sistem akan merekam <b style="color:var(--info);">DNA Fisik HP Anda</b> untuk keamanan Anti-Titip Absen.</p>
+            
             <input type="text" id="reg-name" placeholder="Ketik Nama Lengkap Anda" autocomplete="off">
-            <input type="password" id="reg-pin" placeholder="Buat PIN Rahasia (4 Angka)" maxlength="4" style="text-align:center; letter-spacing:5px;">
-            <div style="margin: 10px 0; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; text-align:center;">
-                <button id="btn-reg-start" class="btn btn-primary" onclick="startDeviceBinding()"><i class="fas fa-link"></i> Daftarkan & Kunci HP Ini</button>
+            <input type="password" id="reg-pin" placeholder="Buat PIN " maxlength="4" style="text-align:center; letter-spacing:8px; font-size: 1.2rem;">
+            
+            <div style="margin: 15px 0 0; padding: 25px 20px; background: rgba(0,0,0,0.2); border-radius: 25px; text-align:center; border: 1px solid rgba(255,255,255,0.05);">
+                <img src="https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyeDIydnIxcGdzMHZlY2ZhNTM2eHltcHRod3l0dDI1YXJuYXhyZHVmdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/fea0VUEUXt79zXTPeB/giphy.gif" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; border: 2px solid var(--info); box-shadow: 0 0 20px rgba(0,176,255,0.4);" alt="Sync">
+                <p id="reg-msg" style="font-size:0.9rem; color:var(--primary); margin-bottom:20px; font-weight:700;">Hardware Sensor Ready</p>
+                <button id="btn-reg-start" class="btn btn-primary" style="margin-bottom:0;" onclick="startDeviceBinding()"><i class="fas fa-lock"></i> Kunci Ke HP Ini</button>
             </div>
         </div>
     </div>
 
     <div id="screen-absen" class="app-screen">
         <div class="app-header">
-            <h2 id="absen-greeting" style="font-size:1.2rem; color:var(--primary);">Halo, Guru</h2>
+            <h2 id="absen-greeting" style="font-size:1.4rem; color:white;">Halo, Guru</h2>
         </div>
 
         <div class="card" style="text-align:center;">
@@ -168,27 +214,52 @@
                     <div class="radar-pulse"></div><div class="radar-pulse"></div>
                     <img src="https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyeDIydnIxcGdzMHZlY2ZhNTM2eHltcHRod3l0dDI1YXJuYXhyZHVmdCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/fea0VUEUXt79zXTPeB/giphy.gif" alt="Radar GPS" class="radar-gif">
                 </div>
-                <p style="font-weight: bold; font-size: 1.1rem; margin-bottom: 5px;">Melacak Satelit GPS</p>
-                <div style="background: rgba(0,0,0,0.3); border-radius: 10px; padding: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                    <p id="absen-distance" style="color:var(--warning); font-weight:700; font-size:1rem;"><i class="fas fa-spinner fa-spin"></i> Menghitung Jarak...</p>
+                <p style="font-weight: 800; font-size: 1.2rem; margin-bottom: 5px; letter-spacing: 0.5px;">Melacak Satelit</p>
+                <div style="background: rgba(0,0,0,0.4); border-radius: 20px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                    <p id="absen-target-radius" style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; font-weight: 600;"></p>
+                    <p id="absen-distance" style="color:var(--info); font-weight:800; font-size:1.1rem;"><i class="fas fa-satellite fa-spin"></i> Menghitung Jarak...</p>
                 </div>
             </div>
 
             <div id="absen-action-module" style="display:none;">
-                <div id="auto-absen-area" style="display:none;">
-                    <i class="fas fa-satellite-dish auto-absen-spinner"></i>
-                    <h3 style="color:var(--primary); margin-bottom: 5px;">Area Cocok!</h3>
-                    <p style="font-size:0.9rem; color:#aaa; margin-bottom: 15px;">Mengirim data absen otomatis...</p>
+                
+                <div id="auto-absen-area" style="display:none; padding: 20px 0;">
+                    <i class="fas fa-fingerprint auto-absen-spinner"></i>
+                    <h3 style="color:var(--primary); margin-bottom: 8px; font-size: 1.5rem; font-weight: 800;">Area Cocok!</h3>
+                    <p style="font-size:0.95rem; color:#94a3b8; font-weight: 600;">Mengirim data otomatis...</p>
                 </div>
                 
-                <div id="alasan-box" style="display:none; text-align:left; margin-bottom:15px;">
-                    <h3 style="color:var(--danger); text-align:center; margin-bottom:10px;"><i class="fas fa-exclamation-triangle"></i> Anda Terlambat</h3>
-                    <input type="text" id="input-alasan" placeholder="Ketik alasan logis..." style="border-color:var(--danger); background:rgba(255,0,0,0.1); margin-top:5px;">
-                    <button class="btn btn-danger" id="btn-submit-alasan" onclick="triggerAbsen()"><i class="fas fa-paper-plane"></i> Kirim Absen</button>
+                <div id="alasan-box" style="display:none; text-align:left; margin-bottom:15px; padding-top: 10px;">
+                    <h3 style="color:var(--danger); text-align:center; margin-bottom:15px; font-size: 1.3rem;"><i class="fas fa-exclamation-triangle"></i> Anda Terlambat</h3>
+                    <input type="text" id="input-alasan" placeholder="Ketik alasan logis (Wajib)..." style="border-color:var(--danger); background:rgba(255,0,0,0.1);">
+                    
+                    <div class="tap-btn-container" id="tap-btn-area">
+                        <button class="tap-btn" id="btn-tap-absen" onclick="triggerAbsen()">
+                            <i class="fas fa-hand-pointer"></i>
+                            <span id="tap-btn-text">ABSEN</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <button class="btn btn-outline" style="margin-top:10px; font-size:0.85rem; border:none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Beranda Utama</button>
+            <button id="btn-izin" class="btn btn-outline-warning" style="display:none; margin-top:25px;" onclick="showIzinForm()"><i class="fas fa-file-medical"></i> Ajukan Izin / Sakit</button>
+            <button id="btn-pulang-awal" class="btn btn-outline" style="display:none; margin-top:20px;" onclick="showPulangAwalForm()"><i class="fas fa-running"></i> Izin Pulang Lebih Awal</button>
+            <button class="btn btn-outline" style="margin-top:15px; border-color: rgba(255,255,255,0.2); color:#94a3b8;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Kembali ke Beranda</button>
+        </div>
+
+        <div class="card" id="form-izin-box" style="display:none; margin-top:15px; border-color:var(--warning);">
+            <h3 style="font-size:1.1rem; color:var(--warning); margin-bottom:20px; font-weight: 800;"><i class="fas fa-notes-medical"></i> Form Ketidakhadiran</h3>
+            <select id="izin-tipe"><option value="Sakit">Sakit</option><option value="Izin">Izin Keperluan</option></select>
+            <input type="text" id="izin-alasan" placeholder="Keterangan (Wajib)...">
+            <button class="btn btn-warning" onclick="submitIzinSakit()"><i class="fas fa-paper-plane"></i> Kirim Pengajuan</button>
+            <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color:white;" onclick="hideFormTambahan()">Batal</button>
+        </div>
+
+        <div class="card" id="form-pulang-awal-box" style="display:none; margin-top:15px; border-color:var(--info);">
+            <h3 style="font-size:1.1rem; color:var(--info); margin-bottom:20px; font-weight: 800;"><i class="fas fa-running"></i> Pulang Lebih Awal</h3>
+            <input type="text" id="pulang-awal-alasan" placeholder="Alasan pulang cepat (Wajib)..." style="border-color:var(--info); background: rgba(0,176,255,0.1);">
+            <button class="btn btn-info" style="background:var(--info); color:black;" onclick="submitPulangAwal()"><i class="fas fa-check-circle"></i> Catat Pulang</button>
+            <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color:white;" onclick="hideFormTambahan()">Batal</button>
         </div>
     </div>
 
@@ -197,7 +268,7 @@
             <button onclick="navTo('screen-absen')"><i class="fas fa-arrow-left"></i></button>
             <h2 id="history-month-title">Histori Bulan Ini</h2>
         </div>
-        <div id="history-loading" style="text-align:center; color:#aaa; margin-top:20px;"><i class="fas fa-spinner fa-spin"></i> Menarik data server...</div>
+        <div id="history-loading" style="text-align:center; color:#64748b; margin-top:30px; font-weight: 600;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Menarik Data...</div>
         <div class="history-list" id="history-list-container"></div>
     </div>
 
@@ -206,28 +277,90 @@
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 100, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00", mode_darurat: false, pengumuman: "" };
-        let teachers = []; let pelanggaranCount = 0; let lastPengumuman = "";
+        let appSettings = { lat: "-6.200000", lng: "106.816666", radius: 50, openTime: "06:00", lateTime: "07:30", tolTime: "07:50", homeTime: "13:00", hariLibur: "", gracePeriod: 0, batasPelanggaran: 3 };
+        let teachers = []; let pelanggaranCount = 0;
         let selectedTeacherName = ""; let watchId = null; let attendanceLogged = false; 
         let currentAbsenType = ""; let currentStatus = ""; let currentColor = ""; 
+        let lastPengumuman = "";
 
         const now = new Date(); const hariIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
         const bulanIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         
+        // ================= SISTEM AUDIO IMUT (ANTI BLOKIR BROWSER) =================
+        let audioCtx;
+        let audioUnlocked = false;
+
+        function initAudio() {
+            if (audioUnlocked) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                audioCtx = new AudioContext();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                gain.gain.value = 0;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.001);
+                audioUnlocked = true;
+            }
+        }
+        document.addEventListener('click', initAudio, { once: true });
+        document.addEventListener('touchstart', initAudio, { once: true });
+
+        function playCutePing() {
+            if (!audioCtx) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.type = 'sine'; 
+                osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime); 
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.5);
+            } catch(e) { console.log(e); }
+        }
+
+        // ================= HELPER FUNCTIONS =================
         function getCurrentTime24() { return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false }).replace('.', ':'); }
         function getCurrentDateStr() { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; }
         function getCurrentYMD() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function timeToMins(timeStr) { if (!timeStr) return 0; const parts = timeStr.split(':'); return parseInt(parts[0]) * 60 + parseInt(parts[1]); }
 
+        function showToast(msg, type = 'success') {
+            playCutePing(); 
+            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
+            let iconClass = type === 'error' ? 'fa-exclamation-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle');
+            toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${msg.replace(/\n/g, '<br>')}</span>`; container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
+        }
+
         async function getDeviceDNA() {
             return new Promise((resolve) => {
-                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
                 ctx.textBaseline = 'top'; ctx.font = '14px Arial'; ctx.textBaseline = 'alphabetic';
                 ctx.fillStyle = '#f60'; ctx.fillRect(125,1,62,20);
                 ctx.fillStyle = '#069'; ctx.fillText('TK Baiturrohman', 2, 15);
                 ctx.fillStyle = 'rgba(102, 204, 0, 0.7)'; ctx.fillText('TK Baiturrohman', 4, 17);
-                const hardwareData = [navigator.userAgent, screen.height, screen.width, screen.colorDepth, navigator.hardwareConcurrency || 'u', navigator.deviceMemory || 'u', canvas.toDataURL()].join('|');
-                let hash = 0; for (let i = 0; i < hardwareData.length; i++) { const char = hardwareData.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash = hash & hash; }
+                const canvasData = canvas.toDataURL();
+
+                const hardwareData = [
+                    navigator.userAgent, screen.height, screen.width, screen.colorDepth,
+                    navigator.hardwareConcurrency || 'unknown', navigator.deviceMemory || 'unknown', canvasData
+                ].join('|');
+
+                let hash = 0;
+                for (let i = 0; i < hardwareData.length; i++) {
+                    const char = hardwareData.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; 
+                }
                 resolve('DEV-' + Math.abs(hash).toString(16));
             });
         }
@@ -240,12 +373,23 @@
             if(screenId === 'screen-history') fetchHistoryData();
         }
 
-        // ================= SISTEM LIVE & NOTIFIKASI =================
-        function triggerSilentSync() {
-            const ind = document.getElementById('sync-indicator'); ind.style.display = 'block';
-            Promise.all([loadSettingsFromDB(), fetchTeachersFromDB()]).then(() => { setTimeout(() => { ind.style.display = 'none'; }, 1000); });
-        }
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.screen) {
+                document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(e.state.screen).classList.add('active');
+                document.getElementById('fab-history').style.display = (e.state.screen === 'screen-absen') ? 'flex' : 'none';
+            } else { navTo('screen-login'); }
+        });
 
+        // SILENT SYNC PENGGANTI REALTIME BERBAYAR
+        function triggerSilentSync() {
+            const ind = document.getElementById('sync-indicator');
+            ind.style.display = 'block';
+            Promise.all([loadSettingsFromDB(), fetchTeachersFromDB()]).then(() => {
+                setTimeout(() => { ind.style.display = 'none'; }, 1000);
+            });
+        }
+        
         function handleNotifikasi(pesanBaru) {
             const bell = document.getElementById('bell-icon');
             const badge = document.getElementById('bell-badge');
@@ -253,20 +397,15 @@
             if(pesanBaru && pesanBaru !== "-" && pesanBaru !== "") {
                 document.getElementById('pengumuman-text').innerText = pesanBaru;
                 if(pesanBaru !== lastPengumuman) {
-                    // PESAN BARU MASUK!
                     lastPengumuman = pesanBaru;
                     bell.classList.add('active');
                     badge.style.display = 'flex';
                     
-                    // MAINKAN SUARA TING!
-                    const audio = document.getElementById('notif-sound');
-                    audio.play().catch(e => console.log("Audio diblokir browser sebelum ada interaksi user"));
+                    showToast("Ada Pengumuman Baru dari Kepsek!", "warning"); // warning class dipake biar kuning cantik
                     
-                    // MUNCULKAN ANGKA DI IKON APP PWA (BADGING API)
                     if(navigator.setAppBadge) {
                         navigator.setAppBadge(1).catch(e => console.log("Badging API tidak disupport"));
                     }
-                    showToast("Ada Pengumuman Baru dari Kepsek!", "info");
                 }
             } else {
                 bell.classList.remove('active');
@@ -283,13 +422,11 @@
             document.getElementById('bell-icon').classList.remove('active');
             document.getElementById('bell-badge').style.display = 'none';
             
-            // BERSIHKAN ANGKA DI IKON APP PWA SAAT DIBACA
             if(navigator.clearAppBadge) navigator.clearAppBadge();
         }
         function closePengumuman() { document.getElementById('pengumuman-modal').style.display = 'none'; }
 
-        // Interval Sync (Tiap 15 Detik biar notif cepat masuk)
-        setInterval(triggerSilentSync, 15000);
+        setInterval(triggerSilentSync, 30000);
         document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") triggerSilentSync(); });
         window.addEventListener("focus", () => { triggerSilentSync(); });
 
@@ -304,29 +441,20 @@
             });
         }
 
-        function showToast(msg, type = 'success') {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
-            let iconClass = type === 'error' ? 'fa-exclamation-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle');
-            toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${msg.replace(/\n/g, '<br>')}</span>`; container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
-        }
-
         async function loadSettingsFromDB() {
             const { data } = await sb.from('Pengaturan').select('*').limit(1);
             if (data && data.length > 0) {
                 const dbSet = data[0];
                 appSettings = dbSet;
                 
-                // CEK MODE DARURAT
                 if(appSettings.mode_darurat) {
                     document.getElementById('alert-darurat').style.display = 'block';
-                    document.getElementById('search-wrapper').style.display = 'block'; // Paksa buka kolom cari
+                    document.getElementById('search-wrapper').style.display = 'block';
                 } else {
                     document.getElementById('alert-darurat').style.display = 'none';
-                    checkDeviceLock(); // Kembalikan ke mode normal
+                    checkDeviceLock(); 
                 }
 
-                // CEK PENGUMUMAN
                 handleNotifikasi(appSettings.pengumuman);
             }
         }
@@ -341,6 +469,7 @@
             const val = input.value.toLowerCase(); list.innerHTML = ''; list.style.display = 'block';
             const activeTeachers = teachers.filter(t => t.is_active === true);
             const filtered = activeTeachers.filter(t => t.nama.toLowerCase().includes(val));
+            
             if(activeTeachers.length === 0) { list.innerHTML = '<div class="search-item" style="color:#aaa;">Belum ada akun aktif</div>'; return; }
             if(filtered.length === 0) { list.innerHTML = '<div class="search-item" style="color:#aaa;">Nama tidak ditemukan</div>'; return; }
             filtered.forEach(t => { let div = document.createElement('div'); div.className = 'search-item'; div.innerText = t.nama; div.onclick = () => { input.value = t.nama; list.style.display = 'none'; }; list.appendChild(div); });
@@ -348,20 +477,22 @@
 
         function checkDeviceLock() {
             const lockedName = localStorage.getItem('device_owner'); 
-            // JIKA MODE DARURAT AKTIF, JANGAN KUNCI TAMPILAN AWALNYA
             if (lockedName && !appSettings.mode_darurat) {
                 document.getElementById('search-wrapper').style.display = 'none'; document.getElementById('btn-daftar-link').style.display = 'none';
                 document.getElementById('lock-msg').style.display = 'block'; document.getElementById('locked-name').style.display = 'block';
+                document.getElementById('reset-info').style.display = 'block';
                 document.getElementById('locked-name').innerText = lockedName; selectedTeacherName = lockedName;
             } else { 
                 document.getElementById('search-wrapper').style.display = 'block'; document.getElementById('btn-daftar-link').style.display = 'flex';
-                document.getElementById('lock-msg').style.display = 'none'; document.getElementById('locked-name').style.display = 'none';
+                document.getElementById('lock-msg').style.display = 'none'; document.getElementById('locked-name').style.display = 'none'; document.getElementById('reset-info').style.display = 'none';
             }
         }
 
         // ================= PENDAFTARAN HARDWARE HP =================
         async function startDeviceBinding() {
-            let name = document.getElementById('reg-name').value.trim(); const pin = document.getElementById('reg-pin').value.trim();
+            let name = document.getElementById('reg-name').value.trim(); 
+            const pin = document.getElementById('reg-pin').value.trim();
+            
             if(!name || pin.length !== 4) { showToast("Ketik Nama & Isi PIN 4 Angka!", "warning"); return; }
             name = name.replace(/\b\w/g, l => l.toUpperCase());
 
@@ -373,38 +504,72 @@
                 const { data: cekData } = await sb.from('Guru').select('id, credential_id, pin').ilike('nama', name);
                 
                 let isSuccess = false;
+                
                 if (cekData && cekData.length > 0) {
                     const dbData = cekData[0];
+
                     if (dbData.pin && dbData.pin !== pin) {
-                        showToast("PIN Lama Anda Salah!", "error"); document.getElementById('btn-reg-start').style.display = 'flex'; return;
+                        showToast("PIN Lama Anda Salah!", "error");
+                        document.getElementById('reg-msg').innerHTML = "Pendaftaran Gagal.";
+                        document.getElementById('btn-reg-start').style.display = 'flex';
+                        return;
                     }
+
                     if (dbData.credential_id !== null && dbData.credential_id !== '') {
-                        showToast("AKSES DITOLAK! Akun ini sudah aktif di HP lain.", "error"); document.getElementById('btn-reg-start').style.display = 'flex'; return;
+                        showToast("AKSES DITOLAK! Akun ini sudah aktif di HP lain.", "error");
+                        document.getElementById('reg-msg').innerHTML = "<span style='color:var(--danger);'>Lapor Kepala Sekolah untuk Reset HP.</span>";
+                        document.getElementById('btn-reg-start').style.display = 'flex';
+                        return;
                     }
+
                     document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan ke Server...";
                     const { error } = await sb.from('Guru').update({ credential_id: deviceDNA, pin: pin }).eq('id', dbData.id);
                     if(!error) isSuccess = true;
+
                 } else {
+                    document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mendaftarkan Guru Baru...";
                     const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, credential_id: deviceDNA }]);
                     if(!error) isSuccess = true;
                 }
                 
-                if(!isSuccess) { showToast("Gagal menyambung!", "error"); document.getElementById('btn-reg-start').style.display = 'flex'; } 
-                else { 
-                    localStorage.setItem('device_owner', name); showToast("Pendaftaran Berhasil!", "success"); 
+                if(!isSuccess) { 
+                    showToast("Gagal menyambung ke server!", "error"); 
+                    document.getElementById('reg-msg').innerHTML = "Pendaftaran Gagal.";
+                    document.getElementById('btn-reg-start').style.display = 'flex';
+                } else { 
+                    localStorage.setItem('device_owner', name);
+                    
+                    document.getElementById('reg-msg').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Perangkat Terkunci & Aman!</span>";
+                    showToast("Pendaftaran Berhasil!", "success"); 
+                    
                     document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; fetchTeachersFromDB();
-                    setTimeout(() => { navTo('screen-login'); window.open(`https://wa.me/6281211862924?text=Halo Admin, saya *${name}* mendaftar HP baru.`, '_blank'); }, 2000);
+                    setTimeout(() => { navTo('screen-login'); window.open(`https://wa.me/6281211862924?text=Halo Admin, saya *${name}* sudah mendaftarkan HP saya (Anti-Titip Absen). Mohon diaktifkan.`, '_blank'); }, 2000);
                 }
-            } catch(err) { showToast("Kesalahan Sistem", "error"); document.getElementById('btn-reg-start').style.display = 'flex'; }
+            } catch(err) {
+                showToast("Terjadi Kesalahan Sistem", "error");
+                document.getElementById('btn-reg-start').style.display = 'flex';
+            }
         }
 
-        // ================= VERIFIKASI LOGIN (BYPASS JIKA MODE DARURAT) =================
+        function isHolidayToday() {
+            if (now.getDay() === 0) return true; 
+            const todayYMD = getCurrentYMD();
+            if (appSettings.hariLibur && appSettings.hariLibur.includes(todayYMD)) return true;
+            return false;
+        }
+
+        async function checkPelanggaran() {
+            const monthStr = String(now.getMonth() + 1).padStart(2, '0'); const yearStr = String(now.getFullYear());
+            const { data } = await sb.from('Naskan').select('*').eq('nama', selectedTeacherName).like('tanggal', `%/${monthStr}/${yearStr}`);
+            pelanggaranCount = data ? data.filter(l => l.status === 'Tidak Disiplin').length : 0;
+        }
+
+        // ================= VERIFIKASI LOGIN =================
         async function verifyLoginData() {
-            // Ambil dari localstorage JIKA BUKAN mode darurat, kalau darurat boleh ambil dari inputan ketik nama
             const name = (appSettings.mode_darurat) ? document.getElementById('teacher-search').value : (localStorage.getItem('device_owner') || document.getElementById('teacher-search').value); 
             const pin = document.getElementById('teacher-pin').value;
             
-            if(!name || !pin) { showToast("Isi Nama & PIN!", "warning"); return; }
+            if(!name || !pin) { showToast("Isi Nama & PIN!", "error"); return; }
             
             const teacherData = teachers.find(t => t.nama === name);
             if(teacherData && teacherData.pin === pin) {
@@ -413,22 +578,21 @@
                 showToast("Memindai Perangkat...", "info");
                 const currentDeviceDNA = await getDeviceDNA();
 
-                // CEK DNA HP: TAPI BYPASS KALAU MODE DARURAT AKTIF
                 if(!appSettings.mode_darurat && teacherData.credential_id !== currentDeviceDNA) {
-                    showToast("AKSES DITOLAK! HP ini tidak terdaftar untuk akun Anda.", "danger"); 
+                    showToast("AKSES DITOLAK! HP ini tidak terdaftar untuk akun Anda.", "error"); 
                     return; 
                 }
                 
                 if(!appSettings.mode_darurat) localStorage.setItem('device_owner', name);
-                selectedTeacherName = name; // Set nama yang berhasil login
+                selectedTeacherName = name; 
 
                 document.getElementById('teacher-pin').value = ''; 
                 document.getElementById('absen-greeting').innerText = `Halo, ${name}`;
                 navTo('screen-absen');
                 
-                if(now.getDay() === 0 || (appSettings.hari_libur && appSettings.hari_libur.includes(getCurrentYMD()))) {
+                if(isHolidayToday()) {
                     document.getElementById('gps-module').innerHTML = '<i class="fas fa-calendar-times" style="font-size:4rem; color:var(--danger); margin-bottom:15px; display:block;"></i><h3 style="color:var(--danger); font-size:1.5rem;">HARI LIBUR</h3>';
-                    document.getElementById('absen-action-module').style.display = 'none';
+                    document.getElementById('absen-action-module').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none'; document.getElementById('btn-pulang-awal').style.display = 'none';
                 } else {
                     await checkPelanggaran(); 
                     startAttendanceLogic();
@@ -438,12 +602,14 @@
 
         function logout() { navTo('screen-login'); }
 
+        // ================= LOGIKA ABSENSI & GPS =================
         async function startAttendanceLogic() {
             document.getElementById('gps-module').style.display = 'block'; document.getElementById('absen-action-module').style.display = 'none';
             document.getElementById('absen-distance').innerHTML = '<i class="fas fa-satellite fa-spin"></i> Cek Database...';
+            document.getElementById('btn-izin').style.display = 'none'; document.getElementById('btn-pulang-awal').style.display = 'none';
             
             const todayStr = getCurrentDateStr(); const currentMins = timeToMins(getCurrentTime24());
-            const openMins = timeToMins(appSettings.open_time); const homeMins = timeToMins(appSettings.home_time);
+            const openMins = timeToMins(appSettings.openTime); const homeMins = timeToMins(appSettings.homeTime);
             
             const { data: logs, error } = await sb.from('Naskan').select('*').eq('tanggal', todayStr).eq('nama', selectedTeacherName);
             if (error) { document.getElementById('absen-distance').innerText = 'Error Jaringan'; return; }
@@ -458,13 +624,14 @@
 
             if (!datangLog) {
                 if (currentMins < openMins) { 
-                    document.getElementById('gps-module').innerHTML = `<i class="fas fa-clock" style="font-size:4rem; color:var(--warning); margin-bottom:15px; display:block;"></i><h3 style="color:var(--warning); font-size:1.5rem;">Belum Buka</h3><p style="color:#94a3b8; font-weight:600;">Buka jam ${appSettings.open_time}</p>`; 
+                    document.getElementById('gps-module').innerHTML = `<i class="fas fa-clock" style="font-size:4rem; color:var(--warning); margin-bottom:15px; display:block;"></i><h3 style="color:var(--warning); font-size:1.5rem;">Belum Buka</h3><p style="color:#94a3b8; font-weight:600;">Buka jam ${appSettings.openTime}</p>`; 
                     attendanceLogged = true; 
-                } else { currentAbsenType = 'Datang'; attendanceLogged = false; startGPS(); }
+                } else { currentAbsenType = 'Datang'; attendanceLogged = false; document.getElementById('btn-izin').style.display = 'block'; startGPS(); }
             } else if (!pulangLog) {
                 if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; attendanceLogged = false; startGPS(); } 
                 else { 
                     document.getElementById('gps-module').innerHTML = `<i class="fas fa-check-circle" style="font-size:4rem; color:var(--primary); margin-bottom:15px; display:block;"></i><h3 style="color:var(--primary); font-size:1.5rem;">Masuk Sukses</h3><p style="color:#94a3b8; font-weight:600;">Belum waktunya pulang.</p>`; 
+                    document.getElementById('btn-pulang-awal').style.display = 'block';
                     attendanceLogged = true; 
                 }
             } else { 
@@ -473,63 +640,147 @@
             }
         }
 
+        // ======= KUNCI PERBAIKAN GPS MACET =======
         function startGPS() {
-            if (navigator.geolocation) { watchId = navigator.geolocation.watchPosition(successPosition, errorPosition, { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }); } 
-            else { document.getElementById('absen-distance').innerText = 'GPS Mati / Ditolak'; }
+            document.getElementById('absen-target-radius').innerText = `Radius Min: ${appSettings.radius} Meter`;
+            document.getElementById('absen-distance').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mencari Satelit...';
+            
+            if (navigator.geolocation) { 
+                watchId = navigator.geolocation.watchPosition(
+                    successPosition, 
+                    errorPosition, 
+                    { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 } // MAX 10 Detik biar gak macet
+                ); 
+            } else { 
+                document.getElementById('absen-distance').innerText = 'GPS Mati / Ditolak'; 
+            }
         }
 
         function successPosition(position) {
             if (attendanceLogged) { navigator.geolocation.clearWatch(watchId); return; }
             const distance = calculateDistance(position.coords.latitude, position.coords.longitude, parseFloat(appSettings.lat), parseFloat(appSettings.lng));
-            document.getElementById('absen-distance').innerText = `Jarak: ${Math.round(distance)} Meter`;
+            document.getElementById('absen-distance').innerHTML = `Jarak Anda: <b>${Math.round(distance)} Meter</b>`;
             
             if (distance <= appSettings.radius) { 
                 navigator.geolocation.clearWatch(watchId); document.getElementById('gps-module').style.display = 'none'; 
                 prepareActionScreen(); 
             } else { document.getElementById('absen-distance').style.color = "var(--danger)"; }
         }
-        function errorPosition(err) { document.getElementById('absen-distance').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Nyalakan Izin Lokasi HP!'; }
+
+        function errorPosition(err) { 
+            const distText = document.getElementById('absen-distance');
+            if(err.code === 1) {
+                distText.innerHTML = '<i class="fas fa-lock"></i> Izin Lokasi Ditolak!';
+            } else if(err.code === 2) {
+                distText.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Sinyal GPS Lemah!';
+            } else if(err.code === 3) {
+                distText.innerHTML = '<i class="fas fa-hourglass-end"></i> Sinyal Timeout (Refresh!)';
+            } else {
+                distText.innerHTML = '<i class="fas fa-times-circle"></i> Error GPS';
+            }
+        }
+        // ==========================================
 
         function prepareActionScreen() {
             const currentMins = timeToMins(getCurrentTime24());
-            document.getElementById('absen-action-module').style.display = 'block'; document.getElementById('alasan-box').style.display = 'none'; document.getElementById('auto-absen-area').style.display = 'none';
+            document.getElementById('absen-action-module').style.display = 'block';
+            document.getElementById('alasan-box').style.display = 'none';
+            document.getElementById('btn-izin').style.display = 'none';
+            document.getElementById('auto-absen-area').style.display = 'none';
             
             if (currentAbsenType === 'Datang') {
-                const tepatMins = timeToMins(appSettings.late_time) + (parseInt(appSettings.grace_period) || 0); 
-                const tolMins = timeToMins(appSettings.tol_time);
+                const tepatMins = timeToMins(appSettings.lateTime) + (parseInt(appSettings.gracePeriod) || 0); 
+                const tolMins = timeToMins(appSettings.tolTime);
                 
                 if (currentMins <= tepatMins) { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; } 
                 else if (currentMins <= tolMins) { currentStatus = 'Terlambat'; currentColor = 'warning'; } 
                 else { 
-                    const batas = parseInt(appSettings.batas_pelanggaran) || 3;
-                    if(pelanggaranCount >= batas) { document.getElementById('absen-action-module').innerHTML = `<i class="fas fa-ban" style="font-size:4rem; color:var(--danger); margin-bottom:15px; display:block;"></i><h3 style="color:var(--danger); font-size:1.5rem;">DIBLOKIR SEMENTARA</h3><p style="color:#94a3b8; font-weight:600;">${pelanggaranCount}x melanggar batas disiplin. Lapor Kepsek!</p>`; return; }
-                    currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; document.getElementById('alasan-box').style.display = 'block';
+                    const batas = parseInt(appSettings.batasPelanggaran) || 3;
+                    if(pelanggaranCount >= batas) {
+                        document.getElementById('absen-action-module').innerHTML = `<i class="fas fa-ban" style="font-size:4rem; color:var(--danger); margin-bottom:15px; display:block;"></i><h3 style="color:var(--danger); font-size:1.5rem;">DIBLOKIR SEMENTARA</h3><p style="color:#94a3b8; font-weight:600;">${pelanggaranCount}x melanggar batas disiplin. Lapor Kepsek!</p>`;
+                        return; 
+                    }
+                    currentStatus = 'Tidak Disiplin'; currentColor = 'danger'; 
+                    document.getElementById('alasan-box').style.display = 'block';
+                    document.getElementById('btn-tap-absen').style.background = `linear-gradient(135deg, #ff1744, #f57f17)`;
                 }
             } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; } 
 
-            if (currentStatus !== 'Tidak Disiplin') { document.getElementById('auto-absen-area').style.display = 'block'; setTimeout(() => { triggerAbsen(); }, 1500); }
+            if (currentStatus !== 'Tidak Disiplin') {
+                document.getElementById('auto-absen-area').style.display = 'block';
+                setTimeout(() => { triggerAbsen(); }, 1500); 
+            }
         }
 
         async function triggerAbsen() {
-            if(currentStatus === 'Tidak Disiplin' && document.getElementById('input-alasan').value.trim() === '') { showToast("Alasan Keterlambatan Wajib Diisi!", "error"); return; }
-            document.getElementById('alasan-box').style.display = 'none'; document.getElementById('auto-absen-area').style.display = 'block'; document.querySelector('.auto-absen-spinner').className = 'fas fa-satellite-dish auto-absen-spinner';
+            if(currentStatus === 'Tidak Disiplin' && document.getElementById('input-alasan').value.trim() === '') {
+                showToast("Alasan Keterlambatan Wajib Diisi!", "error"); return;
+            }
+
+            document.getElementById('alasan-box').style.display = 'none';
+            document.getElementById('auto-absen-area').style.display = 'block';
+            document.querySelector('.auto-absen-spinner').className = 'fas fa-satellite-dish auto-absen-spinner';
             
             let alasanText = currentStatus === 'Tidak Disiplin' ? document.getElementById('input-alasan').value.trim() : '-';
             const timeStr = getCurrentTime24(); const dateStr = getCurrentDateStr();
+            
             const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: currentAbsenType, status: currentStatus, warna: currentColor, alasan: alasanText }]);
             
-            if (error) { showToast("Sinyal Buruk. Coba lagi.", "error"); document.getElementById('auto-absen-area').style.display = 'none'; if(currentStatus === 'Tidak Disiplin') document.getElementById('alasan-box').style.display = 'block'; } 
-            else { attendanceLogged = true; showToast(`Sukses Absen!`, 'success'); document.getElementById('absen-action-module').innerHTML = `<i class="fas fa-check-circle" style="font-size:4.5rem; color:var(--${currentColor}); margin-bottom:15px; display:block;"></i><h3 style="color:var(--${currentColor}); font-size:1.8rem; font-weight:800;">Berhasil ${currentAbsenType}!</h3><p style="font-size:1.1rem; color:#94a3b8; font-weight:700;">Pukul ${timeStr}</p>`; setTimeout(() => { navTo('screen-history'); }, 1500); }
+            if (error) { 
+                showToast("Sinyal Buruk. Coba lagi.", "error"); 
+                document.getElementById('auto-absen-area').style.display = 'none';
+                if(currentStatus === 'Tidak Disiplin') document.getElementById('alasan-box').style.display = 'block';
+            } else { 
+                attendanceLogged = true; showToast(`Sukses Absen!`, 'success'); 
+                document.getElementById('absen-action-module').innerHTML = `<i class="fas fa-check-circle" style="font-size:4.5rem; color:var(--${currentColor}); margin-bottom:15px; display:block; animation: pulseGlow 2s infinite alternate;"></i><h3 style="color:var(--${currentColor}); font-size:1.8rem; font-weight:800;">Berhasil ${currentAbsenType}!</h3><p style="font-size:1.1rem; color:#94a3b8; font-weight:700;">Pukul ${timeStr}</p>`;
+                setTimeout(() => { navTo('screen-history'); }, 1500); 
+            }
         }
 
+        // ================= MENU TAMBAHAN (IZIN & PULANG AWAL) =================
+        function hideFormTambahan() { 
+            document.getElementById('form-izin-box').style.display = 'none'; 
+            document.getElementById('form-pulang-awal-box').style.display = 'none'; 
+            document.getElementById('gps-module').style.display = 'block'; 
+            if(currentAbsenType === 'Datang') document.getElementById('btn-izin').style.display = 'block'; 
+            else document.getElementById('btn-pulang-awal').style.display = 'block';
+            if(!attendanceLogged) startGPS(); 
+        }
+
+        function showIzinForm() { if(watchId) navigator.geolocation.clearWatch(watchId); document.getElementById('gps-module').style.display = 'none'; document.getElementById('absen-action-module').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none'; document.getElementById('form-izin-box').style.display = 'block'; }
+        async function submitIzinSakit() {
+            const tipe = document.getElementById('izin-tipe').value; const alasan = document.getElementById('izin-alasan').value.trim() || '-';
+            const warna = tipe === 'Sakit' ? 'warning' : 'info'; const dateStr = getCurrentDateStr();
+            
+            if(alasan === '-' || alasan === '') { showToast("Keterangan wajib diisi!", "error"); return; }
+            
+            showToast("Mengirim Pengajuan...", "info");
+            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: '-', tipe: tipe, status: tipe, warna: warna, alasan: alasan }]);
+            if (!error) { showToast("Berhasil Tercatat!", "success"); hideFormTambahan(); attendanceLogged = true; document.getElementById('gps-module').innerHTML = `<i class="fas fa-file-medical" style="font-size:4rem; color:var(--${warna}); margin-bottom:15px; display:block;"></i><h3 style="color:var(--${warna}); font-size:1.5rem;">${tipe} Tercatat</h3>`; document.getElementById('gps-module').style.display = 'block'; setTimeout(() => { navTo('screen-history'); }, 1500); }
+        }
+
+        function showPulangAwalForm() { document.getElementById('gps-module').style.display = 'none'; document.getElementById('btn-pulang-awal').style.display = 'none'; document.getElementById('form-pulang-awal-box').style.display = 'block'; }
+        async function submitPulangAwal() {
+            const alasan = document.getElementById('pulang-awal-alasan').value.trim();
+            if(!alasan) { showToast("Alasan Pulang Cepat Wajib Diisi!", "error"); return; }
+            
+            const timeStr = getCurrentTime24(); const dateStr = getCurrentDateStr();
+            showToast("Mencatat Kepulangan...", "info");
+            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: 'Pulang', status: 'Pulang Awal', warna: 'warning', alasan: alasan }]);
+            
+            if (!error) { showToast("Pulang Cepat Tercatat!", "success"); hideFormTambahan(); attendanceLogged = true; document.getElementById('gps-module').innerHTML = `<i class="fas fa-running" style="font-size:4rem; color:var(--warning); margin-bottom:15px; display:block;"></i><h3 style="color:var(--warning); font-size:1.5rem;">Pulang Cepat</h3><p style="color:#94a3b8; font-weight:600;">Hati-hati di jalan!</p>`; document.getElementById('gps-module').style.display = 'block'; setTimeout(() => { navTo('screen-history'); }, 1500); }
+        }
+
+        // ================= HISTORI =================
         async function fetchHistoryData() {
-            const container = document.getElementById('history-list-container'); const monthStr = String(now.getMonth() + 1).padStart(2, '0'); const yearStr = String(now.getFullYear());
+            const container = document.getElementById('history-list-container');
+            const monthStr = String(now.getMonth() + 1).padStart(2, '0'); const yearStr = String(now.getFullYear());
             document.getElementById('history-month-title').innerText = `Histori ${bulanIndo[now.getMonth()]} ${yearStr}`;
             document.getElementById('history-loading').style.display = 'block'; container.innerHTML = '';
             
             const { data: logs, error } = await sb.from('Naskan').select('*').eq('nama', selectedTeacherName).like('tanggal', `%/${monthStr}/${yearStr}`).order('id', { ascending: false });
             document.getElementById('history-loading').style.display = 'none';
-            if(error || !logs || logs.length === 0) { container.innerHTML = '<div style="text-align:center; color:#64748b; margin-top:20px; font-weight:600;">Belum ada riwayat.</div>'; return; }
+            if(error || !logs || logs.length === 0) { container.innerHTML = '<div style="text-align:center; color:#64748b; margin-top:20px; font-weight:600;">Belum ada riwayat bulan ini.</div>'; return; }
 
             const grouped = {};
             logs.forEach(log => {
@@ -548,7 +799,17 @@
                 cardHtml += `</div>`; container.innerHTML += cardHtml;
             });
         }
+        
         function calculateDistance(lat1, lon1, lat2, lon2) { const R = 6371e3; const φ1 = lat1 * Math.PI/180; const φ2 = lat2 * Math.PI/180; const Δφ = (lat2-lat1) * Math.PI/180; const Δλ = (lon2-lon1) * Math.PI/180; const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ/2) * Math.sin(Δλ/2); return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); }
+        
+        // NYALAKAN MESIN APLIKASI (SERVICE WORKER)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((reg) => console.log('Sistem Aplikasi PWA Aktif!'))
+                    .catch((err) => console.log('PWA Gagal:', err));
+            });
+        }
     </script>
 </body>
 </html>
