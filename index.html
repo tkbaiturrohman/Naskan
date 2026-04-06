@@ -39,6 +39,7 @@
         .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000; }
         .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #cbd5e1; box-shadow: none; }
         
+        /* ANIMASI DEVICE SYNC */
         .sync-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0, 176, 255, 0.1); border: 2px dashed rgba(0, 176, 255, 0.5); }
         .sync-icon { font-size: 3.5rem; color: var(--info); z-index: 2; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -48,6 +49,7 @@
         .search-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; cursor: pointer; }
         .search-item:hover { background: rgba(0,176,255,0.1); color: var(--info); }
 
+        /* ANIMASI GPS RADAR MODERN */
         .radar-container { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .radar-icon { font-size: 3.5rem; color: var(--info); z-index: 2; }
         .radar-pulse { position: absolute; width: 100%; height: 100%; background: rgba(0, 176, 255, 0.3); border-radius: 50%; z-index: 1; animation: radarAnim 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1); border: 2px solid rgba(0, 176, 255, 0.5); }
@@ -62,8 +64,10 @@
         .tap-aura { position: absolute; width: 140px; height: 140px; border-radius: 50%; background: var(--primary); z-index: 1; animation: auraPulse 1.5s infinite alternate; }
         @keyframes auraPulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
 
+        /* KARTU HISTORI */
         .history-list { flex: 1; overflow-y: auto; padding-bottom: 20px; width: 100%; max-width: 400px; margin: 0 auto; }
         .hist-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #475569; transition: 0.3s; }
+        .hist-card:hover { background: rgba(255,255,255,0.1); }
         .hist-date { font-size: 0.8rem; color: #94a3b8; margin-bottom: 8px; font-weight: 600;}
         .hist-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 5px; }
         .hist-note { font-size: 0.8rem; color: var(--warning); font-style: italic; margin-top: 5px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 5px; }
@@ -73,7 +77,7 @@
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px;}
         .toast { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); color: white; padding: 12px 18px; border-radius: 12px; border-left: 4px solid var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 10px; animation: slideDown 0.3s forwards; font-size: 0.85rem; font-weight: 600;}
-        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); }
+        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); color: black; background: var(--warning);} .toast.info { border-left-color: var(--info); }
         @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .top-navbar { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; position: sticky; top: 0; background: var(--dark-bg); z-index: 5;}
@@ -107,27 +111,33 @@
             <input type="password" id="teacher-pin" placeholder="PIN" maxlength="4" style="text-align:center; letter-spacing:8px; font-weight:bold; font-size:1.2rem;">
             
             <button class="btn btn-primary" onclick="verifyLoginData()"><i class="fas fa-sign-in-alt"></i> Masuk Sistem</button>
-            <button id="btn-daftar-link" class="btn btn-outline" style="font-size:0.85rem; margin-top:10px;" onclick="navTo('screen-register')"><i class="fas fa-link"></i>Daftar Guru</button>
+            <button id="btn-daftar-link" class="btn btn-outline" style="font-size:0.85rem; margin-top:10px;" onclick="navTo('screen-register')"><i class="fas fa-user-plus"></i> Daftarkan Guru</button>
             
-            <p id="reset-info" style="display:none; font-size:0.75rem; color:#aaa; text-align:center; margin-top:15px;">Lapor Kepala Sekolah jika ingin ganti HP / Akun terkunci.</p>
+            <p id="reset-info" style="display:none; font-size:0.75rem; color:#aaa; text-align:center; margin-top:15px;">Lapor Kepala Sekolah jika ingin ganti HP / Reset Akun.</p>
         </div>
     </div>
 
     <div id="screen-register" class="app-screen">
         <div class="top-navbar">
             <button onclick="navTo('screen-login')"><i class="fas fa-arrow-left"></i></button>
-            <h2>Pendaftaran Perangkat</h2>
+            <h2>Pendaftaran Guru</h2>
         </div>
         
         <div class="card">
-            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 20px; text-align:center;">Sistem akan merekam <b>DNA Fisik HP Anda (RAM, CPU, Layar)</b> agar anti-bajak.</p>
-            <input type="text" id="reg-name" placeholder="Nama Lengkap">
-            <input type="password" id="reg-pin" placeholder="PIN Rahasia (4 Angka)" maxlength="4" style="text-align:center; letter-spacing:5px;">
+            <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 20px; text-align:center;">Sistem akan merekam <b style="color:var(--warning);">DNA Fisik HP Anda</b> agar tidak bisa diakses dari HP lain.</p>
             
-            <div style="margin: 20px 0; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; text-align:center;">
-                <div class="sync-container"><i class="fas fa-microchip sync-icon"></i></div>
+            <input type="text" id="reg-name" placeholder="Nama Lengkap">
+            
+            <input type="password" id="reg-pin" placeholder="Buat PIN Rahasia (4 Angka)" maxlength="4" style="text-align:center; letter-spacing:5px;">
+            <p style="font-size: 0.7rem; color:#94a3b8; text-align:center; margin-top:-5px; margin-bottom:15px;">Jika Anda Guru Baru, PIN ini akan disimpan sebagai PIN permanen Anda.</p>
+            
+            <div style="margin: 10px 0; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; text-align:center;">
+                <div class="sync-container">
+                    <i class="fas fa-microchip sync-icon"></i>
+                </div>
+                
                 <p id="reg-msg" style="font-size:0.85rem; color:var(--info); margin-bottom:15px; font-weight:600;"><i class="fas fa-shield-alt"></i> Perekam DNA Hardware Siap</p>
-                <button id="btn-reg-start" class="btn btn-primary" onclick="startDeviceBinding()"><i class="fas fa-fingerprint"></i> Kunci Ke Hardware HP Ini</button>
+                <button id="btn-reg-start" class="btn btn-primary" onclick="startDeviceBinding()"><i class="fas fa-link"></i> Kunci Ke Hardware HP Ini</button>
             </div>
         </div>
     </div>
@@ -325,30 +335,33 @@
 
         // ================= PENDAFTARAN HARDWARE HP KE DATABASE =================
         async function startDeviceBinding() {
-            const name = document.getElementById('reg-name').value.trim(); const pin = document.getElementById('reg-pin').value.trim();
+            const name = document.getElementById('reg-name').value.trim(); // KEMBALI MENGGUNAKAN INPUT TEXT BEBAS
+            const pin = document.getElementById('reg-pin').value.trim();
             if(!name || pin.length !== 4) { showToast("Isi Nama & PIN 4 Angka!", "warning"); return; }
             
             document.getElementById('btn-reg-start').style.display = 'none';
             document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Memindai DNA Perangkat...";
 
             // Hasilkan ID Unik berdasarkan Fisik HP
-            const deviceDNA = await getDeviceFingerprint();
+            const deviceDNA = await getDeviceDNA();
 
             const { data: cekData } = await sb.from('Guru').select('id, credential_id, pin').eq('nama', name);
             
             let isSuccess = false;
             
             if (cekData && cekData.length > 0) {
+                const dbData = cekData[0];
+
                 // CEK JIKA PIN SALAH
-                if (cekData[0].pin !== pin) {
-                    showToast("PIN Anda Salah!", "error");
+                if (dbData.pin && dbData.pin !== pin) {
+                    showToast("PIN Lama Anda Salah!", "error");
                     document.getElementById('reg-msg').innerHTML = "Pendaftaran Gagal.";
                     document.getElementById('btn-reg-start').style.display = 'flex';
                     return;
                 }
 
                 // JIKA AKUN SUDAH TERKUNCI (Belum direset Kepala Sekolah)
-                if (cekData[0].credential_id !== null && cekData[0].credential_id !== '') {
+                if (dbData.credential_id !== null && dbData.credential_id !== '') {
                     showToast("AKSES DITOLAK! Akun ini sudah aktif di HP lain.", "error");
                     document.getElementById('reg-msg').innerHTML = "<span style='color:var(--danger);'>Lapor Kepala Sekolah untuk Reset HP.</span>";
                     document.getElementById('btn-reg-start').style.display = 'flex';
@@ -357,11 +370,12 @@
 
                 // UPDATE JIKA KOSONG (Baru atau sudah di-reset)
                 document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan ke Server...";
-                const { error } = await sb.from('Guru').update({ credential_id: deviceDNA }).eq('id', cekData[0].id);
+                const { error } = await sb.from('Guru').update({ credential_id: deviceDNA, pin: pin }).eq('id', dbData.id);
                 if(!error) isSuccess = true;
 
             } else {
-                // INSERT JIKA GURU BARU
+                // INSERT JIKA GURU BARU DAFTAR (Ketik Nama Sendiri)
+                document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan ke Server...";
                 const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, credential_id: deviceDNA }]);
                 if(!error) isSuccess = true;
             }
@@ -374,7 +388,7 @@
                 localStorage.setItem('device_owner', name);
                 
                 document.getElementById('reg-msg').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Perangkat Terkunci & Aman!</span>";
-                showToast("HP Berhasil Didaftarkan!", "success"); 
+                showToast("Didaftarkan!", "success"); 
                 
                 document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; fetchTeachersFromDB();
                 setTimeout(() => { 
