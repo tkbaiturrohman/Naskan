@@ -11,14 +11,11 @@
     <style>
         :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --dark-bg: #0f172a; --card-bg: rgba(30, 41, 59, 0.8); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
         body, html { width: 100%; height: 100%; overflow: hidden; background: var(--dark-bg); color: white; }
         
-        /* ANIMASI BACKGROUND */
         .bg-animated { position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, #1e293b 0%, #0f172a 80%); z-index: -1; animation: rotateBg 30s linear infinite; }
         @keyframes rotateBg { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* SPA SCREENS */
         .app-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 20px; overflow-y: auto; overflow-x: hidden; opacity: 0; transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: scale(0.95); }
         .app-screen.active { display: flex; opacity: 1; z-index: 10; transform: scale(1); }
 
@@ -30,6 +27,7 @@
         
         input[type="text"], input[type="password"], select { width: 100%; padding: 14px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: white; font-size: 1rem; outline: none; margin-bottom: 15px; transition: 0.3s; }
         input:focus, select:focus { border-color: var(--info); box-shadow: 0 0 15px rgba(0,176,255,0.3); background: rgba(0,0,0,0.6);}
+        select option { background: var(--dark-bg); color: white; }
         
         .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 1rem; font-weight: 600; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .btn:active { transform: scale(0.95); }
@@ -39,7 +37,6 @@
         .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000; }
         .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #cbd5e1; box-shadow: none; }
         
-        /* ANIMASI DEVICE SYNC */
         .sync-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0, 176, 255, 0.1); border: 2px dashed rgba(0, 176, 255, 0.5); }
         .sync-icon { font-size: 3.5rem; color: var(--info); z-index: 2; animation: float 3s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -49,22 +46,17 @@
         .search-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; cursor: pointer; }
         .search-item:hover { background: rgba(0,176,255,0.1); color: var(--info); }
 
-        /* ANIMASI GPS RADAR MODERN */
-        .radar-container { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        /* ANIMASI GPS RADAR */
+        .radar-container { position: relative; width: 130px; height: 130px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .radar-icon { font-size: 3.5rem; color: var(--info); z-index: 2; }
         .radar-pulse { position: absolute; width: 100%; height: 100%; background: rgba(0, 176, 255, 0.3); border-radius: 50%; z-index: 1; animation: radarAnim 2s infinite cubic-bezier(0.25, 0.8, 0.25, 1); border: 2px solid rgba(0, 176, 255, 0.5); }
         .radar-pulse:nth-child(2) { animation-delay: 1s; }
         @keyframes radarAnim { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
 
-        /* TOMBOL TAP ABSEN RAKSASA */
-        .tap-btn-container { position: relative; width: 180px; height: 180px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
-        .tap-btn { width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, #00e676, #00c853); border: none; color: white; font-size: 1.2rem; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 230, 118, 0.4); z-index: 3; transition: 0.2s; display: flex; flex-direction: column; gap: 5px; }
-        .tap-btn i { font-size: 2.5rem; }
-        .tap-btn:active { transform: scale(0.9); box-shadow: 0 5px 15px rgba(0, 230, 118, 0.3); }
-        .tap-aura { position: absolute; width: 140px; height: 140px; border-radius: 50%; background: var(--primary); z-index: 1; animation: auraPulse 1.5s infinite alternate; }
-        @keyframes auraPulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(1.3); opacity: 0; } }
+        /* ANIMASI AUTO ABSEN (LOADING) */
+        .auto-absen-spinner { font-size: 4rem; color: var(--primary); animation: spin 1.5s linear infinite; margin-bottom: 15px;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* KARTU HISTORI */
         .history-list { flex: 1; overflow-y: auto; padding-bottom: 20px; width: 100%; max-width: 400px; margin: 0 auto; }
         .hist-card { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #475569; transition: 0.3s; }
         .hist-card:hover { background: rgba(255,255,255,0.1); }
@@ -113,7 +105,7 @@
             <button class="btn btn-primary" onclick="verifyLoginData()"><i class="fas fa-sign-in-alt"></i> Masuk Sistem</button>
             <button id="btn-daftar-link" class="btn btn-outline" style="font-size:0.85rem; margin-top:10px;" onclick="navTo('screen-register')"><i class="fas fa-user-plus"></i> Daftarkan Guru</button>
             
-            <p id="reset-info" style="display:none; font-size:0.75rem; color:#aaa; text-align:center; margin-top:15px;">Lapor Kepala Sekolah jika ingin ganti HP / Reset Akun.</p>
+            <p id="reset-info" style="display:none; font-size:0.75rem; color:#aaa; text-align:center; margin-top:15px;">Lapor Kepala Sekolah jika ingin ganti HP / Akun terkunci.</p>
         </div>
     </div>
 
@@ -126,17 +118,15 @@
         <div class="card">
             <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 20px; text-align:center;">Sistem akan merekam <b style="color:var(--warning);">DNA Fisik HP Anda</b> agar tidak bisa diakses dari HP lain.</p>
             
-            <input type="text" id="reg-name" placeholder="Nama Lengkap">
+            <select id="reg-name">
+                <option value="">- Pilih Nama Anda -</option>
+            </select>
             
             <input type="password" id="reg-pin" placeholder="Buat PIN Rahasia (4 Angka)" maxlength="4" style="text-align:center; letter-spacing:5px;">
-            <p style="font-size: 0.7rem; color:#94a3b8; text-align:center; margin-top:-5px; margin-bottom:15px;">Jika Anda Guru Baru, PIN ini akan disimpan sebagai PIN permanen Anda.</p>
             
             <div style="margin: 10px 0; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; text-align:center;">
-                <div class="sync-container">
-                    <i class="fas fa-microchip sync-icon"></i>
-                </div>
-                
-                <p id="reg-msg" style="font-size:0.85rem; color:var(--info); margin-bottom:15px; font-weight:600;"><i class="fas fa-shield-alt"></i> Perekam DNA Hardware Siap</p>
+                <div class="sync-container"><i class="fas fa-microchip sync-icon"></i></div>
+                <p id="reg-msg" style="font-size:0.85rem; color:var(--info); margin-bottom:15px; font-weight:600;"><i class="fas fa-shield-alt"></i> Perekam Hardware Siap</p>
                 <button id="btn-reg-start" class="btn btn-primary" onclick="startDeviceBinding()"><i class="fas fa-link"></i> Kunci Ke Hardware HP Ini</button>
             </div>
         </div>
@@ -162,23 +152,23 @@
             </div>
 
             <div id="absen-action-module" style="display:none;">
-                <div class="tap-btn-container" id="tap-btn-area">
-                    <div class="tap-aura" id="tap-aura"></div>
-                    <button class="tap-btn" id="btn-tap-absen" onclick="triggerAbsen()">
-                        <i class="fas fa-hand-pointer"></i>
-                        <span id="tap-btn-text">ABSEN</span>
-                    </button>
+                
+                <div id="auto-absen-area" style="display:none;">
+                    <i class="fas fa-satellite-dish auto-absen-spinner"></i>
+                    <h3 style="color:var(--primary); margin-bottom: 5px;">Area Cocok!</h3>
+                    <p style="font-size:0.9rem; color:#aaa; margin-bottom: 15px;">Mengirim data absen otomatis...</p>
                 </div>
                 
-                <p id="absen-msg" style="font-size:0.9rem; font-weight:bold; color:var(--primary); margin-bottom:15px;">Anda Berada di Area Sekolah!</p>
-                
                 <div id="alasan-box" style="display:none; text-align:left; margin-bottom:15px;">
-                    <label style="font-size:0.8rem; color:var(--danger); font-weight:bold;">Alasan Keterlambatan (Wajib):</label>
+                    <h3 style="color:var(--danger); text-align:center; margin-bottom:10px;"><i class="fas fa-exclamation-triangle"></i> Anda Terlambat</h3>
+                    <label style="font-size:0.8rem; color:var(--danger); font-weight:bold;">Wajib isi alasan keterlambatan:</label>
                     <input type="text" id="input-alasan" placeholder="Ketik alasan logis..." style="border-color:var(--danger); background:rgba(255,0,0,0.1); margin-top:5px;">
+                    <button class="btn btn-danger" id="btn-submit-alasan" onclick="triggerAbsen()"><i class="fas fa-paper-plane"></i> Kirim Absen</button>
                 </div>
             </div>
 
             <button id="btn-izin" class="btn btn-outline" style="display:none; font-size:0.85rem; margin-top:15px; color:var(--warning); border-color:var(--warning);" onclick="showIzinForm()"><i class="fas fa-file-medical"></i> Ajukan Izin / Sakit</button>
+            <button id="btn-pulang-awal" class="btn btn-outline" style="display:none; font-size:0.85rem; margin-top:10px; color:var(--info); border-color:var(--info);" onclick="showPulangAwalForm()"><i class="fas fa-running"></i> Izin Pulang Lebih Awal</button>
             <button class="btn btn-outline" style="margin-top:10px; font-size:0.85rem; border:none;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Beranda Utama</button>
         </div>
 
@@ -187,7 +177,14 @@
             <select id="izin-tipe"><option value="Sakit">Sakit</option><option value="Izin">Izin Keperluan</option></select>
             <input type="text" id="izin-alasan" placeholder="Keterangan singkat...">
             <button class="btn btn-success" onclick="submitIzinSakit()"><i class="fas fa-check"></i> Kirim Pengajuan</button>
-            <button class="btn btn-outline" onclick="hideIzinForm()">Batal</button>
+            <button class="btn btn-outline" onclick="hideFormTambahan()">Batal</button>
+        </div>
+
+        <div class="card" id="form-pulang-awal-box" style="display:none; margin-top:15px; border-color:var(--info);">
+            <h3 style="font-size:1rem; color:var(--info); margin-bottom:15px;"><i class="fas fa-running"></i> Pulang Lebih Awal</h3>
+            <input type="text" id="pulang-awal-alasan" placeholder="Alasan pulang cepat (Wajib)..." style="border-color:var(--info);">
+            <button class="btn btn-info" onclick="submitPulangAwal()"><i class="fas fa-check"></i> Catat Pulang Sekarang</button>
+            <button class="btn btn-outline" onclick="hideFormTambahan()">Batal</button>
         </div>
     </div>
 
@@ -201,7 +198,6 @@
     </div>
 
     <script>
-        // API SUPABASE
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
@@ -219,48 +215,33 @@
         function getCurrentYMD() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function timeToMins(timeStr) { if (!timeStr) return 0; const parts = timeStr.split(':'); return parseInt(parts[0]) * 60 + parseInt(parts[1]); }
 
-        // ================= MESIN PENCETAK DNA FISIK HP (HARDWARE FINGERPRINT) =================
+        // MENGHASILKAN DNA HP UNTUK ANTI-BAJAK
         async function getDeviceDNA() {
             return new Promise((resolve) => {
-                // 1. Buat elemen gambar rahasia (Canvas) untuk mendeteksi ID Kartu Grafis HP
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                ctx.textBaseline = 'top';
-                ctx.font = '14px Arial';
-                ctx.textBaseline = 'alphabetic';
-                ctx.fillStyle = '#f60';
-                ctx.fillRect(125,1,62,20);
-                ctx.fillStyle = '#069';
-                ctx.fillText('TK Baiturrohman Absen', 2, 15);
-                ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-                ctx.fillText('TK Baiturrohman Absen', 4, 17);
+                ctx.textBaseline = 'top'; ctx.font = '14px Arial'; ctx.textBaseline = 'alphabetic';
+                ctx.fillStyle = '#f60'; ctx.fillRect(125,1,62,20);
+                ctx.fillStyle = '#069'; ctx.fillText('TK Baiturrohman', 2, 15);
+                ctx.fillStyle = 'rgba(102, 204, 0, 0.7)'; ctx.fillText('TK Baiturrohman', 4, 17);
                 const canvasData = canvas.toDataURL();
 
-                // 2. Gabungkan dengan Spek Fisik HP (RAM, CPU, Layar)
                 const hardwareData = [
-                    navigator.userAgent,
-                    screen.height,
-                    screen.width,
-                    screen.colorDepth,
-                    navigator.hardwareConcurrency || 'unknown',
-                    navigator.deviceMemory || 'unknown',
-                    canvasData
+                    navigator.userAgent, screen.height, screen.width, screen.colorDepth,
+                    navigator.hardwareConcurrency || 'unknown', navigator.deviceMemory || 'unknown', canvasData
                 ].join('|');
 
-                // 3. Ubah semua data panjang itu menjadi satu kode rahasia pendek (Hashing)
                 let hash = 0;
                 for (let i = 0; i < hardwareData.length; i++) {
                     const char = hardwareData.charCodeAt(i);
                     hash = ((hash << 5) - hash) + char;
                     hash = hash & hash; 
                 }
-                
-                // Hasilkan Kode Unik (Contoh: "DEV-a8b2c4d")
                 resolve('DEV-' + Math.abs(hash).toString(16));
             });
         }
 
-        // --- SPA NAVIGATION ---
+        // NAVIGASI
         function navTo(screenId) {
             document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -305,7 +286,13 @@
 
         async function fetchTeachersFromDB() {
             const { data } = await sb.from('Guru').select('*').order('nama', { ascending: true });
-            teachers = data || []; checkDeviceLock(); 
+            teachers = data || []; 
+            
+            const regSelect = document.getElementById('reg-name');
+            regSelect.innerHTML = '<option value="">- Pilih Nama Anda -</option>';
+            teachers.forEach(t => { regSelect.innerHTML += `<option value="${t.nama}">${t.nama}</option>`; });
+
+            checkDeviceLock(); 
         }
 
         function filterTeachers() {
@@ -313,7 +300,6 @@
             const val = input.value.toLowerCase(); list.innerHTML = ''; list.style.display = 'block';
             const activeTeachers = teachers.filter(t => t.is_active === true);
             const filtered = activeTeachers.filter(t => t.nama.toLowerCase().includes(val));
-            
             if(activeTeachers.length === 0) { list.innerHTML = '<div class="search-item" style="color:#aaa;">Belum ada akun aktif</div>'; return; }
             if(filtered.length === 0) { list.innerHTML = '<div class="search-item" style="color:#aaa;">Nama tidak ditemukan</div>'; return; }
             filtered.forEach(t => { let div = document.createElement('div'); div.className = 'search-item'; div.innerText = t.nama; div.onclick = () => { input.value = t.nama; list.style.display = 'none'; }; list.appendChild(div); });
@@ -321,7 +307,6 @@
 
         function checkDeviceLock() {
             const lockedName = localStorage.getItem('device_owner'); 
-            
             if (lockedName) {
                 document.getElementById('search-wrapper').style.display = 'none'; document.getElementById('btn-daftar-link').style.display = 'none';
                 document.getElementById('lock-msg').style.display = 'block'; document.getElementById('locked-name').style.display = 'block';
@@ -333,68 +318,56 @@
             }
         }
 
-        // ================= PENDAFTARAN HARDWARE HP KE DATABASE =================
         async function startDeviceBinding() {
-            const name = document.getElementById('reg-name').value.trim(); // KEMBALI MENGGUNAKAN INPUT TEXT BEBAS
+            const name = document.getElementById('reg-name').value;
             const pin = document.getElementById('reg-pin').value.trim();
-            if(!name || pin.length !== 4) { showToast("Isi Nama & PIN 4 Angka!", "warning"); return; }
+            if(!name || pin.length !== 4) { showToast("Pilih Nama & Isi PIN 4 Angka!", "warning"); return; }
             
             document.getElementById('btn-reg-start').style.display = 'none';
             document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Memindai DNA Perangkat...";
 
-            // Hasilkan ID Unik berdasarkan Fisik HP
-            const deviceDNA = await getDeviceDNA();
+            try {
+                const deviceDNA = await getDeviceDNA();
+                const { data: cekData } = await sb.from('Guru').select('id, credential_id, pin').eq('nama', name);
+                
+                let isSuccess = false;
+                if (cekData && cekData.length > 0) {
+                    const dbData = cekData[0];
+                    if (dbData.pin && dbData.pin !== pin) {
+                        showToast("PIN Lama Anda Salah!", "error");
+                        document.getElementById('reg-msg').innerHTML = "Pendaftaran Gagal.";
+                        document.getElementById('btn-reg-start').style.display = 'flex'; return;
+                    }
+                    if (dbData.credential_id !== null && dbData.credential_id !== '') {
+                        showToast("AKSES DITOLAK! Akun ini sudah aktif di HP lain.", "error");
+                        document.getElementById('reg-msg').innerHTML = "<span style='color:var(--danger);'>Lapor Kepala Sekolah untuk Reset HP.</span>";
+                        document.getElementById('btn-reg-start').style.display = 'flex'; return;
+                    }
 
-            const { data: cekData } = await sb.from('Guru').select('id, credential_id, pin').eq('nama', name);
-            
-            let isSuccess = false;
-            
-            if (cekData && cekData.length > 0) {
-                const dbData = cekData[0];
+                    document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan ke Server...";
+                    const { error } = await sb.from('Guru').update({ credential_id: deviceDNA, pin: pin }).eq('id', dbData.id);
+                    if(!error) isSuccess = true;
 
-                // CEK JIKA PIN SALAH
-                if (dbData.pin && dbData.pin !== pin) {
-                    showToast("PIN Lama Anda Salah!", "error");
+                } else {
+                    document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan ke Server...";
+                    const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, credential_id: deviceDNA }]);
+                    if(!error) isSuccess = true;
+                }
+                
+                if(!isSuccess) { 
+                    showToast("Gagal menyambung ke server!", "error"); 
                     document.getElementById('reg-msg').innerHTML = "Pendaftaran Gagal.";
                     document.getElementById('btn-reg-start').style.display = 'flex';
-                    return;
+                } else { 
+                    localStorage.setItem('device_owner', name);
+                    document.getElementById('reg-msg').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Perangkat Terkunci & Aman!</span>";
+                    showToast("Didaftarkan!", "success"); 
+                    
+                    document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; fetchTeachersFromDB();
+                    setTimeout(() => { navTo('screen-login'); window.open(`https://wa.me/6281211862924?text=Halo Admin, saya *${name}* mendaftarkan perangkat. Mohon diaktifkan.`, '_blank'); }, 2000);
                 }
-
-                // JIKA AKUN SUDAH TERKUNCI (Belum direset Kepala Sekolah)
-                if (dbData.credential_id !== null && dbData.credential_id !== '') {
-                    showToast("AKSES DITOLAK! Akun ini sudah aktif di HP lain.", "error");
-                    document.getElementById('reg-msg').innerHTML = "<span style='color:var(--danger);'>Lapor Kepala Sekolah untuk Reset HP.</span>";
-                    document.getElementById('btn-reg-start').style.display = 'flex';
-                    return;
-                }
-
-                // UPDATE JIKA KOSONG (Baru atau sudah di-reset)
-                document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan ke Server...";
-                const { error } = await sb.from('Guru').update({ credential_id: deviceDNA, pin: pin }).eq('id', dbData.id);
-                if(!error) isSuccess = true;
-
-            } else {
-                // INSERT JIKA GURU BARU DAFTAR (Ketik Nama Sendiri)
-                document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan ke Server...";
-                const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, credential_id: deviceDNA }]);
-                if(!error) isSuccess = true;
-            }
-            
-            if(!isSuccess) { 
-                showToast("Gagal menyambung ke server!", "error"); 
-                document.getElementById('reg-msg').innerHTML = "Pendaftaran Gagal.";
-                document.getElementById('btn-reg-start').style.display = 'flex';
-            } else { 
-                localStorage.setItem('device_owner', name);
-                
-                document.getElementById('reg-msg').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Perangkat Terkunci & Aman!</span>";
-                showToast("Didaftarkan!", "success"); 
-                
-                document.getElementById('reg-name').value = ''; document.getElementById('reg-pin').value = ''; fetchTeachersFromDB();
-                setTimeout(() => { 
-                    navTo('screen-login'); 
-                    window.open(`https://wa.me/6281211862924?text=Halo Admin, saya *${name}* sudah mendaftarkan HP saya (Anti-Titip Absen). Mohon diaktifkan.`, '_blank'); 
-                }, 2000);
+            } catch(err) {
+                showToast("Terjadi Kesalahan Sistem", "error"); document.getElementById('btn-reg-start').style.display = 'flex';
             }
         }
 
@@ -411,7 +384,6 @@
             pelanggaranCount = data ? data.filter(l => l.status === 'Tidak Disiplin').length : 0;
         }
 
-        // ================= VERIFIKASI LOGIN (CEK DNA FISIK HP) =================
         async function verifyLoginData() {
             const name = localStorage.getItem('device_owner') || document.getElementById('teacher-search').value; 
             const pin = document.getElementById('teacher-pin').value;
@@ -422,27 +394,22 @@
             if(teacherData && teacherData.pin === pin) {
                 if(!teacherData.is_active) { showToast("Akun belum di-ACC Admin!", "error"); return; }
                 
-                // BACA DNA HP YANG DIPAKAI LOGIN SAAT INI
+                showToast("Memindai Perangkat...", "info");
                 const currentDeviceDNA = await getDeviceDNA();
 
-                // COCOKKAN DENGAN DATABASE
                 if(teacherData.credential_id !== currentDeviceDNA) {
-                    // JIKA GURU HAPUS CACHE, DIA TETAP BISA MASUK (KARENA DNA FISIK HP-NYA SAMA!)
-                    // JIKA GURU PINJAM HP TEMAN, DNA FISIKNYA PASTI BEDA -> DITOLAK!
                     showToast("AKSES DITOLAK! HP ini tidak terdaftar untuk akun Anda.", "danger"); 
                     return; 
                 }
                 
-                // SIMPAN KEMBALI NAMA KE LOCALSTORAGE (Jaga-jaga kalau dia habis hapus cache)
                 localStorage.setItem('device_owner', name);
-
                 document.getElementById('teacher-pin').value = ''; 
                 document.getElementById('absen-greeting').innerText = `Halo, ${name}`;
                 navTo('screen-absen');
                 
                 if(isHolidayToday()) {
                     document.getElementById('gps-module').innerHTML = '<i class="fas fa-calendar-times" style="font-size:3rem; color:var(--danger); margin-bottom:10px;"></i><h3 style="color:var(--danger);">HARI LIBUR</h3>';
-                    document.getElementById('absen-action-module').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none';
+                    document.getElementById('absen-action-module').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none'; document.getElementById('btn-pulang-awal').style.display = 'none';
                 } else {
                     await checkPelanggaran(); 
                     startAttendanceLogic();
@@ -452,10 +419,10 @@
 
         function logout() { navTo('screen-login'); }
 
-        // ================= LOGIKA ABSENSI =================
         async function startAttendanceLogic() {
             document.getElementById('gps-module').style.display = 'block'; document.getElementById('absen-action-module').style.display = 'none';
             document.getElementById('absen-distance').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cek Database...';
+            document.getElementById('btn-izin').style.display = 'none'; document.getElementById('btn-pulang-awal').style.display = 'none';
             
             const todayStr = getCurrentDateStr(); const currentMins = timeToMins(getCurrentTime24());
             const openMins = timeToMins(appSettings.openTime); const homeMins = timeToMins(appSettings.homeTime);
@@ -465,8 +432,6 @@
 
             const datangLog = logs.find(log => log.tipe === 'Datang' || log.tipe === 'Sakit' || log.tipe === 'Izin' || log.tipe === 'Alpa'); 
             const pulangLog = logs.find(log => log.tipe === 'Pulang');
-
-            document.getElementById('btn-izin').style.display = 'none';
 
             if (datangLog && (datangLog.tipe === 'Sakit' || datangLog.tipe === 'Izin' || datangLog.tipe === 'Alpa')) {
                 document.getElementById('gps-module').innerHTML = `<h3 style="color:var(--${datangLog.warna});"><i class="fas fa-file-medical"></i> ${datangLog.tipe}</h3><p>Tercatat seharian.</p>`; 
@@ -481,7 +446,9 @@
             } else if (!pulangLog) {
                 if (currentMins >= homeMins) { currentAbsenType = 'Pulang'; attendanceLogged = false; startGPS(); } 
                 else { 
-                    document.getElementById('gps-module').innerHTML = `<h3 style="color:var(--primary);"><i class="fas fa-check-double"></i> Masuk Sukses</h3><p>Tunggu jam pulang.</p>`; 
+                    document.getElementById('gps-module').innerHTML = `<h3 style="color:var(--primary);"><i class="fas fa-check-double"></i> Masuk Sukses</h3><p>Belum waktunya pulang.</p>`; 
+                    // FITUR PULANG CEPAT MUNCUL
+                    document.getElementById('btn-pulang-awal').style.display = 'block';
                     attendanceLogged = true; 
                 }
             } else { 
@@ -508,12 +475,13 @@
         }
         function errorPosition(err) { document.getElementById('absen-distance').innerText = 'Nyalakan GPS HP Anda!'; }
 
-        // ================= PERSIAPAN LAYAR TOMBOL TAP =================
+        // ================= PERSIAPAN LAYAR AUTO ABSEN =================
         function prepareActionScreen() {
             const currentMins = timeToMins(getCurrentTime24());
             document.getElementById('absen-action-module').style.display = 'block';
             document.getElementById('alasan-box').style.display = 'none';
             document.getElementById('btn-izin').style.display = 'none';
+            document.getElementById('auto-absen-area').style.display = 'none';
             
             if (currentAbsenType === 'Datang') {
                 const tepatMins = timeToMins(appSettings.lateTime) + (parseInt(appSettings.gracePeriod) || 0); 
@@ -532,21 +500,22 @@
                 }
             } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; } 
 
-            // Set Warna Tombol Sesuai Status
-            document.getElementById('btn-tap-absen').style.background = `var(--${currentColor})`;
-            document.getElementById('tap-aura').style.background = `var(--${currentColor})`;
-            document.getElementById('tap-btn-text').innerText = `ABSEN\n${currentAbsenType.toUpperCase()}`;
+            // JIKA STATUS AMAN, LANGSUNG AUTO ABSEN!
+            if (currentStatus !== 'Tidak Disiplin') {
+                document.getElementById('auto-absen-area').style.display = 'block';
+                setTimeout(() => { triggerAbsen(); }, 1500); // Otomatis tembak ke DB setelah 1.5 detik
+            }
         }
 
-        // ================= EKSEKUSI KLIK TOMBOL ABSEN =================
+        // ================= EKSEKUSI ABSEN =================
         async function triggerAbsen() {
             if(currentStatus === 'Tidak Disiplin' && document.getElementById('input-alasan').value.trim() === '') {
-                showToast("Alasan Keterlambatan Wajib Diisi dulu!", "error"); return;
+                showToast("Alasan Keterlambatan Wajib Diisi!", "error"); return;
             }
 
-            document.getElementById('tap-btn-area').style.display = 'none';
             document.getElementById('alasan-box').style.display = 'none';
-            document.getElementById('absen-msg').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan ke Server...';
+            document.getElementById('auto-absen-area').style.display = 'block';
+            document.querySelector('.auto-absen-spinner').className = 'fas fa-spinner fa-spin auto-absen-spinner';
             
             let alasanText = currentStatus === 'Tidak Disiplin' ? document.getElementById('input-alasan').value.trim() : '-';
             const timeStr = getCurrentTime24(); const dateStr = getCurrentDateStr();
@@ -554,8 +523,9 @@
             const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: currentAbsenType, status: currentStatus, warna: currentColor, alasan: alasanText }]);
             
             if (error) { 
-                document.getElementById('absen-msg').innerHTML = '<span style="color:var(--danger);">Sinyal Buruk. Coba lagi.</span>'; 
-                document.getElementById('tap-btn-area').style.display = 'flex'; 
+                showToast("Sinyal Buruk. Coba lagi.", "error"); 
+                document.getElementById('auto-absen-area').style.display = 'none';
+                if(currentStatus === 'Tidak Disiplin') document.getElementById('alasan-box').style.display = 'block';
             } else { 
                 attendanceLogged = true; showToast(`Sukses Absen!`, 'success'); 
                 document.getElementById('absen-action-module').innerHTML = `<div style="font-size:4rem; color:var(--${currentColor}); margin-bottom:10px;"><i class="fas fa-check-circle"></i></div><h3 style="color:var(--${currentColor});">Berhasil ${currentAbsenType}!</h3><p style="font-size:0.9rem; color:#aaa;">Pukul ${timeStr}</p>`;
@@ -563,15 +533,36 @@
             }
         }
 
+        // ================= MENU TAMBAHAN (IZIN & PULANG AWAL) =================
+        function hideFormTambahan() { 
+            document.getElementById('form-izin-box').style.display = 'none'; 
+            document.getElementById('form-pulang-awal-box').style.display = 'none'; 
+            document.getElementById('gps-module').style.display = 'block'; 
+            if(currentAbsenType === 'Datang') document.getElementById('btn-izin').style.display = 'block'; 
+            else document.getElementById('btn-pulang-awal').style.display = 'block';
+            if(!attendanceLogged) startGPS(); 
+        }
+
         function showIzinForm() { if(watchId) navigator.geolocation.clearWatch(watchId); document.getElementById('gps-module').style.display = 'none'; document.getElementById('absen-action-module').style.display = 'none'; document.getElementById('btn-izin').style.display = 'none'; document.getElementById('form-izin-box').style.display = 'block'; }
-        function hideIzinForm() { document.getElementById('form-izin-box').style.display = 'none'; document.getElementById('gps-module').style.display = 'block'; document.getElementById('btn-izin').style.display = 'block'; startGPS(); }
-        
         async function submitIzinSakit() {
             const tipe = document.getElementById('izin-tipe').value; const alasan = document.getElementById('izin-alasan').value.trim() || '-';
             const warna = tipe === 'Sakit' ? 'warning' : 'info'; const dateStr = getCurrentDateStr();
             showToast("Mengirim...", "info");
             const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: '-', tipe: tipe, status: tipe, warna: warna, alasan: alasan }]);
-            if (!error) { showToast("Berhasil!", "success"); document.getElementById('form-izin-box').style.display = 'none'; attendanceLogged = true; document.getElementById('gps-module').innerHTML = `<h3 style="color:var(--${warna});"><i class="fas fa-file-medical"></i> ${tipe} Tercatat</h3>`; document.getElementById('gps-module').style.display = 'block'; setTimeout(() => { navTo('screen-history'); }, 1500); }
+            if (!error) { showToast("Berhasil!", "success"); hideFormTambahan(); attendanceLogged = true; document.getElementById('gps-module').innerHTML = `<h3 style="color:var(--${warna});"><i class="fas fa-file-medical"></i> ${tipe} Tercatat</h3>`; document.getElementById('gps-module').style.display = 'block'; setTimeout(() => { navTo('screen-history'); }, 1500); }
+        }
+
+        // FITUR BARU: PULANG AWAL DARURAT
+        function showPulangAwalForm() { document.getElementById('gps-module').style.display = 'none'; document.getElementById('btn-pulang-awal').style.display = 'none'; document.getElementById('form-pulang-awal-box').style.display = 'block'; }
+        async function submitPulangAwal() {
+            const alasan = document.getElementById('pulang-awal-alasan').value.trim();
+            if(!alasan) { showToast("Alasan Pulang Cepat Wajib Diisi!", "warning"); return; }
+            
+            const timeStr = getCurrentTime24(); const dateStr = getCurrentDateStr();
+            showToast("Mengirim...", "info");
+            const { error } = await sb.from('Naskan').insert([{ tanggal: dateStr, nama: selectedTeacherName, waktu: timeStr, tipe: 'Pulang', status: 'Pulang Awal', warna: 'warning', alasan: alasan }]);
+            
+            if (!error) { showToast("Pulang Tercatat!", "success"); hideFormTambahan(); attendanceLogged = true; document.getElementById('gps-module').innerHTML = `<h3 style="color:var(--warning);"><i class="fas fa-running"></i> Pulang Cepat</h3><p>Hati-hati di jalan!</p>`; document.getElementById('gps-module').style.display = 'block'; setTimeout(() => { navTo('screen-history'); }, 1500); }
         }
 
         // ================= HISTORI =================
@@ -590,7 +581,7 @@
                 if(!grouped[log.tanggal]) grouped[log.tanggal] = { dtg: '-', warnaDtg: 'gray', plg: '-', warnaPlg: 'gray', alasan: '', isSIA: false, tipeSIA: '' };
                 if(log.tipe === 'Sakit' || log.tipe === 'Izin' || log.tipe === 'Alpa') { grouped[log.tanggal].isSIA = true; grouped[log.tanggal].tipeSIA = log.tipe; grouped[log.tanggal].warnaDtg = log.warna; grouped[log.tanggal].alasan = log.alasan; } 
                 else if(log.tipe === 'Datang') { grouped[log.tanggal].dtg = `${log.waktu} (${log.status})`; grouped[log.tanggal].warnaDtg = log.warna; if(log.alasan && log.alasan !== '-') grouped[log.tanggal].alasan = log.alasan; } 
-                else if(log.tipe === 'Pulang') { grouped[log.tanggal].plg = `${log.waktu}`; grouped[log.tanggal].warnaPlg = log.warna; }
+                else if(log.tipe === 'Pulang') { grouped[log.tanggal].plg = `${log.waktu} (${log.status})`; grouped[log.tanggal].warnaPlg = log.warna; if(log.alasan && log.alasan !== '-') grouped[log.tanggal].alasan += (grouped[log.tanggal].alasan ? " | " : "") + log.alasan; }
             });
 
             Object.keys(grouped).forEach(tgl => {
