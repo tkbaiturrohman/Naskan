@@ -73,24 +73,34 @@
         .btn-info { background: linear-gradient(135deg, #00b0ff, #0069c0); }
         .btn-success { background: linear-gradient(135deg, #00e676, #00c853); }
         .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); }
-        .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000; }
+        /* Teks Hitam Untuk Warning (Reset HP) */
+        .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000 !important; font-weight: 800; box-shadow: 0 5px 15px rgba(255, 234, 0, 0.4); } 
         .btn-purple { background: linear-gradient(135deg, #ab47bc, #6a1b9a); }
         
         .btn-outline { background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255,255,255,0.2); color: #cbd5e1; box-shadow: none; }
         .btn-outline:active { background: rgba(255,255,255,0.1); }
 
-        /* TOMBOL JALAN PINTAS RAKSASA (SHORTCUT) */
+        /* TOMBOL JALAN PINTAS RAKSASA (SHORTCUT KE APLIKASI GURU) */
         .btn-glow-shortcut { 
-            background: linear-gradient(135deg, #ab47bc, #00b0ff);
-            border: 2px solid rgba(255,255,255,0.4);
+            background: linear-gradient(135deg, #00e676, #00b0ff);
+            border: 2px solid rgba(255,255,255,0.6);
             border-radius: 25px;
             padding: 20px;
             font-size: 1.1rem;
             animation: pulseGlowAdmin 2s infinite alternate;
-            text-transform: none;
-            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
-        @keyframes pulseGlowAdmin { 0% { box-shadow: 0 0 15px rgba(171, 71, 188, 0.4); } 100% { box-shadow: 0 0 35px rgba(0, 176, 255, 0.8); transform: translateY(-3px); } }
+        .btn-glow-shortcut:active { transform: scale(0.95); }
+        @keyframes pulseGlowAdmin { 0% { box-shadow: 0 0 15px rgba(0, 230, 118, 0.4); } 100% { box-shadow: 0 0 35px rgba(0, 176, 255, 0.8); transform: translateY(-3px); } }
 
         /* DASHBOARD MONITORING - DONUT CHART CSS */
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
@@ -212,8 +222,8 @@
                     </div>
             </div>
 
-            <button class="btn btn-glow-shortcut" onclick="switchTab('tab-edit', 'Revisi & Absensi Manual', this)">
-                <i class="fas fa-magic"></i> Lompat Ke Manajemen Absen Manual
+            <button class="btn-glow-shortcut" onclick="window.location.href='https://tkbaiturrohman.github.io/Naskan'">
+                <i class="fas fa-external-link-alt" style="font-size: 1.5rem;"></i> Buka Aplikasi Absen Guru
             </button>
         </div>
 
@@ -259,7 +269,7 @@
         <div id="tab-guru" class="screen-content">
             <div class="card" style="background: rgba(0, 176, 255, 0.05); border-color: rgba(0, 176, 255, 0.3);">
                 <div class="card-title" style="border-bottom:none; margin-bottom:0;"><i class="fas fa-users-cog" style="color:var(--info);"></i> Pusat Kendali Akun</div>
-                <p style="font-size: 0.8rem; color: #94a3b8; margin-top:5px; font-weight:600;">Jika guru ganti HP / HP rusak, Anda wajib klik <b style="color:var(--primary);">"Reset HP"</b> agar dia bisa mendaftarkan ulang DNA HP barunya.</p>
+                <p style="font-size: 0.8rem; color: #94a3b8; margin-top:5px; font-weight:600;">Jika guru ganti HP / HP rusak, Anda wajib klik <b style="color:var(--warning);">"Reset HP"</b> agar dia bisa mendaftarkan ulang DNA HP barunya.</p>
             </div>
             <div id="admin-teacher-list"></div>
         </div>
@@ -362,12 +372,7 @@
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             
-            if(btnEl) {
-                btnEl.classList.add('active');
-            } else {
-                // Dipanggil dari Shortcut Button
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
-            }
+            if(btnEl) btnEl.classList.add('active');
             
             document.getElementById('header-title').innerText = title;
             if(tabId === 'tab-edit') loadAdminAttendancePreview();
@@ -423,7 +428,7 @@
             teachers = data || []; renderTeacherList();
             
             const sel = document.getElementById('manual-name'); 
-            const curVal = sel.value; // simpan value lama
+            const curVal = sel.value; 
             sel.innerHTML = '<option value="">-Pilih Guru-</option>';
             teachers.forEach(t => sel.innerHTML += `<option value="${t.nama}">${t.nama}</option>`);
             if(curVal) sel.value = curVal;
@@ -444,21 +449,20 @@
             const hadirCount = hadirList.length;
             document.getElementById('dash-hadir').innerText = hadirCount;
 
-            // Hitung persentase untuk Donut Chart
+            // Hitung persentase
             let percent = totalGuru > 0 ? Math.round((hadirCount / totalGuru) * 100) : 0;
             document.getElementById('dash-percent').innerText = `${percent}%`;
 
             // Rincian Warna
-            let cTepat = logs.filter(l => l.warna === 'primary' || l.warna === 'info').length; // Hijau/Biru (Aman)
-            let cTelat = logs.filter(l => l.warna === 'warning').length; // Kuning (Telat/Sakit)
-            let cMerah = logs.filter(l => l.warna === 'danger').length; // Merah (Tdk Disiplin)
+            let cTepat = logs.filter(l => l.warna === 'primary' || l.warna === 'info').length; 
+            let cTelat = logs.filter(l => l.warna === 'warning').length; 
+            let cMerah = logs.filter(l => l.warna === 'danger').length; 
             
             document.getElementById('dash-tepat').innerText = cTepat;
             document.getElementById('dash-telat').innerText = cTelat;
             document.getElementById('dash-merah').innerText = cMerah;
 
-            // Animasi CSS Conic Gradient Donut Chart
-            // Urutan warna: Hijau (Tepat), Kuning (Telat), Merah (Bahaya), Sisa (Abu-abu/Kosong)
+            // Animasi Donut
             let p1 = totalGuru > 0 ? (cTepat / totalGuru) * 100 : 0;
             let p2 = p1 + (totalGuru > 0 ? (cTelat / totalGuru) * 100 : 0);
             let p3 = p2 + (totalGuru > 0 ? (cMerah / totalGuru) * 100 : 0);
@@ -471,7 +475,7 @@
                 rgba(255,255,255,0.05) ${p3}% 100%
             )`;
 
-            // Render Daftar Buronan (Belum Absen)
+            // Daftar Buronan
             const missingBox = document.getElementById('missing-teachers-list');
             missingBox.innerHTML = '';
             
@@ -486,7 +490,7 @@
             }
         }
 
-        // ================= KENDALI AKUN (RESET HP) =================
+        // ================= KENDALI AKUN (RESET HP WARNA KUNING GRADASI) =================
         function renderTeacherList() { 
             const list = document.getElementById('admin-teacher-list'); list.innerHTML = ''; 
             if(teachers.length === 0) list.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:20px;">Kosong</div>';
@@ -506,7 +510,7 @@
                     </div>
                     <div style="display:flex; gap:10px; align-items:center; border-top:1px dashed rgba(255,255,255,0.1); padding-top:12px;">
                         <span style="font-size:0.75rem; font-weight:700; flex:1; color:#94a3b8;">${deviceIcon}</span>
-                        <button class="btn btn-primary" style="width:auto; padding:8px 15px; margin:0; font-size:0.75rem; border-radius:12px;" onclick="resetDeviceLock(${t.id}, '${t.nama}')"><i class="fas fa-sync-alt"></i> Reset HP</button> 
+                        <button class="btn btn-warning" style="width:auto; padding:8px 15px; margin:0; font-size:0.75rem; border-radius:12px; box-shadow: 0 4px 10px rgba(255, 234, 0, 0.4);" onclick="resetDeviceLock(${t.id}, '${t.nama}')"><i class="fas fa-sync-alt"></i> Reset HP</button> 
                         <button class="btn btn-danger" style="width:auto; padding:8px 15px; margin:0; font-size:0.75rem; border-radius:12px;" onclick="deleteTeacher(${t.id}, '${t.nama}')"><i class="fas fa-trash"></i></button>
                     </div>
                 </div>`; 
