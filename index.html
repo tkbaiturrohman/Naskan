@@ -43,12 +43,14 @@
         .search-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; cursor: pointer; }
         .search-item:hover { background: rgba(0,176,255,0.1); color: var(--info); }
 
+        /* ANIMASI GPS RADAR */
         .radar-container { position: relative; width: 140px; height: 140px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
         .radar-icon { font-size: 3rem; color: var(--info); z-index: 2; }
         .radar-pulse { position: absolute; width: 100%; height: 100%; background: rgba(0, 176, 255, 0.4); border-radius: 50%; z-index: 1; animation: radarAnim 2s infinite ease-out; }
         .radar-pulse:nth-child(2) { animation-delay: 1s; }
         @keyframes radarAnim { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
 
+        /* ANIMASI SIDIK JARI */
         .fingerprint-box { position: relative; width: 160px; height: 160px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; background: rgba(0, 176, 255, 0.1); border-radius: 50%; border: 3px solid rgba(0, 176, 255, 0.3); box-shadow: 0 0 30px rgba(0, 176, 255, 0.2); overflow: hidden;}
         .fingerprint-icon { font-size: 5rem; color: var(--info); opacity: 0.7; z-index: 2; transition: 0.3s;}
         .fingerprint-scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: var(--primary); box-shadow: 0 0 15px var(--primary); animation: scanFinger 2s infinite linear; z-index: 5; }
@@ -122,7 +124,7 @@
                     <div class="fingerprint-scan-line" id="reg-laser" style="display:none;"></div>
                 </div>
                 
-                <p id="reg-msg" style="font-size:0.85rem; color:var(--info); margin-bottom:15px; font-weight:600;"><i class="fas fa-shield-alt"></i> Sistem Kriptografi Siap</p>
+                <p id="reg-msg" style="font-size:0.85rem; color:var(--info); margin-bottom:15px; font-weight:600;"><i class="fas fa-shield-alt"></i> Kriptografi Siap</p>
                 <div id="reg-error-info" style="font-size:0.75rem; color:var(--warning); display:none; margin-bottom:15px; background:rgba(255,234,0,0.1); padding:10px; border-radius:8px; border:1px solid var(--warning);"></div>
                 
                 <button id="btn-reg-start" class="btn btn-solid-blue" onclick="startFingerprintReg()"><i class="fas fa-fingerprint"></i> Sentuh Sidik Jari / Pola Layar</button>
@@ -189,6 +191,7 @@
     </div>
 
     <script>
+        // API SUPABASE
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
@@ -206,8 +209,8 @@
         function getCurrentYMD() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function timeToMins(timeStr) { if (!timeStr) return 0; const parts = timeStr.split(':'); return parseInt(parts[0]) * 60 + parseInt(parts[1]); }
 
-        // --- JURUS ANDALAN WEBAUTHN (ANTI-MACET DI GITHUB PAGES) ---
-        const domainURL = window.location.hostname; // Deteksi otomatis domain tempat HTML ini berada
+        // --- HELPER WEBAUTHN (SIDIK JARI) ---
+        const domainURL = window.location.hostname; // Deteksi otomatis Domain
 
         function bufferToBase64url(buffer) {
             const bytes = new Uint8Array(buffer); let str = '';
@@ -222,6 +225,7 @@
             return outputArray.buffer;
         }
 
+        // --- SPA NAVIGATION ---
         function navTo(screenId) {
             document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -293,7 +297,7 @@
             }
         }
 
-        // ================= JURUS ANDALAN: REGISTRASI SIDIK JARI (ANTI MACET) =================
+        // ================= JURUS ANDALAN: REGISTRASI SIDIK JARI (FIX S21 FE) =================
         async function startFingerprintReg() {
             const name = document.getElementById('reg-name').value.trim(); const pin = document.getElementById('reg-pin').value.trim();
             if(!name || pin.length !== 4) { showToast("Isi Nama & PIN 4 Angka!", "warning"); return; }
@@ -301,7 +305,6 @@
             const errorBox = document.getElementById('reg-error-info');
             errorBox.style.display = 'none';
 
-            // 1. Cek Cepat: Apakah nama ini sudah ada di Database?
             document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mengecek Data...";
             const { data: cekData } = await sb.from('Guru').select('id, credential_id').eq('nama', name);
 
@@ -322,10 +325,15 @@
 
                 const publicKey = {
                     challenge: challenge,
-                    rp: { name: "TK Baiturrohman", id: domainURL }, // MENGGUNAKAN DOMAIN OTOMATIS AGAR TIDAK MACET DI GITHUB PAGES
+                    rp: { name: "TK Baiturrohman", id: domainURL }, 
                     user: { id: userId, name: name, displayName: name },
                     pubKeyCredParams: [{type: "public-key", alg: -7}, {type: "public-key", alg: -257}], 
-                    authenticatorSelection: { userVerification: "discouraged" }, // Sangat longgar untuk semua jenis HP
+                    
+                    // JURUS FIX SAMSUNG S21 FE / IN-DISPLAY FINGERPRINT:
+                    authenticatorSelection: { 
+                        authenticatorAttachment: "platform", // Paksa Hardware HP
+                        userVerification: "required"         // Wajib verifikasi agar tidak macet
+                    }, 
                     timeout: 60000
                 };
 
@@ -337,19 +345,18 @@
                 errorBox.style.display = 'block';
                 errorBox.innerHTML = `<b>Penyebab Ditolak:</b><br>${err.message}<br><i>Pastikan HP Anda memiliki Kunci Layar (PIN/Pola).</i>`;
                 showToast("Sensor ditolak / Dibatalkan", "error"); 
-                return; // Berhenti jika gagal scan jari
+                return; 
             }
 
-            // 2. SIMPAN KE DATABASE (UPDATE jika ganti HP, INSERT jika Guru baru)
             document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan Kunci Kriptografi...";
             
             let isSuccess = false;
             if (cekData && cekData.length > 0) {
-                // GURU LAMA, GANTI HP! (Kita Timpa Kuncinya)
+                // UPDATE JIKA GANTI HP
                 const { error } = await sb.from('Guru').update({ credential_id: credentialIdStr, pin: pin }).eq('id', cekData[0].id);
                 if(!error) isSuccess = true;
             } else {
-                // GURU BARU DAFTAR
+                // INSERT JIKA GURU BARU
                 const { error } = await sb.from('Guru').insert([{ nama: name, pin: pin, is_active: false, credential_id: credentialIdStr }]);
                 if(!error) isSuccess = true;
             }
@@ -494,7 +501,7 @@
             } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; } 
         }
 
-        // ================= VERIFIKASI SIDIK JARI ABSEN =================
+        // ================= VERIFIKASI SIDIK JARI ABSEN (FIX S21 FE) =================
         async function triggerAbsenFingerprint() {
             if(currentStatus === 'Tidak Disiplin' && document.getElementById('input-alasan').value.trim() === '') {
                 showToast("Alasan Keterlambatan Wajib Diisi dulu!", "error"); return;
@@ -504,20 +511,20 @@
             if(!teacherData || !teacherData.credential_id) return;
 
             document.getElementById('absen-laser').style.display = 'block';
-            document.getElementById('absen-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menunggu Respon Layar HP...";
+            document.getElementById('absen-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Memverifikasi Biometrik HP...";
             document.getElementById('absen-error-info').style.display = 'none';
 
             try {
                 const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
                 const allowCredential = { type: "public-key", id: base64urlToBuffer(teacherData.credential_id) };
 
-                // JURUS ANDALAN: Paksa HP membaca domain GitHub Pages
+                // JURUS FIX SAMSUNG S21 FE: Wajibkan Verifikasi (required)
                 const assertion = await navigator.credentials.get({
                     publicKey: { 
                         challenge: challenge, 
                         rpId: domainURL, 
                         allowCredentials: [allowCredential], 
-                        userVerification: "discouraged" 
+                        userVerification: "required" // MEMAKSA SENSOR LAYAR LANGSUNG MENYALA
                     } 
                 });
 
