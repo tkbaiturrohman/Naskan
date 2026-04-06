@@ -7,7 +7,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     
     <style>
         :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --bg: #f4f7f6; --text: #333; }
@@ -46,11 +45,11 @@
         .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); color: black; background: #fffde7;} .toast.success { border-left-color: var(--primary); }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* STYLE CETAK KHUSUS A4 LANDSCAPE MATRIX (Diperbaiki Presisi Kolom) */
+        /* STYLE CETAK KHUSUS A4 LANDSCAPE MATRIX (PRESISI TINGGI) */
         .report-wrapper { display: none; } 
         @media print { 
             @page { size: A4 landscape; margin: 8mm; }
-            body { background: white; padding: 0; font-family: Arial, sans-serif;} 
+            body { background: white; padding: 0; font-family: 'Arial', sans-serif;} 
             .container, .header, #toast-container { display: none !important; } 
             .report-wrapper { display: block !important; width: 100%; }
             
@@ -60,24 +59,23 @@
             .print-title { font-size: 13pt; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; text-align: center;}
             
             .print-table { width: 100%; border-collapse: collapse; font-size: 8pt; table-layout: fixed;} 
-            .print-table th, .print-table td { border: 1px solid #000; text-align: center; vertical-align: middle; padding: 2px 1px; overflow: hidden; white-space: nowrap; }
+            .print-table th, .print-table td { border: 1px solid #000; text-align: center; vertical-align: middle; padding: 2px; overflow: hidden; white-space: nowrap;}
             .print-table th { background-color: #e0e0e0 !important; -webkit-print-color-adjust: exact; font-weight: bold; }
             
-            .col-no { width: 20px; } 
-            .col-nama { width: 110px; text-align: left !important; padding-left: 4px !important; white-space: normal !important; word-wrap: break-word;}
-            .col-tgl { width: 22px; font-size: 7.5pt; font-weight: bold;} 
-            .col-ket { width: 18px; font-weight: bold;} 
-            .td-time { font-size: 7.5pt; letter-spacing: -0.5px; } /* Mencegah jam terpotong */
+            .col-no { width: 25px; } 
+            .col-nama { width: 130px; text-align: left !important; padding-left: 5px !important; white-space: normal !important; word-wrap: break-word;}
+            .col-tipe { width: 35px; font-weight: bold;} 
+            .col-tgl { width: 24px; font-size: 7.5pt; font-weight: bold;} 
+            .col-ket { width: 20px; font-weight: bold;} 
             
-            .box-hijau { width: 10px; height: 10px; background: #00e676 !important; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
-            .box-kuning { width: 10px; height: 10px; background: #ffea00 !important; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
-            .box-merah { width: 10px; height: 10px; background: #ff1744 !important; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
-            .box-kosong { width: 10px; height: 10px; margin: auto; display: inline-block;}
+            .td-time { font-size: 7.5pt; letter-spacing: -0.5px; } 
+            
+            .box-hijau { width: 12px; height: 12px; background: #00e676 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
+            .box-kuning { width: 12px; height: 12px; background: #ffea00 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
+            .box-merah { width: 12px; height: 12px; background: #ff1744 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
+            .box-kosong { width: 12px; height: 12px; margin: auto; display: inline-block;}
             
             .cell-libur { background-color: #ffcccc !important; -webkit-print-color-adjust: exact; color: #ff0000; font-weight: bold;}
-
-            /* Style Note di bawah tabel */
-            .print-legend { margin-top: 8px; font-size: 8.5pt; font-family: 'Poppins', sans-serif; font-weight: bold; text-align: left; }
         }
         .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media (max-width: 600px) { .flex-grid { grid-template-columns: 1fr; } }
@@ -99,14 +97,14 @@
 
     <div class="header">
         <h1>Manajemen Absensi TK</h1>
-        <p id="ai-status" style="font-size: 0.85rem; color: var(--info); font-weight: 600;"><i class="fas fa-cog fa-spin"></i> Menghubungkan Server...</p>
+        <p id="db-status" style="font-size: 0.85rem; color: var(--info); font-weight: 600;"><i class="fas fa-cog fa-spin"></i> Menghubungkan Server...</p>
     </div>
 
     <div class="container">
         
         <div class="admin-section" style="border-left-color: var(--primary);">
-            <h4><i class="fas fa-print"></i> Cetak Laporan (Format Matrix)</h4>
-            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Mencetak tabel raksasa horizontal presisi tinggi. 1 Kertas = 5 Guru.</p>
+            <h4><i class="fas fa-print"></i> Cetak Laporan Matrix A4</h4>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Mencetak tabel raksasa horizontal. 1 Kertas = 5 Guru. Note tergabung rapi di bawah.</p>
             <div class="flex-grid" style="align-items: center;">
                 <input type="month" id="report-month" style="margin: 0;">
                 <button class="btn-action btn-success" style="margin: 0;" onclick="generateMatrixReport()"><i class="fas fa-file-pdf"></i> Generate & Print A4</button>
@@ -119,7 +117,7 @@
             <input type="date" id="manual-date" onchange="loadAdminAttendancePreview()">
             
             <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 20px;">
-                <h5 style="margin-bottom: 15px; color: #333;"><i class="fas fa-plus-circle"></i> Tambah / Revisi Absen</h5>
+                <h5 style="margin-bottom: 15px; color: #333;"><i class="fas fa-plus-circle"></i> Tambah / Revisi Absen (S/I/A)</h5>
                 <div class="flex-grid">
                     <select id="manual-name"><option value="">-Pilih Guru-</option></select>
                     <select id="manual-tipe">
@@ -155,13 +153,13 @@
         </div>
 
         <div class="admin-section" style="border-left-color: var(--info);">
-            <h4><i class="fas fa-users"></i> Persetujuan Akun Guru</h4>
-            <p style="font-size:0.85rem; color:#666; margin-bottom: 15px;">Nyalakan tombol <i class="fas fa-toggle-on" style="color:var(--primary);"></i> untuk mengaktifkan akun guru.</p>
+            <h4><i class="fas fa-users"></i> Database & Akses Akun Guru</h4>
+            <p style="font-size:0.85rem; color:#666; margin-bottom: 15px;">Nyalakan tombol <i class="fas fa-toggle-on" style="color:var(--primary);"></i> untuk mengizinkan absen.</p>
             <ul id="admin-teacher-list" style="list-style: none; display: grid; grid-template-columns: 1fr; gap: 10px;"></ul>
         </div>
 
         <div class="admin-section" style="border-left-color: #555;">
-            <h4><i class="fas fa-cogs"></i> Pengaturan Jantung Sistem</h4>
+            <h4><i class="fas fa-cogs"></i> Pengaturan Jam & Hari Libur</h4>
             
             <div class="flex-grid" style="background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px;">
                 <div><label style="font-size:0.8rem; font-weight:bold; color:#555;">Buka Gerbang Pagi</label><input type="time" id="set-open-time"></div>
@@ -171,27 +169,24 @@
             </div>
 
             <div style="background: #fff0f0; padding: 15px; border-radius: 10px; border: 1px solid #ffcdd2; margin-bottom: 15px;">
-                <label style="font-size:0.85rem; font-weight:bold; color:var(--danger);"><i class="fas fa-calendar-times"></i> Hari Libur Nasional (Opsional)</label>
-                <p style="font-size: 0.75rem; color: #666; margin-bottom: 5px;">*Hari Minggu otomatis libur. Masukkan tanggal libur tambahan (Format: YYYY-MM-DD), pisahkan dengan koma.</p>
+                <label style="font-size:0.85rem; font-weight:bold; color:var(--danger);"><i class="fas fa-calendar-times"></i> Hari Libur Nasional</label>
+                <p style="font-size: 0.75rem; color: #666; margin-bottom: 5px;">*Hari Minggu sudah otomatis libur di sistem. Masukkan tanggal libur tambahan (Format: YYYY-MM-DD), pisahkan dengan koma.</p>
                 <textarea id="set-libur" placeholder="Contoh: 2026-04-10, 2026-08-17"></textarea>
             </div>
             
             <div style="background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd;">
                 <button class="btn-action btn-info" onclick="adminGetMyLocation()"><i class="fas fa-crosshairs"></i> Gunakan Titik Berdiriku Saat Ini</button>
                 <div class="flex-grid">
-                    <input type="text" id="set-lat" placeholder="Garis Lintang (Latitude)">
-                    <input type="text" id="set-lng" placeholder="Garis Bujur (Longitude)">
+                    <input type="text" id="set-lat" placeholder="Latitude"><input type="text" id="set-lng" placeholder="Longitude">
                 </div>
                 <label style="font-size:0.85rem; font-weight:bold; display:block;">Jangkauan Absen (Meter)</label>
-                <input type="number" id="set-radius" placeholder="Disarankan 50 - 150 meter">
+                <input type="number" id="set-radius" placeholder="Disarankan 100">
             </div>
 
-            <button class="btn-action" style="background:var(--text); margin-top: 20px;" onclick="saveSettingsToDB()"><i class="fas fa-cloud-upload-alt"></i> Simpan Sistem ke Cloud</button>
+            <button class="btn-action" style="background:var(--text); margin-top: 20px;" onclick="saveSettingsToDB()"><i class="fas fa-cloud-upload-alt"></i> Simpan Pengaturan ke Cloud</button>
         </div>
 
     </div>
-
-    <input type="file" accept="image/*" capture="user" id="admin-face-input" style="display:none;" onchange="registerTeacherFaceAdmin(this)">
 
     <script>
         // API SUPABASE
@@ -199,7 +194,7 @@
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
-        let appSettings = {}; let teachers = []; let registeringTeacherId = null; let isAiLoaded = false;
+        let appSettings = {}; let teachers = [];
         const now = new Date();
 
         function showToast(msg, type = 'success') {
@@ -213,8 +208,7 @@
 
         function verifyAdminPIN() {
             if(document.getElementById('admin-pin-input').value === '1234') {
-                document.getElementById('login-overlay').style.display = 'none';
-                initAdmin();
+                document.getElementById('login-overlay').style.display = 'none'; initAdmin();
             } else { showToast("PIN Salah!", "error"); }
         }
 
@@ -222,21 +216,9 @@
             document.getElementById('report-month').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
             document.getElementById('manual-date').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
             
-            await loadSettingsFromDB();
-            await fetchTeachersFromDB();
-            await loadFaceAPIModels();
+            document.getElementById('db-status').innerHTML = '<i class="fas fa-check-circle"></i> Server Sinkron'; document.getElementById('db-status').style.color = 'var(--primary)';
+            await loadSettingsFromDB(); await fetchTeachersFromDB(); 
             loadAdminAttendancePreview();
-        }
-
-        async function loadFaceAPIModels() {
-            try {
-                const MODEL_URL = 'https://vladmandic.github.io/face-api/model/';
-                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
-                await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-                await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-                isAiLoaded = true;
-                document.getElementById('ai-status').innerHTML = '<i class="fas fa-check-circle"></i> Server Sinkron'; document.getElementById('ai-status').style.color = 'var(--primary)';
-            } catch (err) { document.getElementById('ai-status').innerHTML = '<i class="fas fa-times-circle"></i> Gagal Memuat AI.'; document.getElementById('ai-status').style.color = 'var(--danger)'; }
         }
 
         async function loadSettingsFromDB() {
@@ -269,8 +251,7 @@
 
         async function fetchTeachersFromDB() {
             const { data } = await sb.from('Guru').select('*').order('nama', { ascending: true });
-            teachers = data || []; 
-            renderTeacherList();
+            teachers = data || []; renderTeacherList();
             
             const sel = document.getElementById('manual-name'); sel.innerHTML = '<option value="">-Pilih Guru-</option>';
             teachers.forEach(t => sel.innerHTML += `<option value="${t.nama}">${t.nama}</option>`);
@@ -290,7 +271,6 @@
                     </div>
                     <div style="display:flex; gap:12px; align-items:center;">
                         <button class="toggle-btn" onclick="toggleAccountStatus(${t.id}, ${!t.is_active})" title="Aktif/Nonaktif"><i class="fas ${toggleIcon}"></i></button>
-                        <button class="btn-action btn-info" style="padding:6px; margin:0;" onclick="startFaceRegistrationAdmin(${t.id})" title="Rekam Wajah"><i class="fas fa-camera"></i></button> 
                         <button class="btn-action btn-danger" style="padding:6px; margin:0;" onclick="deleteTeacher(${t.id}, '${t.nama}')" title="Hapus Permanen"><i class="fas fa-trash"></i></button>
                     </div>
                 </li>`; 
@@ -300,22 +280,6 @@
         async function toggleAccountStatus(id, newStatus) { await sb.from('Guru').update({ is_active: newStatus }).eq('id', id); fetchTeachersFromDB(); }
         async function deleteTeacher(id, nama) { if(confirm(`Bakar data ${nama}?`)) { await sb.from('Guru').delete().eq('id', id); fetchTeachersFromDB(); } }
 
-        function startFaceRegistrationAdmin(id) { if (!isAiLoaded) { showToast("AI loading", "warning"); return; } registeringTeacherId = id; document.getElementById('admin-face-input').click(); }
-        async function registerTeacherFaceAdmin(input) {
-            if (input.files && input.files[0]) {
-                showToast("Memindai...", "info");
-                const imgUrl = URL.createObjectURL(input.files[0]); const imgHtml = document.createElement('img'); imgHtml.src = imgUrl;
-                imgHtml.onload = async () => {
-                    try {
-                        const detection = await faceapi.detectSingleFace(imgHtml).withFaceLandmarks().withFaceDescriptor();
-                        if (!detection) { showToast("Wajah tidak jelas!", "error"); return; }
-                        await sb.from('Guru').update({ face_data: JSON.stringify(Array.from(detection.descriptor)) }).eq('id', registeringTeacherId);
-                        showToast("Face ID Aktif!", "success"); fetchTeachersFromDB();
-                    } catch(err) { showToast("Error AI.", "error"); }
-                }
-            }
-        }
-
         // --- SISTEM MANUAL EDIT ---
         async function loadAdminAttendancePreview() {
             const dateInput = document.getElementById('manual-date').value; if(!dateInput) return;
@@ -324,11 +288,11 @@
             
             const { data: logs } = await sb.from('Naskan').select('*').eq('tanggal', dateStr).order('waktu', { ascending: true });
             tbody.innerHTML = '';
-            if(!logs || logs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px;">Tidak ada data masuk di tanggal ini.</td></tr>'; return; }
+            if(!logs || logs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:15px;">Tidak ada data.</td></tr>'; return; }
 
             logs.forEach(log => {
                 let bg = log.warna === 'primary' ? 'bg-green' : (log.warna === 'warning' ? 'bg-yellow' : 'bg-red');
-                if(log.tipe === 'Pulang' && log.warna === 'primary') bg = 'bg-blue'; // Biru untuk pulang normal
+                if(log.tipe === 'Pulang' && log.warna === 'primary') bg = 'bg-blue'; 
 
                 tbody.innerHTML += `<tr style="border-bottom: 1px solid #ddd; text-align:center;">
                     <td style="padding:10px; font-weight:600; text-align:left;">${log.nama}</td><td style="padding:10px;">${log.tipe}</td><td style="padding:10px; font-weight:bold;">${log.waktu}</td><td style="padding:10px;"><span class="badge ${bg}">${log.status}</span></td>
@@ -359,7 +323,7 @@
 
         async function deleteAttendanceRecord(id) { if(confirm("Hapus absen ini?")) { await sb.from('Naskan').delete().eq('id', id); loadAdminAttendancePreview(); } }
 
-        // --- SISTEM CETAK MATRIX A4 LANDSCAPE (PRESISI TINGGI) ---
+        // --- SISTEM CETAK MATRIX A4 LANDSCAPE (PRESISI TINGGI & NOTE DI DALAM TABEL) ---
         async function generateMatrixReport() {
             const selectedMonthVal = document.getElementById('report-month').value; 
             if(!selectedMonthVal) { showToast("Pilih bulan dulu!", "warning"); return; }
@@ -393,7 +357,7 @@
             const uniqueTeachers = Array.from(teachersSet).sort();
             if (uniqueTeachers.length === 0) { showToast("Bulan ini kosong.", "error"); return; }
 
-            // Pagination Guru (5 Guru per Kertas Landscape)
+            // Pagination (5 Guru per Halaman)
             const teachersPerPage = 5; const chunks = [];
             for (let i = 0; i < uniqueTeachers.length; i += teachersPerPage) { chunks.push(uniqueTeachers.slice(i, i + teachersPerPage)); }
 
@@ -405,7 +369,9 @@
             chunks.forEach((chunk, chunkIndex) => {
                 html += `<div class="report-page">`;
                 html += `<div class="print-title">REKAPITULASI ABSENSI TK BAITURROHMAN<br>${titleBulan}</div>`;
-                html += `<table class="print-table"><thead><tr><th rowspan="2" class="col-no">No</th><th rowspan="2" class="col-nama">NAMA</th>`;
+                
+                // HEADER TABEL (Menambahkan Kolom TIPE agar Tidak Melenceng "0")
+                html += `<table class="print-table"><thead><tr><th rowspan="2" class="col-no">No</th><th rowspan="2" class="col-nama">NAMA</th><th rowspan="2" class="col-tipe">TIPE</th>`;
                 html += `<th colspan="${maxDays}">TANGGAL</th><th colspan="3" class="col-ket">KET</th></tr><tr>`;
                 
                 for(let d=1; d<=maxDays; d++){ html += `<th class="col-tgl">${d}</th>`; }
@@ -442,24 +408,22 @@
                         }
                     }
 
-                    // Baris 1: Jam Datang (Tanpa Kolom Note)
+                    // Baris 1-4 per Guru
                     html += `<tr><td rowspan="4">${noUrut}</td><td rowspan="4" class="col-nama">${t}</td><td>Dtg</td>${rowDtg}<td rowspan="4">${countS}</td><td rowspan="4">${countI}</td><td rowspan="4">${countA}</td></tr>`;
-
                     html += `<tr><td>Sts</td>${rowWarnaDtg}</tr>`;
                     html += `<tr><td>Plg</td>${rowPlg}</tr>`;
                     html += `<tr><td>Sts</td>${rowWarnaPlg}</tr>`;
                 });
 
-                html += `</tbody></table>`;
-                
-                // Legend Keterangan Warna diletakkan dengan sangat rapi di bawah tabel
-                html += `<div class="print-legend">`;
-                html += `Keterangan:<br>`;
-                html += `Datang (<span style="color:#008000;">Hijau</span> = Tepat Waktu, <span style="color:#b38600;">Kuning</span> = Terlambat, <span style="color:#cc0000;">Merah</span> = Tidak Disiplin/Alpa/Lupa).<br>`;
-                html += `Pulang (<span style="color:#008000;">Hijau</span> = Tepat Waktu, <span style="color:#b38600;">Kuning</span> = Offset).`;
-                html += `</div>`;
-                
-                html += `</div>`;
+                // LEGEND WARNA (Masuk di dalam tabel paling bawah)
+                html += `<tr>`;
+                html += `<th colspan="3" style="text-align: right; padding-right: 10px; background-color: #f0f0f0;">KETERANGAN :</th>`;
+                html += `<td colspan="${maxDays + 3}" style="text-align: left; padding-left: 10px; font-size: 8.5pt;">`;
+                html += `<b>DATANG:</b> (<span class="box-hijau"></span> Tepat Waktu) &nbsp; (<span class="box-kuning"></span> Terlambat) &nbsp; (<span class="box-merah"></span> Tidak Disiplin/Lupa/Alpa) &nbsp;&nbsp; | &nbsp;&nbsp; `;
+                html += `<b>PULANG:</b> (<span class="box-hijau"></span> Tepat Waktu) &nbsp; (<span class="box-kuning"></span> Offset) &nbsp;&nbsp; | &nbsp;&nbsp; <b>L</b> = Libur`;
+                html += `</td></tr>`;
+
+                html += `</tbody></table></div>`;
             });
 
             renderArea.innerHTML = html;
