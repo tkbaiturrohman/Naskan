@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Super Admin TK Baiturrohman</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -10,66 +10,108 @@
     <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.js"></script>
     
     <style>
-        :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --bg: #f4f7f6; --text: #333; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 15px; }
+        :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --bg: #f8fafc; --text: #334155; --card: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent;}
+        body, html { width: 100%; height: 100%; background-color: var(--bg); color: var(--text); overflow: hidden; }
         
-        .header { text-align: center; margin-bottom: 30px; padding-top: 20px;}
-        .header h1 { font-size: 1.8rem; color: #2c3e50; font-weight: 700;}
+        /* LOGIN OVERLAY */
+        #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #1e293b, #0f172a); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); padding: 40px; border-radius: 25px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: white;}
+        .login-box input { width: 100%; padding: 15px; border-radius: 15px; border: none; text-align: center; letter-spacing: 10px; font-weight: bold; font-size: 1.5rem; margin-bottom: 20px; background: rgba(0,0,0,0.3); color: white; outline: none; }
         
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
+        /* STRUKTUR SPA (NATIVE APP FEEL) */
+        #main-app-container { display: none; width: 100%; height: 100%; flex-direction: column; }
         
-        select, input[type="password"], input[type="text"], input[type="number"], input[type="time"], input[type="date"], input[type="month"], textarea { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ddd; font-size: 1rem; margin-bottom: 15px; outline: none; background: #fafafa;}
-        select:focus, input:focus, textarea:focus { border-color: var(--info); box-shadow: 0 0 5px rgba(0,176,255,0.3);}
+        .top-header { background: white; padding: 20px 20px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); z-index: 10; flex-shrink: 0; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;}
+        .top-header h1 { font-size: 1.3rem; color: #0f172a; font-weight: 700; }
+        .top-header .status { font-size: 0.8rem; color: var(--info); font-weight: 600; background: #e0f2fe; padding: 5px 10px; border-radius: 20px;}
+
+        .screen-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 90px; display: none; animation: fadeIn 0.3s ease-out; }
+        .screen-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* BOTTOM NAVIGATION (Gaya Instagram/HR App) */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: white; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); display: flex; justify-content: space-around; padding: 10px 5px 15px; z-index: 20; border-top-left-radius: 25px; border-top-right-radius: 25px;}
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; color: #94a3b8; background: none; border: none; outline: none; cursor: pointer; transition: 0.3s; width: 25%; }
+        .nav-item i { font-size: 1.4rem; transition: 0.3s; }
+        .nav-item span { font-size: 0.7rem; font-weight: 600; }
+        .nav-item.active { color: var(--info); }
+        .nav-item.active i { transform: translateY(-5px); }
+        .nav-item.active span { opacity: 1; }
+
+        /* KOTAK KONTEN (CARD) */
+        .card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; }
+        .card-title { font-size: 1.1rem; color: #1e293b; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 2px dashed #f1f5f9; padding-bottom: 10px;}
+        
+        /* FORM & INPUT */
+        select, input[type="text"], input[type="number"], input[type="time"], input[type="date"], input[type="month"], textarea { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 0.95rem; margin-bottom: 15px; outline: none; background: #f8fafc; color: #334155; transition: 0.3s;}
+        select:focus, input:focus, textarea:focus { border-color: var(--info); box-shadow: 0 0 0 3px rgba(0,176,255,0.1); background: white;}
         textarea { resize: vertical; min-height: 80px; }
         
-        .btn-action { background: var(--info); color: white; border: none; padding: 14px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; width: 100%;}
-        .btn-action:hover { opacity: 0.9; transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.1);} 
-        .btn-danger { background: var(--danger); } .btn-success { background: var(--primary); } .btn-warning { background: var(--warning); color: black;}
-        
-        .admin-section { background: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; border: 1px solid #eee; border-left: 6px solid var(--info); box-shadow: 0 4px 15px rgba(0,0,0,0.02);}
-        .admin-section h4 { margin-bottom: 15px; color: #2c3e50; font-size: 1.2rem; display: flex; align-items: center; gap: 10px;}
-        
-        .badge { padding: 6px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; color: black; display: inline-block;}
+        .btn { width: 100%; padding: 14px; border-radius: 15px; border: none; font-size: 1rem; font-weight: 600; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.15); margin-bottom: 10px;}
+        .btn:active { transform: scale(0.97); }
+        .btn-info { background: linear-gradient(135deg, #00b0ff, #0069c0); }
+        .btn-success { background: linear-gradient(135deg, #00e676, #00c853); }
+        .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); }
+        .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000; }
+
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; color: black; display: inline-block;}
         .bg-green { background: var(--primary); } .bg-yellow { background: var(--warning); } .bg-red { background: var(--danger); color: white;} .bg-blue { background: var(--info); color: white; }
-        
         .toggle-btn { font-size: 1.8rem; cursor: pointer; background: none; border: none; outline:none; transition: 0.3s;}
-        .toggle-on { color: var(--primary); } .toggle-off { color: #ccc; }
+        .toggle-on { color: var(--primary); } .toggle-off { color: #cbd5e1; }
 
-        #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460); background-size: 400% 400%; animation: gradientBG 10s ease infinite; z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .login-box { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 40px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);}
+        /* DAFTAR GURU UNIK */
+        .teacher-list-item { display: flex; flex-direction: column; padding: 15px; border: 1px solid #e2e8f0; background: white; margin-bottom: 12px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .teacher-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .teacher-name { font-size: 1rem; font-weight: 700; color: #1e293b; }
+        .teacher-pin { font-size: 0.75rem; background: #f1f5f9; padding: 3px 8px; border-radius: 8px; color: #64748b; font-weight: bold; }
+        .teacher-actions { display: flex; gap: 10px; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 10px; }
 
-        .modal { display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 15px; }
-        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; position: relative; }
-        .video-wrapper { position: relative; width: 200px; height: 200px; margin: 0 auto 15px; border-radius: 50%; overflow: hidden; border: 4px solid var(--warning); background: #000; }
-        .laser-scan { position: absolute; width: 100%; height: 4px; background: rgba(0, 230, 118, 0.9); box-shadow: 0 0 15px rgba(0, 230, 118, 1); top: 0; left: 0; animation: scanAnim 2s infinite linear; z-index: 10;}
+        /* DAFTAR PREVIEW MANUAL */
+        .preview-list { display: flex; flex-direction: column; gap: 10px; }
+        .preview-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
+        .preview-info { flex: 1; }
+        .preview-name { font-weight: 700; font-size: 0.95rem; color: #0f172a; }
+        .preview-detail { font-size: 0.8rem; color: #64748b; margin-top: 3px; }
+        .preview-alasan { font-size: 0.75rem; color: var(--danger); font-style: italic; background: #fff0f0; padding: 3px 8px; border-radius: 5px; margin-top: 5px; display: inline-block;}
+
+        /* MODAL KAMERA ADMIN */
+        .modal { display: none; position: fixed; z-index: 99999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.9); backdrop-filter: blur(5px); align-items: center; justify-content: center; padding: 15px; }
+        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 350px; text-align: center; }
+        .video-wrapper { position: relative; width: 180px; height: 180px; margin: 0 auto 15px; border-radius: 50%; overflow: hidden; border: 4px solid var(--warning); background: #000; box-shadow: 0 5px 20px rgba(0,0,0,0.3);}
+        .laser-scan { position: absolute; width: 100%; height: 4px; background: var(--primary); box-shadow: 0 0 15px var(--primary); top: 0; left: 0; animation: scanAnim 2s infinite linear; z-index: 10;}
         @keyframes scanAnim { 0% { top: 0; opacity: 0;} 10% { opacity: 1;} 90% { opacity: 1;} 100% { top: 100%; opacity: 0;} }
 
-        #toast-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 999999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px;}
-        .toast { background: #2c3e50; color: white; padding: 15px 25px; border-radius: 12px; border-left: 5px solid var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.4); display: flex; align-items: center; gap: 10px; animation: slideUp 0.4s forwards; font-size: 0.9rem;}
-        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); color: black; background: #fffde7;} .toast.success { border-left-color: var(--primary); }
-        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* TOAST */
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px;}
+        .toast { background: #1e293b; color: white; padding: 12px 20px; border-radius: 15px; border-left: 5px solid var(--primary); box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; animation: slideDown 0.3s forwards; font-size: 0.85rem; font-weight: 600;}
+        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); color: #000; background: #fef08a;} .toast.success { border-left-color: var(--primary); }
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* STYLE CETAK KHUSUS A4 LANDSCAPE MATRIX PRESISI LEGA */
+        /* GRID RESPONSIVE */
+        .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .flex-grid { grid-template-columns: 1fr; } }
+
+        /* ======================================================= */
+        /* STYLE CETAK KHUSUS A4 LANDSCAPE MATRIX PRESISI LEGA     */
+        /* ======================================================= */
         .report-wrapper { display: none; } 
         @media print { 
             @page { size: A4 landscape; margin: 8mm; }
-            body { background: white; padding: 0; font-family: 'Arial', sans-serif;} 
-            .container, .header, #toast-container { display: none !important; } 
+            body { background: white; padding: 0; font-family: 'Arial', sans-serif; overflow: visible;} 
+            #login-overlay, #main-app-container, .bottom-nav, #toast-container, .modal { display: none !important; } 
             .report-wrapper { display: block !important; width: 100%; }
             
             .report-page { page-break-after: always; margin-bottom: 15mm; }
             .report-page:last-child { page-break-after: auto; }
             
-            .print-title { font-size: 13pt; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; text-align: center;}
+            .print-title { font-size: 13pt; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; text-align: center; color: black;}
             
-            .print-table { width: 100%; border-collapse: collapse; font-size: 8pt; table-layout: fixed;} 
+            .print-table { width: 100%; border-collapse: collapse; font-size: 8pt; table-layout: fixed; color: black;} 
             .print-table th, .print-table td { border: 1px solid #000; text-align: center; vertical-align: middle; padding: 2px 1px; overflow: hidden; white-space: nowrap;}
             .print-table th { background-color: #e0e0e0 !important; -webkit-print-color-adjust: exact; font-weight: bold; }
             
             .col-no { width: 20px; } 
-            /* Perbaikan Lebar Kolom Nama agar S/I/A lega */
             .col-nama { width: 90px; text-align: left !important; padding-left: 4px !important; white-space: normal !important; word-break: break-word; line-height: 1.1;}
             .col-tipe { width: 25px; font-weight: bold;} 
             .col-tgl { width: 22px; font-size: 7pt; font-weight: bold;} 
@@ -83,66 +125,66 @@
             .box-kosong { width: 10px; height: 10px; margin: auto; display: inline-block;}
             
             .cell-libur { background-color: #ffcccc !important; -webkit-print-color-adjust: exact; color: #ff0000; font-weight: bold;}
-            .print-legend { margin-top: 8px; font-size: 8pt; font-family: 'Poppins', sans-serif; font-weight: bold; text-align: left; }
+            .print-legend { margin-top: 8px; font-size: 8pt; font-weight: bold; text-align: left; color: black;}
         }
-        .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        @media (max-width: 600px) { .flex-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div id="toast-container"></div>
 
+    <div id="print-render-area" class="report-wrapper"></div>
+
     <div id="login-overlay">
         <div class="login-box">
-            <h2 style="margin-bottom: 20px; color: #2c3e50;"><i class="fas fa-user-shield"></i> Ruang Kepala</h2>
-            <input type="password" id="admin-pin-input" placeholder="Kode Keamanan" maxlength="4" style="text-align: center; letter-spacing: 8px; font-weight: bold; font-size: 1.3rem;">
-            <button class="btn-action btn-success" onclick="verifyAdminPIN()"><i class="fas fa-unlock"></i> Buka Brankas</button>
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-fingerprint"></i> Akses Kepala</h2>
+            <input type="password" id="admin-pin-input" placeholder="1234" maxlength="4">
+            <button class="btn btn-success" onclick="verifyAdminPIN()"><i class="fas fa-unlock"></i> Buka Brankas</button>
         </div>
     </div>
 
     <div id="admin-cam-modal" class="modal">
         <div class="modal-content">
-            <h3 style="margin-bottom: 10px; color: var(--info);"><i class="fas fa-camera"></i> Perekaman Wajah</h3>
+            <h3 style="margin-bottom: 10px; color: var(--info); font-size: 1.1rem;"><i class="fas fa-camera"></i> Perekaman Wajah</h3>
             <p style="font-size: 0.8rem; color:#888; margin-bottom: 15px;">Arahkan wajah ke kamera.</p>
             <div class="video-wrapper" id="admin-video-wrapper">
                 <video id="admin-video" autoplay muted playsinline style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
                 <div class="laser-scan" id="admin-laser"></div>
             </div>
-            <p id="admin-cam-instruction" style="color: var(--warning); font-weight:bold; margin-bottom: 20px;"><i class="fas fa-spinner fa-spin"></i> Menunggu wajah...</p>
-            <button class="btn-action btn-danger" onclick="closeAdminCamera()"><i class="fas fa-times"></i> Batal</button>
+            <p id="admin-cam-instruction" style="color: var(--warning); font-weight:bold; margin-bottom: 20px; font-size: 0.85rem;"><i class="fas fa-spinner fa-spin"></i> Menunggu wajah...</p>
+            <button class="btn btn-danger" onclick="closeAdminCamera()"><i class="fas fa-times"></i> Batal</button>
         </div>
     </div>
 
-    <div id="print-render-area" class="report-wrapper"></div>
-
-    <div class="header">
-        <h1>Manajemen Absensi TK</h1>
-        <p id="db-status" style="font-size: 0.85rem; color: var(--info); font-weight: 600;"><i class="fas fa-cog fa-spin"></i> Menghubungkan Server...</p>
-    </div>
-
-    <div class="container">
+    <div id="main-app-container">
         
-        <div class="admin-section" style="border-left-color: var(--primary);">
-            <h4><i class="fas fa-print"></i> Cetak Laporan Matrix A4</h4>
-            <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Mencetak tabel raksasa horizontal presisi tinggi. Kolom nama otomatis turun ke bawah.</p>
-            <div class="flex-grid" style="align-items: center;">
-                <input type="month" id="report-month" style="margin: 0;">
-                <button class="btn-action btn-success" style="margin: 0;" onclick="generateMatrixReport()"><i class="fas fa-file-pdf"></i> Print PDF A4</button>
+        <div class="top-header">
+            <h1 id="header-title">Laporan Cetak</h1>
+            <div class="status" id="db-status"><i class="fas fa-sync fa-spin"></i> Memuat...</div>
+        </div>
+
+        <div id="tab-cetak" class="screen-content active">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-file-pdf" style="color:var(--danger);"></i> Matrix Absensi A4</div>
+                <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 15px;">Sistem akan merakit tabel laporan bulanan. Data Alasan dan S/I/A akan tertera di bawah otomatis.</p>
+                <input type="month" id="report-month">
+                <button class="btn btn-danger" onclick="generateMatrixReport()"><i class="fas fa-print"></i> Generate PDF & Cetak</button>
             </div>
         </div>
 
-        <div class="admin-section" style="border-left-color: var(--warning);">
-            <h4><i class="fas fa-edit"></i> Edit Absen Manual & Preview</h4>
-            <input type="date" id="manual-date" onchange="loadAdminAttendancePreview()">
-            
-            <div style="background: #fdfdfd; padding: 20px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 20px;">
-                <h5 style="margin-bottom: 15px; color: #333;"><i class="fas fa-plus-circle"></i> Tambah / Revisi Absen</h5>
+        <div id="tab-edit" class="screen-content">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-calendar-day" style="color:var(--info);"></i> Tinjauan Harian</div>
+                <input type="date" id="manual-date" onchange="loadAdminAttendancePreview()">
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i class="fas fa-edit" style="color:var(--warning);"></i> Tambah / Revisi Absen</div>
                 <div class="flex-grid">
                     <select id="manual-name"><option value="">-Pilih Guru-</option></select>
                     <select id="manual-tipe">
                         <option value="Datang">Datang (Masuk)</option><option value="Pulang">Pulang</option>
-                        <option value="Sakit">Sakit</option><option value="Izin">Izin</option><option value="Alpa">Alpa (Tanpa Ket)</option>
+                        <option value="Sakit">Sakit</option><option value="Izin">Izin</option><option value="Alpa">Alpa</option>
                     </select>
                     <input type="time" id="manual-waktu">
                     <select id="manual-status">
@@ -151,59 +193,67 @@
                         <option value="Sakit">Sakit (Kuning)</option><option value="Izin">Izin (Biru)</option>
                         <option value="Alpa">Alpa (Merah)</option><option value="Lupa">Lupa Absen (Merah)</option>
                     </select>
-                    <input type="text" id="manual-alasan" placeholder="Keterangan / Alasan (Opsional)" style="grid-column: span 2;">
                 </div>
-                <button class="btn-action btn-warning" onclick="saveManualAttendance()"><i class="fas fa-save"></i> Terapkan Perubahan</button>
+                <input type="text" id="manual-alasan" placeholder="Log Alasan Keterlambatan / Izin (Wajib jika merah)">
+                <button class="btn btn-warning" onclick="saveManualAttendance()"><i class="fas fa-save"></i> Terapkan Revisi</button>
             </div>
 
-            <div style="overflow-x: auto; background: #fff; border-radius: 10px; border: 1px solid #eee;">
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
-                    <thead><tr style="background: #2c3e50; color: white;">
-                        <th style="padding: 12px;">Nama</th><th style="padding: 12px;">Detail & Alasan</th><th style="padding: 12px;">Status</th><th style="padding: 12px;">Aksi</th>
-                    </tr></thead>
-                    <tbody id="admin-preview-table"><tr><td colspan="4" style="text-align:center; padding: 15px;">Pilih tanggal di atas</td></tr></tbody>
-                </table>
-            </div>
+            <h4 style="font-size: 0.9rem; margin-bottom: 10px; color:#64748b;">Preview Absen Hari Ini:</h4>
+            <div class="preview-list" id="admin-preview-table">
+                </div>
         </div>
 
-        <div class="admin-section" style="border-left-color: var(--info);">
-            <h4><i class="fas fa-users"></i> Database Akun Guru</h4>
-            <p style="font-size:0.85rem; color:#666; margin-bottom: 15px;">Nyalakan tombol <i class="fas fa-toggle-on" style="color:var(--primary);"></i> untuk mengizinkan absen.</p>
-            <ul id="admin-teacher-list" style="list-style: none; display: grid; grid-template-columns: 1fr; gap: 10px;"></ul>
+        <div id="tab-guru" class="screen-content">
+            <div class="card" style="background: rgba(0, 176, 255, 0.1); border-color: rgba(0, 176, 255, 0.2);">
+                <div class="card-title" style="border-bottom:none; margin-bottom:0;"><i class="fas fa-shield-alt" style="color:var(--info);"></i> Otoritas Akun</div>
+                <p style="font-size: 0.8rem; color: #64748b; margin-top:5px;">Nyalakan "Toggle" agar guru bisa absen. Rekam ulang wajah jika gagal scan.</p>
+            </div>
+            <div id="admin-teacher-list"></div>
         </div>
 
-        <div class="admin-section" style="border-left-color: #555;">
-            <h4><i class="fas fa-cogs"></i> Pengaturan Jam, Toleransi & Penalty</h4>
-            
-            <div class="flex-grid" style="background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px;">
-                <div><label style="font-size:0.8rem; font-weight:bold; color:#555;">Buka Gerbang Pagi</label><input type="time" id="set-open-time"></div>
-                <div><label style="font-size:0.8rem; font-weight:bold; color:var(--primary);">Batas Hijau (Tepat Wkt)</label><input type="time" id="set-late-time"></div>
-                <div><label style="font-size:0.8rem; font-weight:bold; color:var(--primary);">Toleransi Tepat (Menit)</label><input type="number" id="set-grace-period" placeholder="Misal: 15" min="0"></div>
-                <div><label style="font-size:0.8rem; font-weight:bold; color:#b38600;">Batas Kuning (Telat)</label><input type="time" id="set-tol-time"></div>
-                <div><label style="font-size:0.8rem; font-weight:bold; color:var(--danger);"><i class="fas fa-ban"></i> Batas Pelanggaran (Bulan)</label><input type="number" id="set-batas-pelanggaran" placeholder="Blokir jika Tdk Disiplin = 3x"></div>
-                <div><label style="font-size:0.8rem; font-weight:bold; color:var(--info);">Mulai Jam Pulang</label><input type="time" id="set-home-time"></div>
-            </div>
-
-            <div style="background: #fff0f0; padding: 15px; border-radius: 10px; border: 1px solid #ffcdd2; margin-bottom: 15px;">
-                <label style="font-size:0.85rem; font-weight:bold; color:var(--danger);"><i class="fas fa-calendar-times"></i> Hari Libur Nasional (Opsional)</label>
-                <textarea id="set-libur" placeholder="Contoh: 2026-04-10, 2026-08-17"></textarea>
-            </div>
-            
-            <div style="background: #f9f9f9; padding: 15px; border-radius: 10px; border: 1px solid #ddd;">
-                <button class="btn-action btn-info" onclick="adminGetMyLocation()"><i class="fas fa-crosshairs"></i> Gunakan Titik Berdiriku Saat Ini</button>
+        <div id="tab-setting" class="screen-content">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-clock" style="color:var(--warning);"></i> Mesin Waktu & Penalty</div>
                 <div class="flex-grid">
+                    <div><label style="font-size:0.75rem; font-weight:600; color:#64748b;">Buka Gerbang Pagi</label><input type="time" id="set-open-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--primary);">Batas Hijau (Tepat)</label><input type="time" id="set-late-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--primary);">Toleransi Telat (Menit)</label><input type="number" id="set-grace-period" placeholder="Misal: 15" min="0"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--warning);">Batas Kuning</label><input type="time" id="set-tol-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--danger);">Batas Pelanggaran (Bulan)</label><input type="number" id="set-batas-pelanggaran" placeholder="Blokir jika Tdk Disiplin = 3x"></div>
+                    <div><label style="font-size:0.75rem; font-weight:600; color:var(--info);">Mulai Jam Pulang</label><input type="time" id="set-home-time"></div>
+                </div>
+            </div>
+
+            <div class="card" style="background: #fff1f2; border-color: #ffe4e6;">
+                <div class="card-title" style="color:var(--danger);"><i class="fas fa-calendar-times"></i> Libur Nasional</div>
+                <p style="font-size: 0.75rem; color: #64748b; margin-bottom: 10px;">Hari Minggu otomatis libur. Ketik Tgl Tambahan (YYYY-MM-DD), pisahkan dengan koma.</p>
+                <textarea id="set-libur" placeholder="Contoh: 2026-04-10, 2026-08-17" style="background:white;"></textarea>
+            </div>
+            
+            <div class="card">
+                <div class="card-title"><i class="fas fa-map-marked-alt" style="color:var(--primary);"></i> Radar GPS</div>
+                <button class="btn btn-outline" style="color:var(--info); border-color:var(--info);" onclick="adminGetMyLocation()"><i class="fas fa-crosshairs"></i> Ambil Titik Berdiri Saat Ini</button>
+                <div class="flex-grid" style="margin-top: 15px;">
                     <input type="text" id="set-lat" placeholder="Latitude"><input type="text" id="set-lng" placeholder="Longitude">
                 </div>
-                <label style="font-size:0.85rem; font-weight:bold; display:block;">Jangkauan Absen (Meter)</label>
+                <label style="font-size:0.75rem; font-weight:600; color:#64748b;">Jangkauan Absen Bebas (Meter)</label>
                 <input type="number" id="set-radius" placeholder="Disarankan 100">
             </div>
 
-            <button class="btn-action" style="background:var(--text); margin-top: 20px;" onclick="saveSettingsToDB()"><i class="fas fa-cloud-upload-alt"></i> Simpan Pengaturan ke Cloud</button>
+            <button class="btn btn-info" style="margin-top: 10px;" onclick="saveSettingsToDB()"><i class="fas fa-cloud-upload-alt"></i> Simpan Sistem ke Cloud</button>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="nav-item active" onclick="switchTab('tab-cetak', 'Laporan Cetak', this)"><i class="fas fa-print"></i><span>Cetak</span></button>
+            <button class="nav-item" onclick="switchTab('tab-edit', 'Kelola Absen', this)"><i class="fas fa-edit"></i><span>Absensi</span></button>
+            <button class="nav-item" onclick="switchTab('tab-guru', 'Otoritas Akun', this)"><i class="fas fa-users"></i><span>Guru</span></button>
+            <button class="nav-item" onclick="switchTab('tab-setting', 'Seting Sistem', this)"><i class="fas fa-cogs"></i><span>Sistem</span></button>
         </div>
 
     </div>
 
     <script>
+        // API SUPABASE
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
@@ -216,22 +266,33 @@
             const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
             let iconClass = type === 'error' ? 'fa-exclamation-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle');
             toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${msg}</span>`; container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3500);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
         }
 
         function formatIDToYMD_Revert(ymdStr) { const p = ymdStr.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
 
         function verifyAdminPIN() {
             if(document.getElementById('admin-pin-input').value === '1234') {
-                document.getElementById('login-overlay').style.display = 'none'; initAdmin();
-            } else { showToast("PIN Salah!", "error"); }
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('main-app-container').style.display = 'flex';
+                initAdmin();
+            } else { showToast("Akses Ditolak!", "error"); }
+        }
+
+        // SPA TAB LOGIC
+        function switchTab(tabId, title, btnEl) {
+            document.querySelectorAll('.screen-content').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if(btnEl) btnEl.classList.add('active');
+            document.getElementById('header-title').innerText = title;
         }
 
         async function initAdmin() {
             document.getElementById('report-month').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
             document.getElementById('manual-date').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
             
-            document.getElementById('db-status').innerHTML = '<i class="fas fa-check-circle"></i> Server Sinkron'; document.getElementById('db-status').style.color = 'var(--primary)';
+            document.getElementById('db-status').innerHTML = '<i class="fas fa-check-circle"></i> Online'; 
             await loadSettingsFromDB(); await fetchTeachersFromDB(); await loadFaceAPIModels();
             loadAdminAttendancePreview();
         }
@@ -266,12 +327,12 @@
             };
             
             if(appSettings.id) { await sb.from('Pengaturan').update(p).eq('id', appSettings.id); }
-            showToast("Pengaturan Disimpan!", "success"); loadSettingsFromDB(); 
+            showToast("Sistem Disimpan!", "success"); loadSettingsFromDB(); 
         }
 
         function adminGetMyLocation() {
             if (navigator.geolocation) {
-                showToast("Melacak lokasi...", "info");
+                showToast("Melacak GPS...", "info");
                 navigator.geolocation.getCurrentPosition(
                     function(position) { document.getElementById('set-lat').value = position.coords.latitude.toFixed(6); document.getElementById('set-lng').value = position.coords.longitude.toFixed(6); showToast("Terkunci!", "success"); },
                     function(error) { showToast("Gagal melacak.", "error"); }, { enableHighAccuracy: true }
@@ -288,27 +349,32 @@
 
         function renderTeacherList() { 
             const list = document.getElementById('admin-teacher-list'); list.innerHTML = ''; 
+            if(teachers.length === 0) list.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:20px;">Kosong</div>';
+            
             teachers.forEach((t) => {
-                let faceIcon = t.face_data ? '<i class="fas fa-check-circle" style="color:var(--primary);"></i> Terdaftar' : '<i class="fas fa-times-circle" style="color:var(--danger);"></i> Kosong';
+                let faceIcon = t.face_data ? '<i class="fas fa-check-circle" style="color:var(--primary);"></i> Wajah Ada' : '<i class="fas fa-times-circle" style="color:var(--danger);"></i> Wajah Kosong';
                 let toggleIcon = t.is_active ? 'fa-toggle-on toggle-on' : 'fa-toggle-off toggle-off';
                 
                 list.innerHTML += `
-                <li style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee; background: white; margin-bottom:5px; border-radius:5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                    <div style="flex:1;">
-                        <strong style="font-size:0.9rem;">${t.nama}</strong> <span style="font-size:0.75rem; color:#888; background:#eee; padding:2px 6px; border-radius:5px;">PIN: ${t.pin}</span><br>
-                        <span style="font-size:0.75rem; font-weight:600; margin-top:5px; display:block;">Face ID: ${faceIcon}</span>
-                    </div>
-                    <div style="display:flex; gap:12px; align-items:center;">
+                <div class="teacher-list-item">
+                    <div class="teacher-header">
+                        <div>
+                            <div class="teacher-name">${t.nama}</div>
+                            <span class="teacher-pin">PIN: ${t.pin}</span>
+                        </div>
                         <button class="toggle-btn" onclick="toggleAccountStatus(${t.id}, ${!t.is_active})" title="Aktif/Nonaktif"><i class="fas ${toggleIcon}"></i></button>
-                        <button class="btn-action btn-info" style="padding:6px; margin:0;" onclick="startFaceRegistrationAdmin(${t.id})" title="Rekam Wajah"><i class="fas fa-camera"></i></button> 
-                        <button class="btn-action btn-danger" style="padding:6px; margin:0;" onclick="deleteTeacher(${t.id}, '${t.nama}')" title="Hapus Permanen"><i class="fas fa-trash"></i></button>
                     </div>
-                </li>`; 
+                    <div class="teacher-actions">
+                        <span style="font-size:0.75rem; font-weight:600; flex:1;">${faceIcon}</span>
+                        <button class="btn btn-outline" style="width:auto; padding:8px 12px; margin:0; color:var(--info); border-color:var(--info);" onclick="startFaceRegistrationAdmin(${t.id})"><i class="fas fa-camera"></i></button> 
+                        <button class="btn btn-outline" style="width:auto; padding:8px 12px; margin:0; color:var(--danger); border-color:var(--danger);" onclick="deleteTeacher(${t.id}, '${t.nama}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`; 
             });
         }
         
         async function toggleAccountStatus(id, newStatus) { await sb.from('Guru').update({ is_active: newStatus }).eq('id', id); fetchTeachersFromDB(); }
-        async function deleteTeacher(id, nama) { if(confirm(`Bakar data ${nama}?`)) { await sb.from('Naskan').delete().eq('nama', nama); await sb.from('Guru').delete().eq('id', id); fetchTeachersFromDB(); } }
+        async function deleteTeacher(id, nama) { if(confirm(`Bakar permanen data ${nama}?`)) { await sb.from('Naskan').delete().eq('nama', nama); await sb.from('Guru').delete().eq('id', id); fetchTeachersFromDB(); } }
 
         function startFaceRegistrationAdmin(id) { 
             if (!isAiLoaded) { showToast("AI loading", "warning"); return; } 
@@ -322,7 +388,7 @@
                 document.getElementById('admin-video-wrapper').style.borderColor = "var(--warning)";
                 document.getElementById('admin-cam-instruction').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Arahkan wajah ke kamera...';
                 videoEl.onloadedmetadata = () => { videoEl.play(); scanAdminFace(videoEl); };
-            } catch (err) { showToast("Kamera diblokir browser!", "error"); closeAdminCamera(); }
+            } catch (err) { showToast("Kamera diblokir!", "error"); closeAdminCamera(); }
         }
 
         async function scanAdminFace(videoEl) {
@@ -334,12 +400,12 @@
                     clearInterval(adminScanInterval);
                     document.getElementById('admin-video-wrapper').style.borderColor = "var(--primary)";
                     document.getElementById('admin-laser').style.display = "none";
-                    document.getElementById('admin-cam-instruction').innerHTML = '<span style="color:var(--primary);"><i class="fas fa-check"></i> Wajah Terkunci! Menyimpan...</span>';
+                    document.getElementById('admin-cam-instruction').innerHTML = '<span style="color:var(--primary);"><i class="fas fa-check"></i> Wajah Terkunci!</span>';
                     
                     const faceDataString = JSON.stringify(Array.from(detection.descriptor));
                     const { error } = await sb.from('Guru').update({ face_data: faceDataString }).eq('id', registeringTeacherId);
                     
-                    setTimeout(() => { closeAdminCamera(); if(error) { showToast("Gagal.", "error"); } else { showToast("Face ID Aktif!", "success"); fetchTeachersFromDB(); } }, 800);
+                    setTimeout(() => { closeAdminCamera(); if(!error) { showToast("Face ID Aktif!", "success"); fetchTeachersFromDB(); } }, 800);
                 }
             }, 300);
         }
@@ -350,28 +416,31 @@
             document.getElementById('admin-laser').style.display = 'block'; document.getElementById('admin-cam-modal').style.display = 'none';
         }
 
-        // TAMPILKAN ALASAN DI PREVIEW
+        // TAMPILKAN ALASAN DI PREVIEW CARD LIST
         async function loadAdminAttendancePreview() {
             const dateInput = document.getElementById('manual-date').value; if(!dateInput) return;
             const dateStr = formatIDToYMD_Revert(dateInput); 
-            const tbody = document.getElementById('admin-preview-table'); tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px;">Memuat...</td></tr>';
+            const listCon = document.getElementById('admin-preview-table'); listCon.innerHTML = '<div style="text-align:center; padding:15px; color:#94a3b8;"><i class="fas fa-spinner fa-spin"></i> Memuat...</div>';
             
             const { data: logs } = await sb.from('Naskan').select('*').eq('tanggal', dateStr).order('waktu', { ascending: true });
-            tbody.innerHTML = '';
-            if(!logs || logs.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:15px;">Tidak ada data masuk di tanggal ini.</td></tr>'; return; }
+            listCon.innerHTML = '';
+            if(!logs || logs.length === 0) { listCon.innerHTML = '<div style="text-align:center; padding:15px; color:#94a3b8;">Tidak ada data di tanggal ini.</div>'; return; }
 
             logs.forEach(log => {
                 let bg = log.warna === 'primary' ? 'bg-green' : (log.warna === 'warning' ? 'bg-yellow' : (log.warna === 'info' ? 'bg-blue' : 'bg-red'));
                 if(log.tipe === 'Pulang' && log.warna === 'primary') bg = 'bg-blue'; 
                 
-                let ketAlasan = log.alasan && log.alasan !== '-' ? `<br><small style="color:#666; font-style:italic;"><i class="fas fa-comment-dots"></i> ${log.alasan}</small>` : '';
+                let ketAlasan = log.alasan && log.alasan !== '-' ? `<div class="preview-alasan"><i class="fas fa-comment-dots"></i> ${log.alasan}</div>` : '';
 
-                tbody.innerHTML += `<tr style="border-bottom: 1px solid #ddd;">
-                    <td style="padding:10px; font-weight:600;">${log.nama}</td>
-                    <td style="padding:10px;">${log.tipe} (<b>${log.waktu}</b>)${ketAlasan}</td>
-                    <td style="padding:10px;"><span class="badge ${bg}">${log.status}</span></td>
-                    <td style="padding:10px;"><button style="background:var(--danger); border:none; color:white; padding:6px 12px; border-radius:5px; cursor:pointer;" onclick="deleteAttendanceRecord(${log.id})"><i class="fas fa-trash"></i></button></td>
-                </tr>`;
+                listCon.innerHTML += `
+                <div class="preview-card">
+                    <div class="preview-info">
+                        <div class="preview-name">${log.nama}</div>
+                        <div class="preview-detail">${log.tipe} &bull; <b>${log.waktu}</b> &bull; <span class="badge ${bg}">${log.status}</span></div>
+                        ${ketAlasan}
+                    </div>
+                    <button class="btn btn-outline" style="width:auto; color:var(--danger); border-color:transparent; font-size:1.2rem; padding:10px;" onclick="deleteAttendanceRecord(${log.id})"><i class="fas fa-trash"></i></button>
+                </div>`;
             });
         }
 
@@ -381,7 +450,9 @@
             const status = document.getElementById('manual-status').value;
             const alasan = document.getElementById('manual-alasan').value.trim() || '-';
 
-            if(!dateInput || !name || !type || !status) { showToast("Lengkapi form!", "warning"); return; }
+            if(!dateInput || !name || !type || !status) { showToast("Lengkapi form wajib!", "warning"); return; }
+            if(status === 'Tidak Disiplin' && alasan === '-') { showToast("Alasan Keterlambatan Wajib Diisi!", "warning"); return; }
+            
             const dateStr = formatIDToYMD_Revert(dateInput);
 
             let warna = 'primary';
@@ -394,19 +465,19 @@
             if (existing && existing.length > 0) { await sb.from('Naskan').update({ waktu: timeStr, status: status, warna: warna, alasan: alasan }).eq('id', existing[0].id); } 
             else { await sb.from('Naskan').insert([{ tanggal: dateStr, nama: name, waktu: timeStr, tipe: type, status: status, warna: warna, alasan: alasan }]); }
             
-            document.getElementById('manual-alasan').value = ''; // Bersihkan form
+            document.getElementById('manual-alasan').value = ''; 
             showToast("Tersimpan!", "success"); loadAdminAttendancePreview();
         }
 
         async function deleteAttendanceRecord(id) { if(confirm("Hapus absen ini?")) { await sb.from('Naskan').delete().eq('id', id); loadAdminAttendancePreview(); } }
 
-        // --- SISTEM CETAK MATRIX A4 LANDSCAPE (PRESISI ANTI GENCET) ---
+        // --- CETAK MATRIX A4 (LAPORAN SEMPURNA) ---
         async function generateMatrixReport() {
             const selectedMonthVal = document.getElementById('report-month').value; 
             if(!selectedMonthVal) { showToast("Pilih bulan dulu!", "warning"); return; }
             const [yearStr, monthStr] = selectedMonthVal.split('-');
             
-            showToast("Merakit Matrix PDF...", "info");
+            showToast("Merakit PDF A4...", "info");
             const { data: logs } = await sb.from('Naskan').select('*');
             const renderArea = document.getElementById('print-render-area');
             const monthNames = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
@@ -498,11 +569,10 @@
 
                 html += `</tbody></table>`;
                 
-                // KETERANGAN WARNA DI BAWAH TABEL (Dengan S/I/A Note)
                 html += `<div class="print-legend">`;
-                html += `<b>DATANG:</b> (<span class="box-hijau"></span> Tepat Waktu) &nbsp; (<span class="box-kuning"></span> Terlambat) &nbsp; (<span class="box-merah"></span> Tidak Disiplin) &nbsp;&nbsp; | &nbsp;&nbsp; `;
-                html += `<b>PULANG:</b> (<span class="box-hijau"></span> Tepat Waktu) &nbsp; (<span class="box-kuning"></span> Offset) &nbsp;&nbsp; | &nbsp;&nbsp; <b>L</b> = Libur &nbsp;&nbsp; | &nbsp;&nbsp; `;
-                html += `<b>S/I/A:</b> S (<span class="box-kuning"></span> Sakit) &nbsp; I (<span class="box-biru"></span> Izin) &nbsp; A (<span class="box-merah"></span> Alpa)`;
+                html += `<b>DATANG:</b> (<span class="box-hijau"></span> Tepat) (<span class="box-kuning"></span> Telat) (<span class="box-merah"></span> Tdk Disiplin) &nbsp; | &nbsp; `;
+                html += `<b>PULANG:</b> (<span class="box-hijau"></span> Tepat) (<span class="box-kuning"></span> Offset) &nbsp; | &nbsp; <b>L</b> = Libur &nbsp; | &nbsp; `;
+                html += `<b>S/I/A:</b> S (<span class="box-kuning"></span> Sakit) I (<span class="box-biru"></span> Izin) A (<span class="box-merah"></span> Alpa)`;
                 html += `</div></div>`;
             });
 
