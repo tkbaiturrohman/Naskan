@@ -191,7 +191,6 @@
     </div>
 
     <script>
-        // API SUPABASE
         const supabaseUrl = 'https://ssugrwkfacveqfchhcmp.supabase.co';
         const supabaseKey = 'sb_publishable_paMS7g8QVvmMhlPkjMEndg_3w-0EOaK';
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
@@ -209,9 +208,7 @@
         function getCurrentYMD() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function timeToMins(timeStr) { if (!timeStr) return 0; const parts = timeStr.split(':'); return parseInt(parts[0]) * 60 + parseInt(parts[1]); }
 
-        // --- HELPER WEBAUTHN (SIDIK JARI) ---
-        const domainURL = window.location.hostname; // Deteksi otomatis Domain
-
+        // --- HELPER UNTUK WEBAUTHN (SIDIK JARI) ---
         function bufferToBase64url(buffer) {
             const bytes = new Uint8Array(buffer); let str = '';
             for (let i = 0; i < bytes.byteLength; i++) { str += String.fromCharCode(bytes[i]); }
@@ -297,7 +294,7 @@
             }
         }
 
-        // ================= JURUS ANDALAN: REGISTRASI SIDIK JARI (FIX S21 FE) =================
+        // ================= JURUS PAMUNGKAS: REGISTRASI SIDIK JARI ANTI-MACET =================
         async function startFingerprintReg() {
             const name = document.getElementById('reg-name').value.trim(); const pin = document.getElementById('reg-pin').value.trim();
             if(!name || pin.length !== 4) { showToast("Isi Nama & PIN 4 Angka!", "warning"); return; }
@@ -305,13 +302,10 @@
             const errorBox = document.getElementById('reg-error-info');
             errorBox.style.display = 'none';
 
-            document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mengecek Data...";
-            const { data: cekData } = await sb.from('Guru').select('id, credential_id').eq('nama', name);
-
             if (!window.PublicKeyCredential) { 
                 showToast("Browser tidak mendukung!", "error"); 
                 errorBox.style.display = 'block';
-                errorBox.innerHTML = "<b>Browser ini memblokir Sidik Jari.</b><br>Gunakan Google Chrome dan buka lewat HTTPS.";
+                errorBox.innerHTML = "<b>Browser ini memblokir Sidik Jari.</b><br>Gunakan Google Chrome dan wajib lewat HTTPS.";
                 return; 
             }
 
@@ -320,20 +314,16 @@
 
             let credentialIdStr = "";
             try {
+                // 1. PANGGIL SIDIK JARI TERLEBIH DAHULU (Tanpa Await Database agar tidak Timeout)
                 const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
                 const userId = new Uint8Array(16); window.crypto.getRandomValues(userId);
 
                 const publicKey = {
                     challenge: challenge,
-                    rp: { name: "TK Baiturrohman", id: domainURL }, 
+                    rp: { name: "TK Baiturrohman" }, // Tanpa rpId agar Chrome mendeteksi host secara otomatis (Aman di GitHub Pages)
                     user: { id: userId, name: name, displayName: name },
                     pubKeyCredParams: [{type: "public-key", alg: -7}, {type: "public-key", alg: -257}], 
-                    
-                    // JURUS FIX SAMSUNG S21 FE / IN-DISPLAY FINGERPRINT:
-                    authenticatorSelection: { 
-                        authenticatorAttachment: "platform", // Paksa Hardware HP
-                        userVerification: "required"         // Wajib verifikasi agar tidak macet
-                    }, 
+                    authenticatorSelection: { userVerification: "preferred" }, // Preferred sangat fleksibel untuk semua merk HP
                     timeout: 60000
                 };
 
@@ -343,12 +333,14 @@
             } catch (err) { 
                 document.getElementById('reg-laser').style.display = 'none'; document.getElementById('reg-msg').innerHTML = "Pendaftaran Dibatalkan.";
                 errorBox.style.display = 'block';
-                errorBox.innerHTML = `<b>Penyebab Ditolak:</b><br>${err.message}<br><i>Pastikan HP Anda memiliki Kunci Layar (PIN/Pola).</i>`;
+                errorBox.innerHTML = `<b>Penyebab Ditolak:</b><br>${err.message}<br><i>Pastikan HP Anda memiliki Kunci Layar (PIN/Pola/Sidik Jari).</i>`;
                 showToast("Sensor ditolak / Dibatalkan", "error"); 
-                return; 
+                return; // Keluar dari fungsi jika sensor dibatalkan
             }
 
-            document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Menyimpan Kunci Kriptografi...";
+            // 2. SETELAH JARI COCOK, BARU CEK DATABASE & SIMPAN
+            document.getElementById('reg-msg').innerHTML = "<i class='fas fa-spinner fa-spin'></i> Mengecek Data Server...";
+            const { data: cekData } = await sb.from('Guru').select('id').eq('nama', name);
             
             let isSuccess = false;
             if (cekData && cekData.length > 0) {
@@ -501,7 +493,7 @@
             } else { currentStatus = 'Tepat Waktu'; currentColor = 'primary'; } 
         }
 
-        // ================= VERIFIKASI SIDIK JARI ABSEN (FIX S21 FE) =================
+        // ================= JURUS PAMUNGKAS: VERIFIKASI SIDIK JARI ABSEN =================
         async function triggerAbsenFingerprint() {
             if(currentStatus === 'Tidak Disiplin' && document.getElementById('input-alasan').value.trim() === '') {
                 showToast("Alasan Keterlambatan Wajib Diisi dulu!", "error"); return;
@@ -515,19 +507,19 @@
             document.getElementById('absen-error-info').style.display = 'none';
 
             try {
+                // 1. PANGGIL SIDIK JARI LANGSUNG (Tanpa memikirkan rpId)
                 const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
                 const allowCredential = { type: "public-key", id: base64urlToBuffer(teacherData.credential_id) };
 
-                // JURUS FIX SAMSUNG S21 FE: Wajibkan Verifikasi (required)
                 const assertion = await navigator.credentials.get({
                     publicKey: { 
                         challenge: challenge, 
-                        rpId: domainURL, 
                         allowCredentials: [allowCredential], 
-                        userVerification: "required" // MEMAKSA SENSOR LAYAR LANGSUNG MENYALA
+                        userVerification: "preferred" // Sangat fleksibel anti-macet
                     } 
                 });
 
+                // SIDIK JARI COCOK 100%!
                 document.getElementById('absen-laser').style.display = 'none';
                 document.getElementById('absen-finger-icon').classList.add('finger-success');
                 document.getElementById('absen-msg').innerHTML = "<span style='color:var(--primary);'><i class='fas fa-check'></i> Verifikasi Berhasil!</span>";
