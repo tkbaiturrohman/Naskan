@@ -1,0 +1,16 @@
+{
+  "name": "Super Admin TK Baiturrohman",
+  "short_name": "Admin TK",
+  "description": "Panel Kontrol Kepala Sekolah",
+  "start_url": "./jisaeshin.html",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#ff1744",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/8633/8633180.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
