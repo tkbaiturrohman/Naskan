@@ -55,7 +55,7 @@
         .btn-purple { background: linear-gradient(135deg, #ab47bc, #6a1b9a); }
         .btn-outline { background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255,255,255,0.2); color: #cbd5e1; box-shadow: none; }
         
-        .btn-glow-shortcut { background: linear-gradient(135deg, #00e676, #00b0ff); border: 2px solid rgba(255,255,255,0.6); border-radius: 25px; padding: 20px; font-size: 1.1rem; animation: pulseGlowAdmin 2s infinite alternate; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; color: white; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .btn-glow-shortcut { background: linear-gradient(135deg, #00e676, #00b0ff); border: 2px solid rgba(255,255,255,0.6); border-radius: 25px; padding: 20px; font-size: 1.1rem; animation: pulseGlowAdmin 2s infinite alternate; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; color: white; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;}
         @keyframes pulseGlowAdmin { 0% { box-shadow: 0 0 15px rgba(0, 230, 118, 0.4); } 100% { box-shadow: 0 0 35px rgba(0, 176, 255, 0.8); transform: translateY(-3px); } }
 
         .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
@@ -98,6 +98,11 @@
         @media (max-width: 600px) { .flex-grid { grid-template-columns: 1fr; } }
         
         #sync-indicator { position: fixed; top: 20px; right: 20px; font-size: 1rem; color: var(--info); z-index: 9999; display: none; opacity: 0.8;}
+
+        /* CSS KHUSUS LABEL LIBUR NASIONAL */
+        .libur-chip { background: rgba(255, 23, 68, 0.15); color: #ff8a80; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 23, 68, 0.3); transition: 0.2s;}
+        .libur-chip:hover { background: rgba(255, 23, 68, 0.3); }
+        .libur-chip i { cursor: pointer; color: var(--danger); font-size: 1rem; }
 
         /* CETAK A4 MATRIX */
         .report-wrapper { display: none; } 
@@ -172,6 +177,12 @@
                 <div id="missing-teachers-list" style="margin-top:10px;"></div>
             </div>
 
+            <div class="card" style="border-color: var(--warning);">
+                <div class="card-title"><i class="fas fa-file-pdf" style="color:var(--danger);"></i> Pabrik Laporan PDF</div>
+                <input type="month" id="report-month">
+                <button class="btn btn-warning" style="color: black !important;" onclick="generateMatrixReport()"><i class="fas fa-print"></i> Generate Matrix PDF</button>
+            </div>
+
             <button class="btn-glow-shortcut" onclick="window.location.href='https://tkbaiturrohman.github.io/Naskan'">
                 <i class="fas fa-external-link-alt" style="font-size: 1.5rem;"></i> Buka Aplikasi Absen Guru
             </button>
@@ -219,14 +230,6 @@
             <div class="preview-list" id="admin-preview-table"></div>
         </div>
 
-        <div id="tab-cetak" class="screen-content">
-            <div class="card">
-                <div class="card-title"><i class="fas fa-file-pdf" style="color:var(--danger);"></i> Pabrik Laporan PDF</div>
-                <input type="month" id="report-month">
-                <button class="btn btn-danger" onclick="generateMatrixReport()"><i class="fas fa-print"></i> Generate Matrix PDF</button>
-            </div>
-        </div>
-
         <div id="tab-guru" class="screen-content">
             <div class="card" style="background: rgba(0, 176, 255, 0.05); border-color: rgba(0, 176, 255, 0.3);">
                 <div class="card-title" style="border-bottom:none; margin-bottom:0;"><i class="fas fa-users-cog" style="color:var(--info);"></i> Pusat Kendali Akun</div>
@@ -246,10 +249,20 @@
                     <div><label style="font-size:0.75rem; font-weight:700; color:var(--info);">Mulai Jam Pulang</label><input type="time" id="set-home-time"></div>
                 </div>
             </div>
+
             <div class="card" style="background: rgba(255, 23, 68, 0.05); border-color: rgba(255, 23, 68, 0.2);">
-                <div class="card-title" style="color:var(--danger);"><i class="fas fa-calendar-times"></i> Libur Nasional</div>
-                <textarea id="set-libur" placeholder="Contoh: 2026-04-10, 2026-08-17"></textarea>
+                <div class="card-title" style="color:var(--danger);"><i class="fas fa-calendar-times"></i> Manajemen Libur Nasional</div>
+                <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:15px;">Pilih tanggal dari kalender lalu klik tambah (+). Tanggal akan otomatis tersimpan jika Anda mengklik "Terapkan Pengaturan" di bawah.</p>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                    <input type="date" id="input-libur-baru" style="margin-bottom: 0;">
+                    <button class="btn btn-danger" style="width: auto; margin-bottom: 0; padding: 0 25px;" onclick="tambahLiburUI()"><i class="fas fa-plus"></i></button>
+                </div>
+                
+                <div id="daftar-libur-container" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px;">
+                    </div>
             </div>
+
             <div class="card">
                 <div class="card-title"><i class="fas fa-satellite" style="color:var(--primary);"></i> Kalibrasi Satelit GPS</div>
                 <button class="btn btn-outline" style="color:var(--info); border-color:var(--info);" onclick="adminGetMyLocation()"><i class="fas fa-crosshairs"></i> Kunci Koordinat Saat Ini</button>
@@ -278,6 +291,7 @@
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
         let appSettings = {}; let teachers = [];
+        let holidayArr = []; // Array khusus untuk menyimpan daftar libur
         const now = new Date();
 
         if ('serviceWorker' in navigator) {
@@ -320,7 +334,7 @@
             document.getElementById(tabId).classList.add('active');
             
             if(btnEl) { btnEl.classList.add('active'); } 
-            else { document.querySelectorAll('.nav-item')[2].classList.add('active'); } // Handle manual shortcut
+            else { document.querySelectorAll('.nav-item')[2].classList.add('active'); } 
             
             document.getElementById('header-title').innerText = title;
             if(tabId === 'tab-edit') loadAdminAttendancePreview();
@@ -339,21 +353,67 @@
                 appSettings = data[0];
                 document.getElementById('set-lat').value = appSettings.lat; document.getElementById('set-lng').value = appSettings.lng; document.getElementById('set-radius').value = appSettings.radius; 
                 document.getElementById('set-open-time').value = appSettings.open_time; document.getElementById('set-late-time').value = appSettings.late_time; document.getElementById('set-tol-time').value = appSettings.tol_time; document.getElementById('set-home-time').value = appSettings.home_time;
-                document.getElementById('set-libur').value = appSettings.hari_libur || "";
                 document.getElementById('set-grace-period').value = appSettings.grace_period || 0;
                 document.getElementById('set-batas-pelanggaran').value = appSettings.batas_pelanggaran || 3;
                 
-                // Set saklar darurat
                 document.getElementById('toggle-darurat').checked = appSettings.mode_darurat || false;
                 document.getElementById('pesan-broadcast').value = appSettings.pengumuman || "";
+
+                // Tarik data Libur Nasional untuk Tag UI
+                holidayArr = appSettings.hari_libur ? appSettings.hari_libur.split(',').map(s => s.trim()).filter(s => s) : [];
+                renderLiburChips();
             }
+        }
+
+        // FUNGSI KHUSUS LIBUR NASIONAL
+        function renderLiburChips() {
+            const container = document.getElementById('daftar-libur-container');
+            container.innerHTML = '';
+            if(holidayArr.length === 0) {
+                container.innerHTML = '<span style="font-size:0.8rem; color:#94a3b8; font-style:italic;">Belum ada hari libur disetel.</span>';
+                return;
+            }
+            holidayArr.forEach((tgl, index) => {
+                container.innerHTML += `<div class="libur-chip">${tgl} <i class="fas fa-times-circle" onclick="hapusLiburUI(${index})"></i></div>`;
+            });
+        }
+
+        function tambahLiburUI() {
+            const val = document.getElementById('input-libur-baru').value;
+            if(!val) { showToast("Pilih tanggal dari kalender dulu!", "warning"); return; }
+            if(holidayArr.includes(val)) { showToast("Tanggal ini sudah ditambahkan!", "warning"); return; }
+            
+            holidayArr.push(val);
+            holidayArr.sort(); // Urutkan tanggal dari yang terlama ke terbaru otomatis
+            renderLiburChips();
+            document.getElementById('input-libur-baru').value = '';
+        }
+
+        function hapusLiburUI(index) {
+            holidayArr.splice(index, 1);
+            renderLiburChips();
         }
 
         async function saveSettingsToDB() {
             showToast("Mentransfer ke Cloud...", "info");
-            const p = { lat: document.getElementById('set-lat').value, lng: document.getElementById('set-lng').value, radius: parseInt(document.getElementById('set-radius').value), open_time: document.getElementById('set-open-time').value, late_time: document.getElementById('set-late-time').value, tol_time: document.getElementById('set-tol-time').value, home_time: document.getElementById('set-home-time').value, hari_libur: document.getElementById('set-libur').value, grace_period: parseInt(document.getElementById('set-grace-period').value) || 0, batas_pelanggaran: parseInt(document.getElementById('set-batas-pelanggaran').value) || 3 };
+            
+            // Gabungkan array libur menjadi string untuk database
+            const holidayStr = holidayArr.join(',');
+
+            const p = { 
+                lat: document.getElementById('set-lat').value, 
+                lng: document.getElementById('set-lng').value, 
+                radius: parseInt(document.getElementById('set-radius').value), 
+                open_time: document.getElementById('set-open-time').value, 
+                late_time: document.getElementById('set-late-time').value, 
+                tol_time: document.getElementById('set-tol-time').value, 
+                home_time: document.getElementById('set-home-time').value, 
+                hari_libur: holidayStr, 
+                grace_period: parseInt(document.getElementById('set-grace-period').value) || 0, 
+                batas_pelanggaran: parseInt(document.getElementById('set-batas-pelanggaran').value) || 3 
+            };
             if(appSettings.id) { await sb.from('Pengaturan').update(p).eq('id', appSettings.id); }
-            showToast("Engine Diperbarui!", "success"); loadSettingsFromDB(); 
+            showToast("Sistem & Libur Diperbarui!", "success"); loadSettingsFromDB(); 
         }
 
         // ================= KONTROL KOMANDO (BROADCAST & DARURAT) =================
@@ -510,7 +570,10 @@
             const monthNames = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
             const uniqueTeachers = teachers.map(t => t.nama).sort();
             if (uniqueTeachers.length === 0) { showToast("Database Guru Kosong.", "error"); return; }
-            const reportMap = {}; const holidayArr = appSettings.hari_libur ? appSettings.hari_libur.split(',').map(s => s.trim()) : [];
+            const reportMap = {}; 
+            
+            // Konversi holidayArr menjadi format YMD di database (YYYY-MM-DD ke DD/MM/YYYY)
+            // Namun database kita nyimpan YYYY-MM-DD di appSettings, jadi kita cek kesamaan String
             uniqueTeachers.forEach(namaGuru => { reportMap[namaGuru] = {}; for(let d=1; d<=31; d++) { reportMap[namaGuru][d] = { dtg: '', warnaDtg: '', plg: '', warnaPlg: '', absenTipe: '' }; } });
 
             if (logs) {
@@ -542,7 +605,10 @@
                     const noUrut = (chunkIndex * teachersPerPage) + i + 1;
                     let countS = 0, countI = 0, countA = 0; let rowDtg = '', rowWarnaDtg = '', rowPlg = '', rowWarnaPlg = '';
                     for(let d=1; d<=maxDays; d++){ 
-                        let isSunday = new Date(parseInt(yearStr), parseInt(monthStr)-1, d).getDay() === 0; let currDate = `${yearStr}-${String(monthStr).padStart(2,'0')}-${String(d).padStart(2,'0')}`; let isHoliday = isSunday || holidayArr.includes(currDate);
+                        let isSunday = new Date(parseInt(yearStr), parseInt(monthStr)-1, d).getDay() === 0; 
+                        let currDate = `${yearStr}-${String(monthStr).padStart(2,'0')}-${String(d).padStart(2,'0')}`; 
+                        let isHoliday = isSunday || holidayArr.includes(currDate);
+                        
                         const cell = reportMap[t][d];
                         if(isHoliday) { rowDtg += `<td class="cell-libur">L</td>`; rowWarnaDtg += `<td class="cell-libur">L</td>`; rowPlg += `<td class="cell-libur">L</td>`; rowWarnaPlg += `<td class="cell-libur">L</td>`; } 
                         else if(cell.absenTipe === 'Sakit' || cell.absenTipe === 'Izin' || cell.absenTipe === 'Alpa') {
