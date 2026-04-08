@@ -1,5 +1,5 @@
 {
-  "name": "Absensi TK Baiturrohman",
+  "name": "Absensi TPQ Roudlotul Islamiyah Pendosawalan",
   "short_name": "Absen TK",
   "description": "Aplikasi Absensi Pintar Anti-Titip Absen",
   "start_url": "./index.html",
@@ -8,7 +8,7 @@
   "theme_color": "#00b0ff",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2942/2942821.png",
+      "src": "logo Roudlotul Islamiyah Pendosawalan.png",
       "sizes": "512x512",
       "type": "image/png"
     }
