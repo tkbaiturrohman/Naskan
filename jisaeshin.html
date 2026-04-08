@@ -11,12 +11,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        :root { --primary: #00e676; --warning: #ffea00; --danger: #ff1744; --info: #00b0ff; --dark-bg: #0b1120; --card-bg: rgba(15, 23, 42, 0.85); }
+        :root { --primary: #00e676; --warning: #FFD700; --warning-dark: #F39C12; --danger: #ff1744; --info: #00b0ff; --dark-bg: #0b1120; --card-bg: rgba(15, 23, 42, 0.85); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         body, html { width: 100%; height: 100%; background-color: var(--dark-bg); color: white; overflow: hidden; }
         
         .bg-animated { position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, #1e293b 0%, #0b1120 80%); z-index: -1; animation: rotateBg 40s linear infinite; }
         @keyframes rotateBg { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- CSS GEMBOK TRIAL --- */
+        #expired-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 17, 32, 0.98); backdrop-filter: blur(20px); z-index: 9999999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .expired-box { background: linear-gradient(135deg, #ff1744, #8e0000); padding: 40px 30px; border-radius: 30px; border: 2px solid #FFD700; box-shadow: 0 20px 50px rgba(255,23,68,0.5); max-width: 400px; width: 100%; animation: popUpExpired 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .expired-box h1 { color: white; font-size: 1.8rem; margin-bottom: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;}
+        .expired-box p { color: #FFD700; font-size: 0.95rem; margin-bottom: 25px; font-weight: 600; line-height: 1.6; }
+        .btn-hubungi { background: #25D366; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 1.1rem; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 25px rgba(37,211,102,0.4); transition: 0.3s; border: 2px solid white; width: 100%;}
+        .btn-hubungi:active { transform: scale(0.95); }
+        @keyframes popUpExpired { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         #login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--dark-bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box, linear-gradient(45deg, var(--danger), transparent 40%, var(--warning), transparent 60%) border-box; border: 2px solid transparent; border-radius: 35px; padding: 40px; text-align: center; width: 90%; max-width: 350px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); color: white; background-size: 200% 200%; animation: gradientBorder 4s linear infinite; }
@@ -24,7 +33,9 @@
         
         #main-app-container { display: none; width: 100%; height: 100%; flex-direction: column; }
         .top-header { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); padding: 20px 20px 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); z-index: 10; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;}
-        .top-header h1 { font-size: 1.3rem; color: white; font-weight: 800; letter-spacing: 1px; }
+        .top-header img.logo { width: 45px; height: auto; object-fit: contain; margin-right: 10px; drop-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .top-header h1 { font-size: 1.3rem; color: white; font-weight: 800; letter-spacing: 1px; display: flex; align-items: center;}
+        
         .screen-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; display: none; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .screen-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
@@ -51,8 +62,7 @@
         .btn-info { background: linear-gradient(135deg, #00b0ff, #0069c0); }
         .btn-success { background: linear-gradient(135deg, #00e676, #00c853); }
         .btn-danger { background: linear-gradient(135deg, #ff1744, #d50000); }
-        .btn-warning { background: linear-gradient(135deg, #ffea00, #f57f17); color: #000 !important; font-weight: 800; box-shadow: 0 5px 15px rgba(255, 234, 0, 0.4); } 
-        .btn-purple { background: linear-gradient(135deg, #ab47bc, #6a1b9a); }
+        .btn-warning { background: linear-gradient(135deg, var(--warning), var(--warning-dark)); color: #000 !important; font-weight: 800; box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4); } 
         .btn-outline { background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255,255,255,0.2); color: #cbd5e1; box-shadow: none; }
         
         .btn-glow-shortcut { background: linear-gradient(135deg, #00e676, #00b0ff); border: 2px solid rgba(255,255,255,0.6); border-radius: 25px; padding: 20px; font-size: 1.1rem; animation: pulseGlowAdmin 2s infinite alternate; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; color: white; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px;}
@@ -71,7 +81,7 @@
         .preview-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 18px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: 0.3s;}
         .preview-name { font-weight: 800; font-size: 1rem; color: white; letter-spacing: 0.5px;}
         .preview-detail { font-size: 0.8rem; color: #94a3b8; margin-top: 5px; font-weight: 600;}
-        .preview-alasan { font-size: 0.75rem; color: var(--warning); font-style: italic; background: rgba(255,234,0,0.1); padding: 5px 10px; border-radius: 10px; margin-top: 8px; display: inline-block; border: 1px solid rgba(255,234,0,0.2);}
+        .preview-alasan { font-size: 0.75rem; color: var(--warning-dark); font-style: italic; background: rgba(255,215,0,0.1); padding: 5px 10px; border-radius: 10px; margin-top: 8px; display: inline-block; border: 1px solid rgba(255,215,0,0.2);}
 
         .missing-teacher { display: inline-block; background: rgba(255,23,68,0.15); color: #ff8a80; padding: 6px 12px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; margin: 4px; border: 1px solid rgba(255,23,68,0.3); }
 
@@ -81,7 +91,6 @@
         .toggle-btn { font-size: 2rem; cursor: pointer; background: none; border: none; outline:none; transition: 0.3s; text-shadow: 0 0 10px rgba(0,0,0,0.5);}
         .toggle-on { color: var(--primary); text-shadow: 0 0 15px var(--primary);} .toggle-off { color: #475569; }
 
-        /* SAKLAR MODE DARURAT CSS */
         .switch-darurat { position: relative; display: inline-block; width: 60px; height: 34px; }
         .switch-darurat input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #475569; transition: .4s; border-radius: 34px; border: 2px solid rgba(255,255,255,0.2); }
@@ -91,7 +100,10 @@
 
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 999999; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px;}
         .toast { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); color: white; padding: 15px 20px; border-radius: 20px; border-left: 5px solid var(--primary); box-shadow: 0 15px 35px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; animation: slideDown 0.3s forwards; font-size: 0.9rem; font-weight: 700;}
-        .toast.error { border-left-color: var(--danger); } .toast.warning { border-left-color: var(--warning); color: black; background: var(--warning);} .toast.success { border-left-color: var(--primary); }
+        .toast.error { border-left-color: var(--danger); } 
+        .toast.warning { border-left-color: var(--warning-dark); color: #000; background: linear-gradient(135deg, var(--warning), var(--warning-dark)); } 
+        .toast.success { border-left-color: var(--primary); }
+        .toast.info { border-left-color: var(--info); }
         @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         .flex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -99,10 +111,9 @@
         
         #sync-indicator { position: fixed; top: 20px; right: 20px; font-size: 1rem; color: var(--info); z-index: 9999; display: none; opacity: 0.8;}
 
-        /* CSS KHUSUS LABEL LIBUR NASIONAL */
         .libur-chip { background: rgba(255, 23, 68, 0.15); color: #ff8a80; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255, 23, 68, 0.3); transition: 0.2s;}
         .libur-chip:hover { background: rgba(255, 23, 68, 0.3); }
-        .libur-chip i { cursor: pointer; color: var(--danger); font-size: 1rem; }
+        .libur-chip i { cursor: pointer; color: var(--danger); font-size: 1.1rem; }
 
         /* CETAK A4 MATRIX */
         .report-wrapper { display: none; } 
@@ -118,7 +129,9 @@
             .print-table th, .print-table td { border: 1px solid #000; text-align: center; vertical-align: middle; padding: 2px 1px; overflow: hidden; white-space: nowrap;}
             .print-table th { background-color: #e0e0e0 !important; -webkit-print-color-adjust: exact; font-weight: bold; }
             .col-no { width: 20px; } .col-nama { width: 90px; text-align: left !important; padding-left: 4px !important; white-space: normal !important; word-break: break-word; line-height: 1.1;}
-            .col-tipe { width: 25px; font-weight: bold;} .col-tgl { width: 22px; font-size: 7pt; font-weight: bold;} .col-ket { width: 18px; font-weight: bold;} .td-time { font-size: 7pt; letter-spacing: -0.5px; } 
+            .col-tipe { width: 25px; font-weight: bold;} .col-tgl { width: 22px; font-size: 7pt; font-weight: bold;} 
+            .col-ket { font-weight: bold; letter-spacing: 2px; } .col-sia { width: 30px; font-weight: bold; font-size: 8pt; }
+            .td-time { font-size: 7pt; letter-spacing: -0.5px; } 
             .box-hijau { width: 10px; height: 10px; background: #00e676 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
             .box-kuning { width: 10px; height: 10px; background: #ffea00 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
             .box-merah { width: 10px; height: 10px; background: #ff1744 !important; border: 1px solid #000; -webkit-print-color-adjust: exact; margin: auto; display: inline-block;}
@@ -136,6 +149,15 @@
     <div id="sync-indicator"><i class="fas fa-satellite-dish fa-spin"></i></div>
     <div id="print-render-area" class="report-wrapper"></div>
 
+    <div id="expired-overlay">
+        <div class="expired-box">
+            <i class="fas fa-lock" style="font-size: 4.5rem; color: #FFD700; margin-bottom: 20px; text-shadow: 0 0 20px rgba(255,215,0,0.5);"></i>
+            <h1>LISENSI HABIS</h1>
+            <p>Masa trial / langganan aplikasi ini telah berakhir. Akses Admin dikunci oleh sistem pusat.<br><br>Silakan perpanjang lisensi Anda untuk kembali menggunakan layanan sistem absensi.</p>
+            <a href="https://wa.me/6281211862924?text=Halo%20Developer,%20saya%20mau%20perpanjang%20lisensi%20Aplikasi%20Absensi%20TK." target="_blank" class="btn-hubungi"><i class="fab fa-whatsapp" style="font-size: 1.6rem;"></i> Hubungi Developer</a>
+        </div>
+    </div>
+
     <div id="login-overlay">
         <div class="login-box">
             <h2 style="margin-bottom: 25px; font-weight:800; letter-spacing: 1px;"><i class="fas fa-shield-alt" style="color:var(--danger);"></i> Otoritas Kepala</h2>
@@ -146,7 +168,10 @@
 
     <div id="main-app-container">
         <div class="top-header">
-            <h1 id="header-title">Dashboard Live</h1>
+            <h1 id="header-title">
+                <img src="https://files.catbox.moe/dlbpqp.png" alt="Logo TK" class="logo">
+                Dashboard Live
+            </h1>
             <div class="status" id="db-status"><i class="fas fa-satellite-dish fa-spin"></i> Live</div>
         </div>
 
@@ -180,7 +205,7 @@
             <div class="card" style="border-color: var(--warning);">
                 <div class="card-title"><i class="fas fa-file-pdf" style="color:var(--danger);"></i> Pabrik Laporan PDF</div>
                 <input type="month" id="report-month">
-                <button class="btn btn-warning" style="color: black !important;" onclick="generateMatrixReport()"><i class="fas fa-print"></i> Generate Matrix PDF</button>
+                <button class="btn btn-warning" onclick="generateMatrixReport()"><i class="fas fa-print"></i> Generate Matrix PDF</button>
             </div>
 
             <button class="btn-glow-shortcut" onclick="window.location.href='https://tkbaiturrohman.github.io/Naskan'">
@@ -241,12 +266,13 @@
             <div class="card">
                 <div class="card-title"><i class="fas fa-cogs" style="color:var(--warning);"></i> Core Engine & Penalty</div>
                 <div class="flex-grid">
-                    <div><label style="font-size:0.75rem; font-weight:700; color:#94a3b8;">Buka Gerbang</label><input type="time" id="set-open-time"></div>
-                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--primary);">Batas Hijau</label><input type="time" id="set-late-time"></div>
-                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--primary);">Toleransi Telat (Mnt)</label><input type="number" id="set-grace-period" placeholder="Misal: 15" min="0"></div>
-                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--warning);">Batas Kuning</label><input type="time" id="set-tol-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:700; color:#94a3b8;">Buka Gerbang Datang</label><input type="time" id="set-open-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--primary);">Batas Hijau (Tepat Waktu)</label><input type="time" id="set-late-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--primary);">Toleransi Telat (Menit)</label><input type="number" id="set-grace-period" placeholder="Misal: 15" min="0"></div>
+                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--warning);">Batas Akhir Kuning</label><input type="time" id="set-tol-time"></div>
                     <div><label style="font-size:0.75rem; font-weight:700; color:var(--danger);">Blokir Jika Melanggar</label><input type="number" id="set-batas-pelanggaran" placeholder="Misal: 3x"></div>
-                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--info);">Mulai Jam Pulang</label><input type="time" id="set-home-time"></div>
+                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--warning);">Mulai Radar Pulang (Offset)</label><input type="time" id="set-pulang-awal"></div>
+                    <div><label style="font-size:0.75rem; font-weight:700; color:var(--info);">Jam Resmi Pulang Tepat</label><input type="time" id="set-home-time"></div>
                 </div>
             </div>
 
@@ -291,18 +317,62 @@
         const sb = supabase.createClient(supabaseUrl, supabaseKey);
 
         let appSettings = {}; let teachers = [];
-        let holidayArr = []; // Array khusus untuk menyimpan daftar libur
+        let holidayArr = []; 
         const now = new Date();
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch((err) => console.log('PWA Failed:', err)); });
         }
 
+        // SISTEM AUDIO PING IMUT
+        let audioCtx;
+        let audioUnlocked = false;
+        function initAudio() {
+            if (audioUnlocked) return;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                audioCtx = new AudioContext();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                gain.gain.value = 0; osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.001);
+                audioUnlocked = true;
+            }
+        }
+        document.addEventListener('click', initAudio, { once: true });
+        document.addEventListener('touchstart', initAudio, { once: true });
+
+        function playCutePing() {
+            if (!audioCtx) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.type = 'sine'; 
+                osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime); 
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.5);
+            } catch(e) { console.log(e); }
+        }
+
+        function showToast(msg, type = 'success') {
+            playCutePing();
+            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
+            let iconClass = type === 'error' ? 'fa-exclamation-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle');
+            toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${msg}</span>`; container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
+        }
+
+        // SILENT SYNC FIX (updateUI flag ditambahkan)
         function triggerSilentSync() {
             const ind = document.getElementById('sync-indicator');
             if(document.getElementById('main-app-container').style.display === 'flex') {
                 ind.style.display = 'block';
-                Promise.all([loadSettingsFromDB(), fetchTeachersFromDB(), refreshDashboardData()]).then(() => {
+                Promise.all([loadSettingsFromDB(false), fetchTeachersFromDB(), refreshDashboardData()]).then(() => {
                     if (document.getElementById('tab-edit').classList.contains('active')) loadAdminAttendancePreview();
                     setTimeout(() => { ind.style.display = 'none'; }, 1000);
                 });
@@ -311,13 +381,6 @@
         setInterval(triggerSilentSync, 30000); 
         document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") triggerSilentSync(); });
         window.addEventListener("focus", () => { triggerSilentSync(); });
-
-        function showToast(msg, type = 'success') {
-            const container = document.getElementById('toast-container'); const toast = document.createElement('div'); toast.className = `toast ${type}`;
-            let iconClass = type === 'error' ? 'fa-exclamation-circle' : (type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle');
-            toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${msg}</span>`; container.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, 3500);
-        }
 
         function formatIDToYMD_Revert(ymdStr) { const p = ymdStr.split('-'); return `${p[2]}/${p[1]}/${p[0]}`; }
         function getCurrentDateStr() { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; }
@@ -336,7 +399,7 @@
             if(btnEl) { btnEl.classList.add('active'); } 
             else { document.querySelectorAll('.nav-item')[2].classList.add('active'); } 
             
-            document.getElementById('header-title').innerText = title;
+            document.getElementById('header-title').innerHTML = `<img src="https://files.catbox.moe/dlbpqp.png" alt="Logo" class="logo"> ${title}`;
             if(tabId === 'tab-edit') loadAdminAttendancePreview();
             if(tabId === 'tab-dashboard') refreshDashboardData();
         }
@@ -344,24 +407,68 @@
         async function initAdmin() {
             document.getElementById('report-month').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
             document.getElementById('manual-date').value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            await loadSettingsFromDB(); await fetchTeachersFromDB(); await refreshDashboardData();
+            await loadSettingsFromDB(true); 
+            await fetchTeachersFromDB(); 
+            await refreshDashboardData();
         }
 
-        async function loadSettingsFromDB() {
+        async function loadSettingsFromDB(updateUI = false) {
             const { data } = await sb.from('Pengaturan').select('*').limit(1);
             if (data && data.length > 0) {
-                appSettings = data[0];
-                document.getElementById('set-lat').value = appSettings.lat; document.getElementById('set-lng').value = appSettings.lng; document.getElementById('set-radius').value = appSettings.radius; 
-                document.getElementById('set-open-time').value = appSettings.open_time; document.getElementById('set-late-time').value = appSettings.late_time; document.getElementById('set-tol-time').value = appSettings.tol_time; document.getElementById('set-home-time').value = appSettings.home_time;
-                document.getElementById('set-grace-period').value = appSettings.grace_period || 0;
-                document.getElementById('set-batas-pelanggaran').value = appSettings.batas_pelanggaran || 3;
+                const dbSet = data[0]; 
+                appSettings = dbSet;
                 
-                document.getElementById('toggle-darurat').checked = appSettings.mode_darurat || false;
-                document.getElementById('pesan-broadcast').value = appSettings.pengumuman || "";
+                // --- MESIN PENGECEK TRIAL (LOCK EXPIRED SAAS) ---
+                // --- MESIN PENGECEK TRIAL (LOCK EXPIRED SAAS) ---
+                if (appSettings.tgl_expired) {
+                    // 1. Ubah spasi menjadi 'T' agar bisa dibaca semua browser (Chrome, Safari, HP)
+                    // Misal "2026-04-08 07:00:00" menjadi "2026-04-08T07:00:00"
+                    let safeDateStr = appSettings.tgl_expired;
+                    if (safeDateStr.includes(' ')) {
+                        safeDateStr = safeDateStr.replace(' ', 'T');
+                    }
+                    
+                    const expDate = new Date(safeDateStr); 
+                    const currentTime = new Date(); 
 
-                // Tarik data Libur Nasional untuk Tag UI
-                holidayArr = appSettings.hari_libur ? appSettings.hari_libur.split(',').map(s => s.trim()).filter(s => s) : [];
-                renderLiburChips();
+                    // 2. ALAT PELACAK: Buka "Inspect Element" -> tab "Console" di browser kawan untuk melihat tulisan ini!
+                    console.log("⏳ Waktu HP/Komputer Saat Ini :", currentTime.toLocaleString());
+                    console.log("🔒 Waktu Expired dari Supabase :", expDate.toLocaleString());
+
+                    // 3. Eksekusi Eksekusi Gembok
+                    if (currentTime > expDate) {
+                        console.log("🛑 STATUS: LISENSI HABIS! MENGUNCI APLIKASI...");
+                        document.getElementById('expired-overlay').style.display = 'flex';
+                        
+                        // Tutup paksa semua layar lain
+                        const uiElements = ['screen-login', 'main-app-container', 'login-overlay', 'screen-absen', 'screen-history', 'screen-register'];
+                        uiElements.forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+                        
+                        return; // Stop eksekusi fitur lain!
+                    } else {
+                        console.log("✅ STATUS: LISENSI MASIH AMAN.");
+                    }
+                }
+                // --- AKHIR MESIN PENGECEK ---
+                
+                if (updateUI) {
+                    document.getElementById('set-lat').value = appSettings.lat; 
+                    document.getElementById('set-lng').value = appSettings.lng; 
+                    document.getElementById('set-radius').value = appSettings.radius; 
+                    document.getElementById('set-open-time').value = appSettings.open_time; 
+                    document.getElementById('set-late-time').value = appSettings.late_time; 
+                    document.getElementById('set-tol-time').value = appSettings.tol_time; 
+                    document.getElementById('set-home-time').value = appSettings.home_time;
+                    document.getElementById('set-pulang-awal').value = appSettings.pulang_awal_time || "09:00"; 
+                    document.getElementById('set-grace-period').value = appSettings.grace_period || 0;
+                    document.getElementById('set-batas-pelanggaran').value = appSettings.batas_pelanggaran || 3;
+                    
+                    document.getElementById('toggle-darurat').checked = appSettings.mode_darurat || false;
+                    document.getElementById('pesan-broadcast').value = appSettings.pengumuman || "";
+
+                    holidayArr = appSettings.hari_libur ? appSettings.hari_libur.split(',').map(s => s.trim()).filter(s => s) : [];
+                    renderLiburChips();
+                }
             }
         }
 
@@ -384,7 +491,7 @@
             if(holidayArr.includes(val)) { showToast("Tanggal ini sudah ditambahkan!", "warning"); return; }
             
             holidayArr.push(val);
-            holidayArr.sort(); // Urutkan tanggal dari yang terlama ke terbaru otomatis
+            holidayArr.sort(); 
             renderLiburChips();
             document.getElementById('input-libur-baru').value = '';
         }
@@ -394,12 +501,10 @@
             renderLiburChips();
         }
 
+        // PENANGKAP ERROR SAAT SIMPAN KE SUPABASE
         async function saveSettingsToDB() {
             showToast("Mentransfer ke Cloud...", "info");
-            
-            // Gabungkan array libur menjadi string untuk database
             const holidayStr = holidayArr.join(',');
-
             const p = { 
                 lat: document.getElementById('set-lat').value, 
                 lng: document.getElementById('set-lng').value, 
@@ -408,15 +513,24 @@
                 late_time: document.getElementById('set-late-time').value, 
                 tol_time: document.getElementById('set-tol-time').value, 
                 home_time: document.getElementById('set-home-time').value, 
+                pulang_awal_time: document.getElementById('set-pulang-awal').value,
                 hari_libur: holidayStr, 
                 grace_period: parseInt(document.getElementById('set-grace-period').value) || 0, 
                 batas_pelanggaran: parseInt(document.getElementById('set-batas-pelanggaran').value) || 3 
             };
-            if(appSettings.id) { await sb.from('Pengaturan').update(p).eq('id', appSettings.id); }
-            showToast("Sistem & Libur Diperbarui!", "success"); loadSettingsFromDB(); 
+            
+            if(appSettings.id) { 
+                const { error } = await sb.from('Pengaturan').update(p).eq('id', appSettings.id); 
+                if (error) {
+                    showToast("Gagal Simpan: Kolom database belum lengkap!", "error");
+                    console.log("Error Supabase:", error.message);
+                    return; 
+                }
+            }
+            showToast("Sistem & Libur Diperbarui!", "success"); 
+            loadSettingsFromDB(true); 
         }
 
-        // ================= KONTROL KOMANDO (BROADCAST & DARURAT) =================
         async function saveEmergencyMode() {
             const isEmergency = document.getElementById('toggle-darurat').checked;
             showToast(isEmergency ? "Mode Darurat Dinyalakan!" : "Mode Darurat Dimatikan", "info");
@@ -572,8 +686,6 @@
             if (uniqueTeachers.length === 0) { showToast("Database Guru Kosong.", "error"); return; }
             const reportMap = {}; 
             
-            // Konversi holidayArr menjadi format YMD di database (YYYY-MM-DD ke DD/MM/YYYY)
-            // Namun database kita nyimpan YYYY-MM-DD di appSettings, jadi kita cek kesamaan String
             uniqueTeachers.forEach(namaGuru => { reportMap[namaGuru] = {}; for(let d=1; d<=31; d++) { reportMap[namaGuru][d] = { dtg: '', warnaDtg: '', plg: '', warnaPlg: '', absenTipe: '' }; } });
 
             if (logs) {
@@ -599,7 +711,7 @@
             chunks.forEach((chunk, chunkIndex) => {
                 html += `<div class="report-page"><div class="print-title">REKAPITULASI ABSENSI TK BAITURROHMAN<br>${titleBulan}</div><table class="print-table"><thead><tr><th rowspan="2" class="col-no">No</th><th rowspan="2" class="col-nama">NAMA</th><th rowspan="2" class="col-tipe">TIPE</th><th colspan="${maxDays}">TANGGAL</th><th colspan="3" class="col-ket">KET</th></tr><tr>`;
                 for(let d=1; d<=maxDays; d++){ html += `<th class="col-tgl">${d}</th>`; }
-                html += `<th class="col-tgl">S</th><th class="col-tgl">I</th><th class="col-tgl">A</th></tr></thead><tbody>`;
+                html += `<th class="col-sia">S</th><th class="col-sia">I</th><th class="col-sia">A</th></tr></thead><tbody>`; 
 
                 chunk.forEach((t, i) => {
                     const noUrut = (chunkIndex * teachersPerPage) + i + 1;
